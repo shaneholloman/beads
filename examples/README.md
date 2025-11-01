@@ -9,7 +9,6 @@ This directory contains examples of how to integrate beads with AI agents and wo
 - **[markdown-to-jsonl/](markdown-to-jsonl/)** - Convert markdown planning docs to beads issues
 - **[github-import/](github-import/)** - Import issues from GitHub repositories
 - **[git-hooks/](git-hooks/)** - Pre-configured git hooks for automatic export/import
-<!-- REMOVED (beads-4c74): branch-merge example - collision resolution no longer needed with hash IDs -->
 - **[claude-desktop-mcp/](claude-desktop-mcp/)** - MCP server for Claude Desktop integration
 - **[claude-code-skill/](claude-code-skill/)** - Claude Code skill for effective beads usage patterns
 
@@ -18,7 +17,7 @@ This directory contains examples of how to integrate beads with AI agents and wo
 ```bash
 # Try the Python agent example
 cd python-agent
-python agent.py
+uv run agent.py
 
 # Try the bash agent example
 cd bash-agent

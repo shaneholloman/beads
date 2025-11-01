@@ -12,7 +12,7 @@ Install from PyPI:
 uv tool install beads-mcp
 
 # Or using pip
-pip install beads-mcp
+uv tool install beads-mcp
 ```
 
 Add to your Claude Desktop config:
@@ -33,7 +33,7 @@ For development, clone the repository:
 
 ```bash
 git clone https://github.com/shaneholloman/beads
-cd beads/integrations/beads-mcp
+cd beads/adapters/mcp
 uv sync
 ```
 
@@ -280,8 +280,8 @@ cd /path/to/beads
 ./beads daemon start
 
 # Run multi-repo test
-cd integrations/beads-mcp
-uv run python test_multi_repo.py
+cd adapters/mcp
+uv run test_multi_repo.py
 ```
 
 This test verifies that the daemon can handle operations across multiple repositories simultaneously using per-request context routing.

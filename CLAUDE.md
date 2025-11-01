@@ -56,7 +56,7 @@ Shane uses exclusively Astral products for Python development:
 ### Running Python Code - UV Run Only
 
 **DO**:
-- `uv run python script.py` - Run Python scripts
+- `uv run script.py` - Run Python scripts
 - `uv run pytest` - Run tests
 - `uv run ruff check .` - Run linter
 - `uv run ty check src/` - Run type checker
@@ -65,8 +65,9 @@ Shane uses exclusively Astral products for Python development:
 **DON'T**:
 - `python script.py` - NEVER call Python directly
 - `python3 script.py` - NEVER
+- `uv run python script.py` - NEVER (UV handles Python automatically)
 - `./venv/bin/python` - NEVER
-- Any direct Python invocation - ALWAYS use `uv run`
+- Any explicit Python invocation - ALWAYS use `uv run` with script only
 
 **WHY**: UV ensures the correct Python version is used and manages the virtual environment automatically. Direct Python calls bypass UV's environment management.
 

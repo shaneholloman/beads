@@ -110,15 +110,15 @@ main() {
         '"version": "[0-9]+\.[0-9]+\.[0-9]+"' \
         "\"version\": \"$NEW_VERSION\""
 
-    # 4. Update integrations/mcp/pyproject.toml - use regex
-    echo "  • integrations/mcp/pyproject.toml"
-    update_file "integrations/mcp/pyproject.toml" \
+    # 4. Update adapters/mcp/pyproject.toml - use regex
+    echo "  • adapters/mcp/pyproject.toml"
+    update_file "adapters/mcp/pyproject.toml" \
         'version = "[0-9]+\.[0-9]+\.[0-9]+"' \
         "version = \"$NEW_VERSION\""
 
-    # 5. Update integrations/mcp/src/mcp_beads/__init__.py - use regex
-    echo "  • integrations/mcp/src/mcp_beads/__init__.py"
-    update_file "integrations/mcp/src/mcp_beads/__init__.py" \
+    # 5. Update adapters/mcp/src/mcp_beads/__init__.py - use regex
+    echo "  • adapters/mcp/src/mcp_beads/__init__.py"
+    update_file "adapters/mcp/src/mcp_beads/__init__.py" \
         '__version__ = "[0-9]+\.[0-9]+\.[0-9]+"' \
         "__version__ = \"$NEW_VERSION\""
 
@@ -149,8 +149,8 @@ main() {
         "$(grep 'Version = ' cmd/beads/version.go | sed 's/.*"\(.*\)".*/\1/')"
         "$(jq -r '.version' .claude-plugin/plugin.json)"
         "$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)"
-        "$(grep 'version = ' integrations/mcp/pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')"
-        "$(grep '__version__ = ' integrations/mcp/src/mcp_beads/__init__.py | sed 's/.*"\(.*\)".*/\1/')"
+        "$(grep 'version = ' adapters/mcp/pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')"
+        "$(grep '__version__ = ' adapters/mcp/src/mcp_beads/__init__.py | sed 's/.*"\(.*\)".*/\1/')"
         "$(jq -r '.version' .beads/config.json)"
     )
 
@@ -178,8 +178,8 @@ main() {
         git add cmd/beads/version.go \
                 .claude-plugin/plugin.json \
                 .claude-plugin/marketplace.json \
-                integrations/mcp/pyproject.toml \
-                integrations/mcp/src/mcp_beads/__init__.py \
+                adapters/mcp/pyproject.toml \
+                adapters/mcp/src/mcp_beads/__init__.py \
                 .beads/config.json \
                 docs/plugin.md
 

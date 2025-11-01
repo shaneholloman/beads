@@ -83,8 +83,8 @@ This updates:
 - `cmd/beads/version.go`
 - `.claude-plugin/plugin.json`
 - `.claude-plugin/marketplace.json`
-- `integrations/mcp/pyproject.toml`
-- `integrations/mcp/src/mcp_beads/__init__.py`
+- `adapters/mcp/pyproject.toml`
+- `adapters/mcp/src/mcp_beads/__init__.py`
 - `README.md`
 - `plugin.md`
 
@@ -126,7 +126,7 @@ The automation requires this secret to be configured:
 If the automated publish fails, you can manually upload:
 
 ```bash
-cd integrations/mcp
+cd adapters/mcp
 
 # Clean and rebuild
 rm -rf dist/ build/ src/*.egg-info
@@ -136,7 +136,7 @@ uv build
 TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-... uv tool run twine upload dist/*
 ```
 
-See [integrations/mcp/pypi.md](integrations/mcp/pypi.md) for detailed PyPI instructions.
+See [adapters/mcp/pypi.md](adapters/mcp/pypi.md) for detailed PyPI instructions.
 
 ### 3. Update Homebrew Formula
 
@@ -230,7 +230,7 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
    brew update && brew upgrade beads && beads version
    
    # PyPI
-   pip install --upgrade beads-mcp
+   uv tool install --upgrade mcp-beads
    beads-mcp --help
    
    # Check daemon version matches client
@@ -277,4 +277,4 @@ Set up API token at <https://pypi.org/manage/account/token/> and use `__token__`
 
 - [CHANGELOG.md](CHANGELOG.md) - Release history
 - [scripts/README.md](scripts/README.md) - Version bump script details
-- [integrations/mcp/pypi.md](integrations/mcp/pypi.md) - Detailed PyPI guide
+- [adapters/mcp/pypi.md](adapters/mcp/pypi.md) - Detailed PyPI guide

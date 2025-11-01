@@ -21,7 +21,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "${CLAUDE_PLUGIN_ROOT}/integrations/mcp",
+        "${CLAUDE_PLUGIN_ROOT}/adapters/mcp",
         "run",
         "beads-mcp"
       ],

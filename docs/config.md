@@ -319,4 +319,4 @@ External integration scripts can read configuration to sync with Jira, Linear, G
 
 - [README.md](../README.md) - Main documentation
 - [extending.md](extending.md) - Database schema and compaction config
-- [examples/integrations/](../examples/integrations) - Integration examples
+- [examples/adapters/](../examples/adapters) - Integration examples

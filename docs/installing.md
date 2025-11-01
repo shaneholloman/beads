@@ -169,7 +169,7 @@ If you're using an MCP-compatible tool other than Claude Code:
 uv tool install beads-mcp
 
 # Or using pip
-pip install beads-mcp
+uv tool install beads-mcp
 ```
 
 **Configuration for Claude Desktop** (macOS):
@@ -206,7 +206,7 @@ Add to your MCP settings:
 - Ready work detection and dependency management
 - All without requiring Bash commands
 
-See [integrations/mcp/README.md](../integrations/mcp/README.md) for detailed MCP server documentation.
+See [adapters/mcp/README.md](../adapters/mcp/README.md) for detailed MCP server documentation.
 
 ## Verifying Installation
 

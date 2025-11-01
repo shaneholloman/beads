@@ -12,11 +12,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
    - Test PyPI: <https://test.pypi.org/manage/account/token/>
    - PyPI: <https://pypi.org/manage/account/token/>
 
-3. **Build Tools**: Install the Python build tools:
-
-   ```bash
-   uv pip install --upgrade build twine
-   ```
+3. **Build Tools**: UV handles building automatically (no separate tools needed)
 
 ## Building the Package
 
@@ -29,21 +25,21 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 2. **Build the distribution packages**:
 
    ```bash
-   python -m build
+   uv build
    ```
 
    This creates both:
-   - `dist/beads_mcp-0.9.4-py3-none-any.whl` (wheel)
-   - `dist/beads-mcp-0.9.4.tar.gz` (source distribution)
+   - `dist/mcp_beads-0.30.0-py3-none-any.whl` (wheel)
+   - `dist/mcp_beads-0.30.0.tar.gz` (source distribution)
 
 3. **Verify the build**:
 
    ```bash
-   tar -tzf dist/beads-mcp-0.9.4.tar.gz
+   tar -tzf dist/mcp_beads-0.30.0.tar.gz
    ```
 
    Should include:
-   - Source files in `src/beads_mcp/`
+   - Source files in `src/mcp_beads/`
    - `README.md`
    - `LICENSE`
    - `pyproject.toml`
@@ -55,7 +51,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 1. **Upload to Test PyPI**:
 
    ```bash
-   python -m twine upload --repository testpypi dist/*
+   uv run twine upload --repository testpypi dist/*
    ```
 
    When prompted, use:
@@ -65,12 +61,8 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 2. **Install from Test PyPI**:
 
    ```bash
-   # In a fresh virtual environment
-   uv venv test-env
-   source test-env/bin/activate
-
-   # Install from Test PyPI
-   pip install --index-url https://test.pypi.org/simple/ beads-mcp
+   # Test installation
+   uv tool install --index-url https://test.pypi.org/simple/ beads-mcp
 
    # Test it works
    beads-mcp --help
@@ -79,7 +71,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 3. **Verify the installation**:
 
    ```bash
-   python -c "import beads_mcp; print(beads_mcp.__version__)"
+   uv run python -c "import mcp_beads; print(mcp_beads.__version__)"
    ```
 
 ## Publishing to PyPI
@@ -89,7 +81,7 @@ Once you've verified the package works on Test PyPI:
 1. **Upload to PyPI**:
 
    ```bash
-   python -m twine upload dist/*
+   uv run twine upload dist/*
    ```
 
    Use:
@@ -97,15 +89,14 @@ Once you've verified the package works on Test PyPI:
    - Password: Your PyPI API token
 
 2. **Verify on PyPI**:
-   - Visit <https://pypi.org/project/beads-mcp/>
+   - Visit <https://pypi.org/project/mcp-beads/>
    - Check that the README displays correctly
    - Verify all metadata is correct
 
 3. **Test installation**:
 
    ```bash
-   # In a fresh environment
-   pip install beads-mcp
+   uv tool install mcp-beads
    beads-mcp --help
    ```
 
@@ -114,9 +105,7 @@ Once you've verified the package works on Test PyPI:
 After publishing, users can install simply with:
 
 ```bash
-pip install beads-mcp
-# or with uv
-uv pip install beads-mcp
+uv tool install mcp-beads
 ```
 
 Update the README.md to reflect this simpler installation method.
@@ -125,9 +114,7 @@ Update the README.md to reflect this simpler installation method.
 
 When releasing a new version:
 
-1. Update version in `src/beads_mcp/__init__.py`
-2. Update version in `pyproject.toml`
-3. Use the version bump script from the parent project:
+1. Use the version bump script from the parent project (updates all files automatically):
 
    ```bash
    cd ../..
@@ -159,7 +146,7 @@ If files are missing from the built package, create a `MANIFEST.in`:
 ```
 include README.md
 include LICENSE
-recursive-include src/beads_mcp *.py
+recursive-include src/mcp_beads *.py
 ```
 
 ### Authentication Errors

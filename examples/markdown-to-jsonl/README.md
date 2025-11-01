@@ -21,20 +21,20 @@ The converter script (`md2jsonl.py`) parses markdown files and outputs JSONL tha
 ### Basic conversion
 
 ```bash
-python md2jsonl.py feature.md | beads import
+uv run md2jsonl.py feature.md | beads import
 ```
 
 ### Save to file first
 
 ```bash
-python md2jsonl.py feature.md > issues.jsonl
+uv run md2jsonl.py feature.md > issues.jsonl
 beads import -i issues.jsonl
 ```
 
 ### Preview before importing
 
 ```bash
-python md2jsonl.py feature.md | jq .
+uv run md2jsonl.py feature.md | jq .
 ```
 
 ## Markdown Format
@@ -103,7 +103,7 @@ See `example-feature.md` for a complete example.
 
 ```bash
 # Convert the example
-python md2jsonl.py example-feature.md > example-issues.jsonl
+uv run md2jsonl.py example-feature.md > example-issues.jsonl
 
 # View the output
 cat example-issues.jsonl | jq .
@@ -133,8 +133,8 @@ This is a simple example, not a production tool:
 
 For production use, you might want to:
 
-- Use a proper YAML parser (`pip install pyyaml`)
-- Use a markdown parser (`pip install markdown` or `python-markdown2`)
+- Use a proper YAML parser (`uv add pyyaml`)
+- Use a markdown parser (`uv add markdown` or `markdown2`)
 - Add validation and error handling
 - Support more dependency formats
 

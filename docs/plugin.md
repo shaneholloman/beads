@@ -384,7 +384,7 @@ Beads follows semantic versioning. The plugin version tracks the beads CLI versi
 - **GitHub**: <https://github.com/shaneholloman/beads>
 - **Documentation**: See README.md in the repository
 - **Examples**: Check `examples/` directory for integration patterns
-- **MCP Server**: See `integrations/mcp/` for server details
+- **MCP Server**: See `adapters/mcp/` for server details
 
 ## Contributing
 

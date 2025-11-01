@@ -40,18 +40,18 @@ export GITHUB_TOKEN=ghp_your_token_here
 
 ```bash
 # Fetch all issues from a repository
-python gh2jsonl.py --repo owner/repo | beads import
+uv run gh2jsonl.py --repo owner/repo | beads import
 
 # Save to file first (recommended)
-python gh2jsonl.py --repo owner/repo > issues.jsonl
+uv run gh2jsonl.py --repo owner/repo > issues.jsonl
 beads import -i issues.jsonl --dry-run  # Preview
 beads import -i issues.jsonl             # Import
 
 # Fetch only open issues
-python gh2jsonl.py --repo owner/repo --state open
+uv run gh2jsonl.py --repo owner/repo --state open
 
 # Fetch only closed issues
-python gh2jsonl.py --repo owner/repo --state closed
+uv run gh2jsonl.py --repo owner/repo --state closed
 ```
 
 ### From JSON File
@@ -63,26 +63,26 @@ Export issues from GitHub (via API or manually), then:
 curl -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/owner/repo/issues/123 > issue.json
 
-python gh2jsonl.py --file issue.json | beads import
+uv run gh2jsonl.py --file issue.json | beads import
 
 # Multiple issues
 curl -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/owner/repo/issues > issues.json
 
-python gh2jsonl.py --file issues.json | beads import
+uv run gh2jsonl.py --file issues.json | beads import
 ```
 
 ### Custom Options
 
 ```bash
 # Use custom prefix (instead of 'beads')
-python gh2jsonl.py --repo owner/repo --prefix myproject
+uv run gh2jsonl.py --repo owner/repo --prefix myproject
 
 # Start numbering from specific ID
-python gh2jsonl.py --repo owner/repo --start-id 100
+uv run gh2jsonl.py --repo owner/repo --start-id 100
 
 # Pass token directly (instead of env var)
-python gh2jsonl.py --repo owner/repo --token ghp_...
+uv run gh2jsonl.py --repo owner/repo --token ghp_...
 ```
 
 ## Label Mapping
@@ -163,7 +163,7 @@ See also owner/other-repo#789.
 ```bash
 # Import only open issues for active work
 export GITHUB_TOKEN=ghp_...
-python gh2jsonl.py --repo mycompany/myapp --state open > open-issues.jsonl
+uv run gh2jsonl.py --repo mycompany/myapp --state open > open-issues.jsonl
 
 # Preview
 cat open-issues.jsonl | jq .
@@ -177,7 +177,7 @@ beads ready  # See what's ready to work on
 
 ```bash
 # Import all issues (open and closed)
-python gh2jsonl.py --repo mycompany/myapp > all-issues.jsonl
+uv run gh2jsonl.py --repo mycompany/myapp > all-issues.jsonl
 
 # Preview import (check for new issues and updates)
 beads import -i all-issues.jsonl --dry-run
@@ -196,7 +196,7 @@ beads stats
 gh api repos/owner/repo/issues?labels=p1,bug > high-priority-bugs.json
 
 # Import
-python gh2jsonl.py --file high-priority-bugs.json | beads import
+uv run gh2jsonl.py --file high-priority-bugs.json | beads import
 ```
 
 ## Customization
@@ -283,7 +283,7 @@ export GITHUB_TOKEN=ghp_your_token_here
 Or pass directly:
 
 ```bash
-python gh2jsonl.py --repo owner/repo --token ghp_...
+uv run gh2jsonl.py --repo owner/repo --token ghp_...
 ```
 
 ### "GitHub API error: 404"

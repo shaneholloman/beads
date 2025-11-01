@@ -93,7 +93,7 @@ Updates version in all these files:
 - `cmd/beads/version.go` - beads CLI version constant
 - `.claude-plugin/plugin.json` - Plugin version
 - `.claude-plugin/marketplace.json` - Marketplace plugin version
-- `integrations/beads-mcp/pyproject.toml` - MCP server version
+- `adapters/mcp/pyproject.toml` - MCP server version
 - `README.md` - Alpha status version
 - `plugin.md` - Version requirements
 
