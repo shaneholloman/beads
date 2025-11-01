@@ -3,7 +3,9 @@ description: Update an issue's status, priority, or other fields
 argument-hint: [issue-id] [status]
 ---
 
-Update a beads issue.
+# Update Issue
+
+> Update a beads issue.
 
 If arguments are provided:
 

@@ -1,10 +1,10 @@
 ---
-description: Show the AI-supervised issue workflow guide
+description: Show the Agent issue workflow guide
 ---
 
-Display the beads workflow for AI agents and developers.
+# Beads Workflow Guide
 
-# Beads Workflow
+> Display the beads workflow for AI agents and developers.
 
 Beads is an issue tracker designed for AI-supervised coding workflows. Here's how to use it effectively:
 

@@ -2,7 +2,9 @@
 description: Check beads and plugin versions
 ---
 
-Check the installed versions of beads components and verify compatibility.
+# Version Check
+
+> Check the installed versions of beads components and verify compatibility.
 
 **Note:** The MCP server automatically checks beads CLI version >= 0.9.0 on startup. This command provides detailed version info and update instructions.
 

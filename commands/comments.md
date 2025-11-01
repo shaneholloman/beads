@@ -3,7 +3,9 @@ description: View or manage comments on an issue
 argument-hint: [issue-id]
 ---
 
-View or add comments to a beads issue.
+# Comments
+
+> View or add comments to a beads issue.
 
 ## View Comments
 

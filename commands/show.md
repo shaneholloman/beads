@@ -3,7 +3,9 @@ description: Show detailed information about an issue
 argument-hint: [issue-id]
 ---
 
-Display detailed information about a beads issue.
+# Show Issue
+
+> Display detailed information about a beads issue.
 
 If an issue ID is provided as $1, use it. Otherwise, ask the user for the issue ID.
 

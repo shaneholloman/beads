@@ -2,7 +2,9 @@
 description: Find ready-to-work tasks with no blockers
 ---
 
-Use the beads MCP server to find tasks that are ready to work on (no blocking dependencies).
+# Ready Tasks
+
+> Use the beads MCP server to find tasks that are ready to work on (no blocking dependencies).
 
 Call the `ready` tool to get a list of unblocked issues. Then present them to the user in a clear format showing:
 

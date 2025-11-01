@@ -3,7 +3,9 @@ description: Manage issue labels
 argument-hint: [command] [issue-id] [label]
 ---
 
-Manage labels on beads issues. Labels provide flexible cross-cutting metadata beyond structured fields (status, priority, type).
+# Label Management
+
+> Manage labels on beads issues. Labels provide flexible cross-cutting metadata beyond structured fields (status, priority, type).
 
 ## Available Commands
 

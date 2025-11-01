@@ -3,7 +3,9 @@ description: Show orphaned claims and dead executors
 argument-hint: [--release] [--threshold]
 ---
 
-Show issues stuck in_progress with execution_state where the executor is dead or stopped.
+# Stale Issues
+
+> Show issues stuck in_progress with execution_state where the executor is dead or stopped.
 
 Helps identify orphaned work that needs manual recovery.
 

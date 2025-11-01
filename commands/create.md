@@ -3,7 +3,9 @@ description: Create a new issue interactively
 argument-hint: [title] [type] [priority]
 ---
 
-Create a new beads issue. If arguments are provided:
+# Create Issue
+
+> Create a new beads issue. If arguments are provided:
 
 - $1: Issue title
 - $2: Issue type (bug, feature, task, epic, chore)

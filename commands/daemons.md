@@ -1,6 +1,6 @@
 # beads daemons - Daemon Management
 
-Manage beads daemon processes across all repositories and worktrees.
+> Manage beads daemon processes across all repositories and worktrees.
 
 ## Synopsis
 

@@ -2,7 +2,9 @@
 description: Show project statistics and progress
 ---
 
-Display statistics about the current beads project.
+# Project Statistics
+
+> Display statistics about the current beads project.
 
 Use the beads MCP `stats` tool to retrieve project metrics and present them clearly:
 

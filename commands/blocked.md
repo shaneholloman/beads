@@ -3,7 +3,9 @@ description: Show blocked issues
 argument-hint: []
 ---
 
-Show all issues that are blocked by dependencies.
+# Blocked Issues
+
+> Show all issues that are blocked by dependencies.
 
 Use `beads blocked` to see which issues have blockers preventing them from being worked on. This is the inverse of `beads ready` - it shows what's NOT ready.
 

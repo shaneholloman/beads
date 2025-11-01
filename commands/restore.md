@@ -3,7 +3,9 @@ description: Restore full history of compacted issue from git
 argument-hint: <issue-id>
 ---
 
-Restore full history of a compacted issue from git version control.
+# Restore Issue History
+
+> Restore full history of a compacted issue from git version control.
 
 When an issue is compacted, the git commit hash is saved. This command:
 

@@ -3,7 +3,9 @@ description: Export issues to JSONL format
 argument-hint: [-o output-file]
 ---
 
-Export all issues to JSON Lines format (one JSON object per line).
+# Export Issues
+
+> Export all issues to JSON Lines format (one JSON object per line).
 
 ## Usage
 

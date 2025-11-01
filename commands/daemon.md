@@ -3,7 +3,9 @@ description: Run background sync daemon
 argument-hint: [--stop] [--status] [--health]
 ---
 
-Run a per-project background daemon that manages database connections and syncs with git.
+# Daemon
+
+> Run a per-project background daemon that manages database connections and syncs with git.
 
 ## Per-Project Daemon (LSP Model)
 

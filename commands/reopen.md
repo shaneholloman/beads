@@ -3,7 +3,9 @@ description: Reopen closed issues
 argument-hint: [issue-ids...] [--reason]
 ---
 
-Reopen one or more closed issues.
+# Reopen Issues
+
+> Reopen one or more closed issues.
 
 Sets status to 'open' and clears the closed_at timestamp. Emits a Reopened event.
 

@@ -3,7 +3,9 @@ description: Quick start guide for beads workflows
 argument-hint: []
 ---
 
-Display a quick start guide showing common beads workflows and patterns.
+# Quickstart Guide
+
+> Display a quick start guide showing common beads workflows and patterns.
 
 Use `beads quickstart` to see:
 

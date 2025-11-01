@@ -3,7 +3,9 @@ description: Initialize beads in the current project
 argument-hint: [prefix]
 ---
 
-Initialize beads issue tracking in the current directory.
+# Initialize Beads
+
+> Initialize beads issue tracking in the current directory.
 
 If a prefix is provided as $1, use it as the issue prefix (e.g., "myproject" creates issues like myproject-1, myproject-2). If not provided, the default is the current directory name.
 

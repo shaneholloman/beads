@@ -3,7 +3,9 @@ description: Rename the issue prefix for all issues
 argument-hint: <new-prefix> [--dry-run]
 ---
 
-Rename the issue prefix for all issues in the database.
+# Rename Issue Prefix
+
+> Rename the issue prefix for all issues in the database.
 
 Updates all issue IDs and all text references across all fields.
 

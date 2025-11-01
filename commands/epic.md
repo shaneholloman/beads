@@ -3,7 +3,9 @@ description: Epic management commands
 argument-hint: [command]
 ---
 
-Manage epics (large features composed of multiple issues).
+# Epic Management
+
+> Manage epics (large features composed of multiple issues).
 
 ## Available Commands
 

@@ -3,7 +3,9 @@ description: Compact old closed issues using semantic summarization
 argument-hint: [--all] [--id issue-id] [--dry-run]
 ---
 
-Reduce database size by summarizing closed issues no longer actively referenced.
+# Compact Issues
+
+> Reduce database size by summarizing closed issues no longer actively referenced.
 
 ## Compaction Tiers
 

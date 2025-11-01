@@ -3,7 +3,9 @@ description: Synchronize issues with git remote
 argument-hint: [--dry-run] [--message]
 ---
 
-Synchronize issues with git remote in a single operation.
+# Sync Issues
+
+> Synchronize issues with git remote in a single operation.
 
 ## Sync Steps
 
