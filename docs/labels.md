@@ -21,7 +21,7 @@ Labels provide flexible, multi-dimensional categorization for issues beyond the 
 
 ## Quick Start
 
-```bash
+```sh
 # Add labels when creating issues
 beads create "Fix auth bug" -t bug -p 1 -l auth,backend,urgent
 
@@ -54,7 +54,7 @@ beads list --status open --priority 1 --label security
 
 Identify which part of the system:
 
-```bash
+```sh
 backend
 frontend
 api
@@ -67,7 +67,7 @@ mobile
 
 **Example:**
 
-```bash
+```sh
 beads create "Add GraphQL endpoint" -t feature -p 2 -l backend,api
 beads create "Update login form" -t task -p 2 -l frontend,auth,ui
 ```
@@ -76,7 +76,7 @@ beads create "Update login form" -t task -p 2 -l frontend,auth,ui
 
 Group by business domain:
 
-```bash
+```sh
 auth
 payments
 search
@@ -89,7 +89,7 @@ admin
 
 **Example:**
 
-```bash
+```sh
 beads list --label payments --status open  # All open payment issues
 beads list --label-any auth,security       # Security-related work
 ```
@@ -98,7 +98,7 @@ beads list --label-any auth,security       # Security-related work
 
 Quick effort indicators:
 
-```bash
+```sh
 small     # < 1 day
 medium    # 1-3 days
 large     # > 3 days
@@ -106,7 +106,7 @@ large     # > 3 days
 
 **Example:**
 
-```bash
+```sh
 # Find small quick wins
 beads ready --json | jq '.[] | select(.labels[] == "small")'
 ```
@@ -115,7 +115,7 @@ beads ready --json | jq '.[] | select(.labels[] == "small")'
 
 Track what's needed before closing:
 
-```bash
+```sh
 needs-review
 needs-tests
 needs-docs
@@ -124,7 +124,7 @@ breaking-change
 
 **Example:**
 
-```bash
+```sh
 beads label add beads-42 needs-review
 beads list --label needs-review --status in_progress
 ```
@@ -133,7 +133,7 @@ beads list --label needs-review --status in_progress
 
 Track release targeting:
 
-```bash
+```sh
 v1.0
 v2.0
 backport-candidate
@@ -142,7 +142,7 @@ release-blocker
 
 **Example:**
 
-```bash
+```sh
 beads list --label v1.0 --status open    # What's left for v1.0?
 beads label add beads-42 release-blocker
 ```
@@ -151,7 +151,7 @@ beads label add beads-42 release-blocker
 
 Indicate ownership or interest:
 
-```bash
+```sh
 team-infra
 team-product
 team-mobile
@@ -161,7 +161,7 @@ help-wanted
 
 **Example:**
 
-```bash
+```sh
 beads list --assignee alice --label team-infra
 beads create "Memory leak in cache" -t bug -p 1 -l team-infra,help-wanted
 ```
@@ -170,7 +170,7 @@ beads create "Memory leak in cache" -t bug -p 1 -l team-infra,help-wanted
 
 Process or workflow flags:
 
-```bash
+```sh
 auto-generated     # Created by automation
 discovered-from    # Found during other work (also a dep type)
 technical-debt
@@ -181,7 +181,7 @@ wontfix
 
 **Example:**
 
-```bash
+```sh
 beads create "TODO: Refactor parser" -t chore -p 3 -l technical-debt,auto-generated
 ```
 
@@ -191,7 +191,7 @@ beads create "TODO: Refactor parser" -t chore -p 3 -l technical-debt,auto-genera
 
 All specified labels must be present:
 
-```bash
+```sh
 # Issues that are BOTH backend AND urgent
 beads list --label backend,urgent
 
@@ -203,7 +203,7 @@ beads list --status open --type bug --label needs-review,needs-tests
 
 At least one specified label must be present:
 
-```bash
+```sh
 # Issues in frontend OR backend
 beads list --label-any frontend,backend
 
@@ -215,7 +215,7 @@ beads list --label-any security,auth
 
 Mix both filters for complex queries:
 
-```bash
+```sh
 # Backend issues that are EITHER urgent OR a blocker
 beads list --label backend --label-any urgent,release-blocker
 
@@ -227,7 +227,7 @@ beads list --label needs-review,needs-tests --label-any frontend,ui,mobile
 
 ### Triage Workflow
 
-```bash
+```sh
 # Create untriaged issue
 beads create "Crash on login" -t bug -p 1 -l needs-triage
 
@@ -243,7 +243,7 @@ beads list --label needs-triage
 
 ### Quality Gate Workflow
 
-```bash
+```sh
 # Start work
 beads update beads-42 --status in_progress
 
@@ -263,7 +263,7 @@ beads close beads-42
 
 ### Release Planning
 
-```bash
+```sh
 # Tag issues for v1.0
 beads label add beads-42 v1.0
 beads label add beads-43 v1.0
@@ -281,7 +281,7 @@ beads label add beads-45 release-blocker
 
 ### Component-Based Work Distribution
 
-```bash
+```sh
 # Backend team picks up work
 beads ready --json | jq '.[] | select(.labels[]? == "backend")'
 
@@ -296,7 +296,7 @@ beads list --label help-wanted,good-first-issue
 
 ### Listing Labels
 
-```bash
+```sh
 # Labels on a specific issue
 beads label list beads-42
 
@@ -321,13 +321,13 @@ Output:
 
 Add labels in batch during creation:
 
-```bash
+```sh
 beads create "Issue" -l label1,label2,label3
 ```
 
 Script to add label to multiple issues:
 
-```bash
+```sh
 # Add "needs-review" to all in_progress issues
 beads list --status in_progress --json | jq -r '.[].id' | while read id; do
   beads label add "$id" needs-review
@@ -336,7 +336,7 @@ done
 
 Remove label from multiple issues:
 
-```bash
+```sh
 # Remove "urgent" from closed issues
 beads list --status closed --label urgent --json | jq -r '.[].id' | while read id; do
   beads label remove "$id" urgent
@@ -347,7 +347,7 @@ done
 
 Labels are automatically synced to `.beads/issues.jsonl` along with all issue data:
 
-```bash
+```sh
 # Make changes
 beads create "Fix bug" -l backend,urgent
 beads label add beads-42 needs-review
@@ -381,7 +381,7 @@ auth, backend, urgent, needs-review
 Users can't log in after recent deployment.
 ```
 
-```bash
+```sh
 beads create -f issue.md
 # Creates issue with all four labels
 ```
@@ -392,7 +392,7 @@ beads create -f issue.md
 
 Document your team's label taxonomy:
 
-```bash
+```sh
 # Add to project README or CONTRIBUTING.md
 - Use lowercase, hyphen-separated (e.g., `good-first-issue`)
 - Prefix team labels (e.g., `team-infra`, `team-product`)
@@ -412,7 +412,7 @@ Labels are flexible, but too many can cause confusion. Prefer:
 
 Periodically review:
 
-```bash
+```sh
 beads label list-all
 # Remove obsolete labels from issues
 ```
@@ -428,7 +428,7 @@ Labels are for categorization, not free-text search:
 
 Labels + dependencies = powerful organization:
 
-```bash
+```sh
 # Epic with labeled subtasks
 beads create "Auth system rewrite" -t epic -p 1 -l auth,v2.0
 beads create "Implement JWT" -t task -p 1 -l auth,backend --deps parent-child:beads-42
@@ -442,7 +442,7 @@ beads list --label auth,v2.0
 
 Labels are especially useful for AI agents managing complex workflows:
 
-```bash
+```sh
 # Auto-label discovered work
 beads create "Found TODO in auth.go" -t task -p 2 -l auto-generated,technical-debt
 
@@ -456,7 +456,7 @@ beads label add beads-42 needs-human-review
 
 Example agent workflow:
 
-```bash
+```sh
 # Agent discovers issues during refactor
 beads create "Extract validateToken function" -t chore -p 2 \
   -l technical-debt,backend,auth,small \
@@ -480,7 +480,7 @@ beads close beads-42
 
 Track issues across multiple dimensions:
 
-```bash
+```sh
 # Backend + auth + high priority
 beads list --label backend,auth --priority 1
 
@@ -493,7 +493,7 @@ beads list --priority 0 --label-any backend,frontend,infrastructure
 
 ### Sprint Planning
 
-```bash
+```sh
 # Label issues for sprint
 for id in beads-42 beads-43 beads-44 beads-45; do
   beads label add "$id" sprint-12
@@ -507,7 +507,7 @@ beads stats | grep "In Progress"                # Current WIP
 
 ### Technical Debt Tracking
 
-```bash
+```sh
 # Mark debt
 beads create "Refactor legacy parser" -t chore -p 3 -l technical-debt,large
 
@@ -518,7 +518,7 @@ beads list --label technical-debt --priority 1  # High-priority debt
 
 ### Breaking Change Coordination
 
-```bash
+```sh
 # Identify breaking changes
 beads label add beads-42 breaking-change
 beads label add beads-42 v2.0
@@ -536,7 +536,7 @@ beads list --label breaking-change --label needs-docs
 
 Labels require explicit fetching. The `beads list` command shows issues but not labels in human output (only in JSON).
 
-```bash
+```sh
 # See labels in JSON
 beads list --json | jq '.[] | {id, labels}'
 
@@ -549,7 +549,7 @@ beads label list beads-42
 
 Check label names for exact matches (case-sensitive):
 
-```bash
+```sh
 # These are different labels:
 beads label add beads-42 Backend    # Capital B
 beads list --label backend       # Won't match
@@ -562,7 +562,7 @@ beads label list-all
 
 Labels are included in `.beads/issues.jsonl` export. If labels seem out of sync:
 
-```bash
+```sh
 # Force export
 beads export -o .beads/issues.jsonl
 

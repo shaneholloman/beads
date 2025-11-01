@@ -8,7 +8,7 @@ This directory contains example scripts for automating database compaction.
 
 Interactive compaction workflow with prompts. Perfect for manual compaction runs.
 
-```bash
+```sh
 chmod +x workflow.sh
 export ANTHROPIC_API_KEY="sk-ant-..."
 ./workflow.sh
@@ -27,7 +27,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 
 Fully automated compaction for cron jobs. No interaction required.
 
-```bash
+```sh
 # Configure
 export BEADS_REPO_PATH="/path/to/your/repo"
 export BEADS_LOG_FILE="$HOME/.beads-compact.log"
@@ -58,7 +58,7 @@ crontab -e
 
 Smart auto-compaction with thresholds. Only runs if enough eligible issues exist.
 
-```bash
+```sh
 chmod +x auto-compact.sh
 
 # Compact if 10+ eligible issues
@@ -91,7 +91,7 @@ chmod +x auto-compact.sh
 
 All scripts require:
 
-```bash
+```sh
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
@@ -114,7 +114,7 @@ Use `cron-compact.sh` quarterly or `auto-compact.sh` in CI.
 
 Use `cron-compact.sh` monthly with both tiers:
 
-```bash
+```sh
 # Modify cron-compact.sh to run both tiers
 ```
 
@@ -129,7 +129,7 @@ Combine approaches:
 
 Before deploying to cron, test scripts manually:
 
-```bash
+```sh
 # Test workflow
 export ANTHROPIC_API_KEY="sk-ant-..."
 ./workflow.sh
@@ -148,14 +148,14 @@ export BEADS_REPO_PATH="$(pwd)"
 
 Ensure beads is in PATH:
 
-```bash
+```sh
 which beads
 export PATH="$PATH:/usr/local/bin"
 ```
 
 ### "ANTHROPIC_API_KEY not set"
 
-```bash
+```sh
 export ANTHROPIC_API_KEY="sk-ant-..."
 # Add to ~/.zshrc or ~/.bashrc for persistence
 ```
@@ -164,7 +164,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 
 Check cron logs:
 
-```bash
+```sh
 # Linux
 grep CRON /var/log/syslog
 
@@ -174,7 +174,7 @@ log show --predicate 'process == "cron"' --last 1h
 
 Verify script is executable:
 
-```bash
+```sh
 chmod +x /etc/cron.monthly/beads-compact
 ```
 
@@ -182,7 +182,7 @@ chmod +x /etc/cron.monthly/beads-compact
 
 Track compaction costs:
 
-```bash
+```sh
 # Show stats after compaction
 beads compact --stats
 

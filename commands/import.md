@@ -21,7 +21,7 @@ Import issues from JSON Lines format (one JSON object per line).
 
 Use `--dry-run` to see what will change before importing:
 
-```bash
+```sh
 beads import -i issues.jsonl --dry-run
 # Shows: new issues, updates, exact matches
 ```

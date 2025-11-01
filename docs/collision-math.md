@@ -138,7 +138,7 @@ Using `[a-z0-9]` (36 characters) instead of hex (16 characters):
 
 Run the collision calculator yourself:
 
-```bash
+```sh
 go run scripts/collision-calculator.go
 ```
 

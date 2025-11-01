@@ -432,7 +432,7 @@ ORDER BY created_at DESC;
 
 Use beads's `--json` flags for scripting:
 
-```bash
+```sh
 #!/bin/bash
 
 # Find ready work

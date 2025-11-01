@@ -165,7 +165,7 @@ Epic Planning Workflow:
 
 **Example**: OAuth Integration Epic
 
-```bash
+```sh
 1. Create epic:
    beads create "Implement OAuth integration" -t epic -d "OAuth with Google and GitHub"
      design: "Support Google and GitHub providers"
@@ -337,7 +337,7 @@ User Tips:
 
 **At End of Session 1:**
 
-```bash
+```sh
 beads update workspace-mcp-server-2 --notes "COMPLETED: Set up skeleton with Docs
 API connection verified. Markdown parsing logic 80% done (handles *, _ modifiers).
 IN PROGRESS: Testing edge cases for nested formatting. NEXT: Implement
@@ -347,7 +347,7 @@ docs/markdown-to-docs-reference.md. No blockers, moving well."
 
 **At Start of Session 2:**
 
-```bash
+```sh
 beads show workspace-mcp-server-2
 # Output includes notes field showing exactly where we left off
 # Claude reports: "Markdown→Docs feature is 80% parsed. We were testing

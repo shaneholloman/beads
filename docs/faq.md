@@ -91,7 +91,7 @@ Follow the repo for updates and the path to 1.0!
 
 **The problem with sequential IDs:**
 
-```bash
+```sh
 # Branch A creates beads-10
 git checkout -b feature-auth
 beads create "Add OAuth"  # Sequential ID: beads-10
@@ -106,7 +106,7 @@ git merge feature-auth   # Two different issues, same ID
 
 **Hash IDs solve this:**
 
-```bash
+```sh
 # Branch A
 beads create "Add OAuth"  # Hash ID: beads-a1b2 (from random UUID)
 
@@ -131,7 +131,7 @@ beads automatically extends hash length as your database grows to maintain low c
 
 **Example:**
 
-```bash
+```sh
 # Create epic (generates parent hash)
 beads create "Auth System" -t epic -p 1
 # Returns: beads-a3f8e9
@@ -166,19 +166,19 @@ beads create "Tests" -p 1          # beads-a3f8e9.3
 
 **Humans:**
 
-```bash
+```sh
 beads init  # Interactive - prompts for git hooks
 ```
 
 **Agents:**
 
-```bash
+```sh
 beads init --quiet  # Non-interactive - auto-installs hooks, no prompts
 ```
 
 **Workflow for humans:**
 
-```bash
+```sh
 # Clone existing project with beads:
 git clone <repo>
 cd <repo>
@@ -193,7 +193,7 @@ git commit -m "Initialize beads"
 
 **Workflow for agents setting up repos:**
 
-```bash
+```sh
 git clone <repo>
 cd <repo>
 beads init --quiet  # No prompts, auto-installs hooks
@@ -213,13 +213,13 @@ beads automatically:
 
 **Optional**: For immediate export (no 5-second wait) and guaranteed import after git operations, install the git hooks:
 
-```bash
+```sh
 cd examples/git-hooks && ./install.sh
 ```
 
 **Disable auto-sync** if needed:
 
-```bash
+```sh
 beads --no-auto-flush create "Issue"   # Disable auto-export
 beads --no-auto-import list            # Disable auto-import check
 ```
@@ -228,7 +228,7 @@ beads --no-auto-import list            # Disable auto-import check
 
 Just run any beads command - it will auto-import:
 
-```bash
+```sh
 git pull
 beads ready     # Automatically imports fresh data from git
 beads list      # Also triggers auto-import if needed
@@ -241,7 +241,7 @@ The auto-import check is fast (<5ms) and only imports when the JSONL file is new
 
 **Yes! Each project is completely isolated.** beads uses project-local databases:
 
-```bash
+```sh
 cd ~/project1 && beads init --prefix proj1
 cd ~/project2 && beads init --prefix proj2
 ```
@@ -259,7 +259,7 @@ Each project gets its own `.beads/` directory with its own database and JSONL fi
 
 **Example:** Multiple agents, multiple projects, same machine:
 
-```bash
+```sh
 # Agent 1 working on web app
 cd ~/work/webapp && beads ready --json    # Uses ~/work/webapp/.beads/webapp.db
 
@@ -349,7 +349,7 @@ For extremely large projects (100k+ issues), you might want to filter exports or
 
 Use compaction to remove old closed issues:
 
-```bash
+```sh
 # Preview what would be compacted
 beads compact --dry-run --all
 
@@ -359,7 +359,7 @@ beads compact --days 90
 
 Or split your project into multiple databases:
 
-```bash
+```sh
 cd ~/project/frontend && beads init --prefix fe
 cd ~/project/backend && beads init --prefix be
 ```
@@ -440,7 +440,7 @@ See [installing.md](./installing.md#windows-11) for details.
 
 Yes, but with limitations. The daemon doesn't work correctly with worktrees, so use `--no-daemon` mode:
 
-```bash
+```sh
 export BEADS_NO_DAEMON=1
 beads ready
 beads create "Fix bug" -p 1
@@ -472,7 +472,7 @@ SQLite database file corruption can occur from:
 
 **Solution**: Reimport from JSONL (which survives in git history):
 
-```bash
+```sh
 mv .beads/*.db .beads/*.db.backup
 beads init
 beads import -i .beads/issues.jsonl
@@ -505,7 +505,7 @@ Contributions are welcome! See [CONTRIBUTING.md](../CONTRIBUTING.md) for:
 
 The roadmap lives in beads itself! Run:
 
-```bash
+```sh
 beads list --priority 0 --priority 1 --json
 ```
 

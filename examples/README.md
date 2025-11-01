@@ -14,7 +14,7 @@ This directory contains examples of how to integrate beads with AI agents and wo
 
 ## Quick Start
 
-```bash
+```sh
 # Try the Python agent example
 cd python-agent
 uv run agent.py

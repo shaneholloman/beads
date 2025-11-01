@@ -17,13 +17,13 @@ Beads (`beads`) is an issue tracker designed specifically for AI-supervised codi
 
 1. Install beads CLI:
 
-```bash
+```sh
 curl -sSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
 ```
 
 2. Install Python and uv (for MCP server):
 
-```bash
+```sh
 # Install uv (if not already installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
@@ -34,7 +34,7 @@ There are two ways to install the beads plugin:
 
 #### Option 1: From GitHub (Recommended)
 
-```bash
+```sh
 # In Claude Code
 /plugin marketplace add shaneholloman/beads
 /plugin install beads
@@ -42,7 +42,7 @@ There are two ways to install the beads plugin:
 
 #### Option 2: Local Development
 
-```bash
+```sh
 # Clone the repository
 git clone https://github.com/shaneholloman/beads
 cd beads
@@ -60,7 +60,7 @@ After installation, restart Claude Code to activate the MCP server.
 
 ## Quick Start
 
-```bash
+```sh
 # Initialize beads in your project
 /beads-init
 
@@ -225,7 +225,7 @@ To customize, edit your Claude Code MCP settings or the plugin configuration.
 
 ### Basic Task Management
 
-```bash
+```sh
 # Create a high-priority bug
 /beads-create "Fix authentication" bug 1
 
@@ -241,7 +241,7 @@ To customize, edit your Claude Code MCP settings or the plugin configuration.
 
 ### Discovering Work During Development
 
-```bash
+```sh
 # Working on beads-10, found a related bug
 /beads-create "Add rate limiting to API" feature 2
 
@@ -254,7 +254,7 @@ To customize, edit your Claude Code MCP settings or the plugin configuration.
 
 ### Using the Task Agent
 
-```bash
+```sh
 # Let the agent find and complete ready work
 @task-agent
 
@@ -276,7 +276,7 @@ Beads automatically syncs issues to `.beads/issues.jsonl`:
 
 This enables seamless collaboration:
 
-```bash
+```sh
 # Make changes
 beads create "Add feature" -p 1
 
@@ -298,7 +298,7 @@ The beads plugin has three components that may need updating:
 
 Check for plugin updates:
 
-```bash
+```sh
 /plugin update beads
 ```
 
@@ -308,7 +308,7 @@ Claude Code will pull the latest version from GitHub. After updating, **restart 
 
 The plugin requires the `beads` CLI to be installed. Update it separately:
 
-```bash
+```sh
 # Quick update
 curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
 
@@ -322,7 +322,7 @@ The MCP server **automatically checks** beads CLI version on startup and will fa
 
 Check version compatibility manually:
 
-```bash
+```sh
 /beads-version
 ```
 

@@ -99,14 +99,14 @@ Project configuration is:
 
 ### Set Configuration
 
-```bash
+```sh
 beads config set <key> <value>
 beads config set --json <key> <value>  # JSON output
 ```
 
 Examples:
 
-```bash
+```sh
 beads config set jira.url "https://company.atlassian.net"
 beads config set jira.project "PROJ"
 beads config set jira.status_map.todo "open"
@@ -114,14 +114,14 @@ beads config set jira.status_map.todo "open"
 
 ### Get Configuration
 
-```bash
+```sh
 beads config get <key>
 beads config get --json <key>  # JSON output
 ```
 
 Examples:
 
-```bash
+```sh
 beads config get jira.url
 # Output: https://company.atlassian.net
 
@@ -131,7 +131,7 @@ beads config get --json jira.url
 
 ### List All Configuration
 
-```bash
+```sh
 beads config list
 beads config list --json  # JSON output
 ```
@@ -159,14 +159,14 @@ JSON output:
 
 ### Unset Configuration
 
-```bash
+```sh
 beads config unset <key>
 beads config unset --json <key>  # JSON output
 ```
 
 Example:
 
-```bash
+```sh
 beads config unset jira.url
 ```
 
@@ -193,7 +193,7 @@ Use these namespaces for external integrations:
 
 ### Example: Adaptive Hash ID Configuration
 
-```bash
+```sh
 # Configure adaptive ID lengths (see docs/adaptive-ids.md)
 # Default: 25% max collision probability
 beads config set max_collision_prob "0.25"
@@ -213,7 +213,7 @@ See [docs/adaptive-ids.md](adaptive-ids.md) for detailed documentation.
 
 ### Example: Jira Integration
 
-```bash
+```sh
 # Configure Jira connection
 beads config set jira.url "https://company.atlassian.net"
 beads config set jira.project "PROJ"
@@ -232,7 +232,7 @@ beads config set jira.type_map.task "Task"
 
 ### Example: Linear Integration
 
-```bash
+```sh
 # Configure Linear connection
 beads config set linear.api_token "YOUR_TOKEN"
 beads config set linear.team_id "team-123"
@@ -245,7 +245,7 @@ beads config set linear.status_map.closed "Done"
 
 ### Example: GitHub Integration
 
-```bash
+```sh
 # Configure GitHub connection
 beads config set github.org "myorg"
 beads config set github.repo "myrepo"
@@ -260,7 +260,7 @@ beads config set github.label_map.feature "enhancement"
 
 Configuration is designed for scripting. Use `--json` for machine-readable output:
 
-```bash
+```sh
 #!/bin/bash
 
 # Get Jira URL

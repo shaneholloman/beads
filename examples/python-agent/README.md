@@ -18,7 +18,7 @@ A simple Python script demonstrating how an AI agent can use beads to manage tas
 
 ## Usage
 
-```bash
+```sh
 # Make the script executable
 chmod +x agent.py
 

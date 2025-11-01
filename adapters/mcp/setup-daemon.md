@@ -27,7 +27,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 In your beads project directory:
 
-```bash
+```sh
 beads daemon start
 ```
 
@@ -39,7 +39,7 @@ The daemon will:
 
 ### 3. Test It
 
-```bash
+```sh
 # Test with beads repo
 cd ~/src/vc/adar/beads
 beads list
@@ -107,7 +107,7 @@ If you want to temporarily use CLI mode:
 
 ## Daemon Management
 
-```bash
+```sh
 # Start daemon
 beads daemon start
 
@@ -130,7 +130,7 @@ beads daemon stop && beads daemon start
 
 Start the daemon in your beads project:
 
-```bash
+```sh
 cd ~/src/vc/adar/beads
 beads daemon start
 ```
@@ -139,7 +139,7 @@ beads daemon start
 
 1. Check where daemon is running:
 
-   ```bash
+   ```sh
    beads daemon status
    ```
 

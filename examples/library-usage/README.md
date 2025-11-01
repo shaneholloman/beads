@@ -17,7 +17,7 @@ Instead of spawning `beads` CLI processes:
 
 In your Go project:
 
-```bash
+```sh
 go get github.com/shaneholloman/beads@latest
 ```
 
@@ -59,7 +59,7 @@ func main() {
 
 ## Running This Example
 
-```bash
+```sh
 # From this directory
 cd examples/library-usage
 

@@ -159,7 +159,7 @@ This establishes immediate shared context about available and active work withou
 
 If `beads ready` returns empty but issues exist:
 
-```bash
+```sh
 beads blocked --json
 ```
 
@@ -236,7 +236,7 @@ All beads commands support `--json` flag for structured output when needed for p
 
 **Check ready work:**
 
-```bash
+```sh
 beads ready
 beads ready --json              # For structured output
 beads ready --priority 0        # Filter by priority
@@ -245,7 +245,7 @@ beads ready --assignee alice    # Filter by assignee
 
 **Create new issue:**
 
-```bash
+```sh
 beads create "Fix login bug"
 beads create "Add OAuth" -p 0 -t feature
 beads create "Write tests" -d "Unit tests for auth module" --assignee alice
@@ -254,7 +254,7 @@ beads create "Research caching" --design "Evaluate Redis vs Memcached"
 
 **Update issue status:**
 
-```bash
+```sh
 beads update issue-123 --status in_progress
 beads update issue-123 --priority 0
 beads update issue-123 --assignee bob
@@ -263,7 +263,7 @@ beads update issue-123 --design "Decided to use Redis for persistence support"
 
 **Close completed work:**
 
-```bash
+```sh
 beads close issue-123
 beads close issue-123 --reason "Implemented in PR #42"
 beads close issue-1 issue-2 issue-3 --reason "Bulk close related work"
@@ -271,14 +271,14 @@ beads close issue-1 issue-2 issue-3 --reason "Bulk close related work"
 
 **Show issue details:**
 
-```bash
+```sh
 beads show issue-123
 beads show issue-123 --json
 ```
 
 **List issues:**
 
-```bash
+```sh
 beads list
 beads list --status open
 beads list --priority 0
@@ -319,7 +319,7 @@ Quick guide for when and how to use each beads field:
 
 **Pattern:**
 
-```bash
+```sh
 # When encountering new work during a task:
 beads create "Found: auth doesn't handle profile permissions"
 beads dep add current-task-id new-issue-id --type discovered-from
@@ -333,13 +333,13 @@ beads dep add current-task-id new-issue-id --type discovered-from
 
 **Mark issues in_progress when starting work:**
 
-```bash
+```sh
 beads update issue-123 --status in_progress
 ```
 
 **Update throughout work:**
 
-```bash
+```sh
 # Add design notes as implementation progresses
 beads update issue-123 --design "Using JWT with RS256 algorithm"
 
@@ -349,7 +349,7 @@ beads update issue-123 --acceptance "- JWT validation works\n- Tests pass\n- Err
 
 **Close when complete:**
 
-```bash
+```sh
 beads close issue-123 --reason "Implemented JWT validation with tests passing"
 ```
 
@@ -361,13 +361,13 @@ For complex multi-step work, structure issues with dependencies before starting:
 
 **Create parent epic:**
 
-```bash
+```sh
 beads create "Implement user authentication" -t epic -d "OAuth integration with JWT tokens"
 ```
 
 **Create subtasks:**
 
-```bash
+```sh
 beads create "Set up OAuth credentials" -t task
 beads create "Implement authorization flow" -t task
 beads create "Add token refresh" -t task
@@ -375,7 +375,7 @@ beads create "Add token refresh" -t task
 
 **Link with dependencies:**
 
-```bash
+```sh
 # parent-child for epic structure
 beads dep add auth-epic auth-setup --type parent-child
 beads dep add auth-epic auth-flow --type parent-child
@@ -457,7 +457,7 @@ NEXT: Need user input on token expiry time (1hr vs 24hr trade-off)."
 
 **What you see**:
 
-```bash
+```sh
 $ beads ready
 # Returns: beads-42 "Research analytics platform expansion proposal" (in_progress)
 
@@ -481,7 +481,7 @@ NEXT: Need user input on budget constraints before finalizing recommendations"
 3. Work on tasks, mark TodoWrite items completed
 4. At milestone, update beads notes:
 
-   ```bash
+   ```sh
    beads update beads-42 --notes "COMPLETED: Cost-benefit analysis drafted.
    KEY DECISION: User confirmed $50k budget cap - ruled out enterprise options.
    IN PROGRESS: Finalizing recommendations (Posthog + custom ETL).
@@ -560,7 +560,7 @@ beads is primarily for work tracking, but can also serve as queryable database f
 
 **Check project health:**
 
-```bash
+```sh
 beads stats
 beads stats --json
 ```
@@ -569,7 +569,7 @@ Returns: total issues, open, in_progress, closed, blocked, ready, avg lead time
 
 **Find blocked work:**
 
-```bash
+```sh
 beads blocked
 beads blocked --json
 ```
@@ -584,7 +584,7 @@ Use stats to:
 
 ### Issue Types
 
-```bash
+```sh
 beads create "Title" -t task        # Standard work item (default)
 beads create "Title" -t bug         # Defect or problem
 beads create "Title" -t feature     # New functionality
@@ -594,7 +594,7 @@ beads create "Title" -t chore       # Maintenance or cleanup
 
 ### Priority Levels
 
-```bash
+```sh
 beads create "Title" -p 0    # Highest priority (critical)
 beads create "Title" -p 1    # High priority
 beads create "Title" -p 2    # Normal priority (default)
@@ -603,7 +603,7 @@ beads create "Title" -p 3    # Low priority
 
 ### Bulk Operations
 
-```bash
+```sh
 # Close multiple issues at once
 beads close issue-1 issue-2 issue-3 --reason "Completed in sprint 5"
 
@@ -613,7 +613,7 @@ beads create --file issues.md
 
 ### Dependency Visualization
 
-```bash
+```sh
 # Show full dependency tree for an issue
 beads dep tree issue-123
 
@@ -623,7 +623,7 @@ beads dep cycles
 
 ### Built-in Help
 
-```bash
+```sh
 # Quick start guide (comprehensive built-in reference)
 beads quickstart
 
@@ -636,7 +636,7 @@ beads dep --help
 
 All beads commands support `--json` flag for structured output:
 
-```bash
+```sh
 beads ready --json
 beads show issue-123 --json
 beads list --status open --json

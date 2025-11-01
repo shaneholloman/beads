@@ -43,7 +43,7 @@ The `--format mermaid` option outputs the dependency tree as a Mermaid.js flowch
 
 **Example:**
 
-```bash
+```sh
 beads dep tree beads-1 --format mermaid
 ```
 

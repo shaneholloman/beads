@@ -8,7 +8,7 @@ This is **beads** (command: `beads`), an issue tracker designed for AI-supervise
 
 **IMPORTANT:** If you need to initialize beads, use the `--quiet` flag:
 
-```bash
+```sh
 beads init --quiet  # Non-interactive, auto-installs git hooks, no prompts
 ```
 
@@ -59,7 +59,7 @@ If it goes into git history, it must be a beads issue first.
 
 **Installation:**
 
-```bash
+```sh
 # Install the MCP server
 uv tool install beads-mcp
 
@@ -94,7 +94,7 @@ See `adapters/mcp/README.md` for complete documentation.
 
 **Setup (one-time):**
 
-```bash
+```sh
 # MCP config in ~/.config/amp/settings.json or Claude Desktop config:
 {
   "beads": {
@@ -114,7 +114,7 @@ The single MCP server instance automatically:
 
 **Architecture:**
 
-```
+```text
 MCP Server (one instance)
     ↓
 Per-Project Daemons (one per workspace)
@@ -166,7 +166,7 @@ If you must use separate MCP servers:
 
 If you're not using the MCP server, here are the CLI commands:
 
-```bash
+```sh
 # Check database path and daemon status
 beads info --json
 
@@ -260,7 +260,7 @@ beads migrate --cleanup --yes                             # Migrate and remove o
 
 beads runs a background daemon per workspace for auto-sync and RPC operations. Use `beads daemons` to manage multiple daemons:
 
-```bash
+```sh
 # List all running daemons
 beads daemons list --json
 
@@ -319,7 +319,7 @@ See [commands/daemons.md](commands/daemons.md) for detailed documentation.
 
 Event-driven mode is opt-in during Phase 1. To enable:
 
-```bash
+```sh
 # Enable event-driven mode for a single daemon
 BEADS_DAEMON_MODE=events beads daemon start
 
@@ -354,14 +354,14 @@ If the watcher fails to start:
 
 **Disable polling fallback:**
 
-```bash
+```sh
 # Require fsnotify, fail if unavailable
 BEADS_WATCHER_FALLBACK=false BEADS_DAEMON_MODE=events beads daemon start
 ```
 
 **Switch back to polling:**
 
-```bash
+```sh
 # Explicitly use polling mode
 BEADS_DAEMON_MODE=poll beads daemon start
 
@@ -416,7 +416,7 @@ AI agents should proactively detect and merge duplicate issues to keep the datab
 
 **Automated duplicate detection:**
 
-```bash
+```sh
 # Find all content duplicates in the database
 beads duplicates
 
@@ -434,21 +434,21 @@ beads import -i issues.jsonl --dedupe-after
 
 1. **Before creating new issues**: Search for similar existing issues
 
-   ```bash
+   ```sh
    beads list --json | grep -i "authentication"
    beads show beads-41 beads-42 --json  # Compare candidates
    ```
 
 2. **Periodic duplicate scans**: Review issues by type or priority
 
-   ```bash
+   ```sh
    beads list --status open --priority 1 --json  # High-priority issues
    beads list --issue-type bug --json             # All bugs
    ```
 
 3. **During work discovery**: Check for duplicates when filing discovered-from issues
 
-   ```bash
+   ```sh
    # Before: beads create "Fix auth bug" --deps discovered-from:beads-100
    # First: beads list --json | grep -i "auth bug"
    # Then decide: create new or link to existing
@@ -456,7 +456,7 @@ beads import -i issues.jsonl --dedupe-after
 
 **Merge workflow:**
 
-```bash
+```sh
 # Step 1: Identify duplicates (beads-42 and beads-43 duplicate beads-41)
 beads show beads-41 beads-42 beads-43 --json
 
@@ -492,7 +492,7 @@ beads show beads-41 --json  # Verify merged content
 - Add labels like `duplicate` to source issues before merging (for tracking)
 - File a discovered-from issue if you found duplicates during work:
 
-  ```bash
+  ```sh
   beads create "Found duplicates during beads-X" -p 2 --deps discovered-from:beads-X --json
   ```
 
@@ -507,7 +507,7 @@ beads show beads-41 --json  # Verify merged content
 
 ### File Organization
 
-```
+```tree
 beads/
 ├── cmd/beads/              # CLI commands
 ├── internal/
@@ -539,7 +539,7 @@ The 30-second debounce provides a **transaction window** for batch operations - 
 
 **IMPORTANT for AI agents:** When you finish making issue changes, always run:
 
-```bash
+```sh
 beads sync
 ```
 
@@ -553,7 +553,7 @@ This immediately:
 
 **Example agent session:**
 
-```bash
+```sh
 # Make multiple changes (batched in 30-second window)
 beads create "Fix bug" -p 1
 beads create "Add tests" -p 1
@@ -574,7 +574,7 @@ beads sync
 
 **Alternative**: Install git hooks for automatic flush on commit:
 
-```bash
+```sh
 # One-time setup
 ./examples/git-hooks/install.sh
 ```
@@ -603,7 +603,7 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 1. **Use `--no-daemon` flag** (recommended):
 
-   ```bash
+   ```sh
    beads --no-daemon ready
    beads --no-daemon create "Fix bug" -p 1
    beads --no-daemon update beads-42 --status in_progress
@@ -611,14 +611,14 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 2. **Disable daemon via environment variable** (for entire worktree session):
 
-   ```bash
+   ```sh
    export BEADS_NO_DAEMON=1
    beads ready  # All commands use direct mode
    ```
 
 3. **Disable auto-start** (less safe, still warns):
 
-   ```bash
+   ```sh
    export BEADS_AUTO_START_DAEMON=false
    ```
 
@@ -637,7 +637,7 @@ Git conflicts in `.beads/beads.jsonl` happen when the same issue is modified on 
 
 **Resolution:**
 
-```bash
+```sh
 # After git merge creates conflict
 git checkout --theirs .beads/beads.jsonl  # Accept remote version
 # OR
@@ -682,7 +682,7 @@ Run `beads stats` to see overall progress.
 
 We're working toward 1.0. Key blockers tracked in beads. Run:
 
-```bash
+```sh
 beads dep tree beads-8  # Show 1.0 epic dependencies
 ```
 
@@ -707,7 +707,7 @@ See [exclusive-lock.md](docs/exclusive-lock.md) for:
 
 **Quick example:**
 
-```bash
+```sh
 # Create lock
 echo '{"holder":"my-tool","pid":'$$',"hostname":"'$(hostname)'","started_at":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","version":"1.0.0"}' > .beads/.exclusive-lock
 
@@ -777,7 +777,7 @@ rm .beads/.exclusive-lock
 
 ## Building and Testing
 
-```bash
+```sh
 # Build
 go build -o beads ./cmd/beads
 
@@ -798,7 +798,7 @@ go tool cover -html=coverage.out
 
 **IMPORTANT**: When the user asks to "bump the version" or mentions a new version number (e.g., "bump to 0.9.3"), use the version bump script:
 
-```bash
+```sh
 # Preview changes (shows diff, doesn't commit)
 ./scripts/bump-version.sh 0.9.3
 
@@ -873,37 +873,37 @@ Happy coding!
 
 **FIRST TIME?** Just run `beads init` - it auto-imports issues from git:
 
-```bash
+```sh
 beads init --prefix beads
 ```
 
 **Check for ready work:**
 
-```bash
+```sh
 beads ready --json
 ```
 
 **Create new issues:**
 
-```bash
+```sh
 beads create "Issue title" -t bug|feature|task -p 0-4 --json
 beads create "Issue title" -p 1 --deps discovered-from:beads-123 --json
 ```
 
 **Claim and update:**
 
-```bash
+```sh
 beads update beads-42 --status in_progress --json
 beads update beads-42 --priority 1 --json
 ```
 
 **Complete work:**
 
-```bash
+```sh
 beads close beads-42 --reason "Completed" --json
 ```
 
-### Issue Types
+### Issue Types (Quick Reference)
 
 - `bug` - Something broken
 - `feature` - New functionality
@@ -911,7 +911,7 @@ beads close beads-42 --reason "Completed" --json
 - `epic` - Large feature with subtasks
 - `chore` - Maintenance (dependencies, tooling)
 
-### Priorities
+### Priorities (Quick Reference)
 
 - `0` - Critical (security, data loss, broken builds)
 - `1` - High (major features, important bugs)
@@ -936,11 +936,11 @@ beads automatically syncs with git:
 - Imports from JSONL when newer (e.g., after `git pull`)
 - No manual export/import needed!
 
-### MCP Server (Recommended)
+### MCP Server Setup
 
 If using Claude or MCP-compatible clients, install the beads MCP server:
 
-```bash
+```sh
 uv tool install beads-mcp
 ```
 

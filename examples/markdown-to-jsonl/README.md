@@ -20,20 +20,20 @@ The converter script (`md2jsonl.py`) parses markdown files and outputs JSONL tha
 
 ### Basic conversion
 
-```bash
+```sh
 uv run md2jsonl.py feature.md | beads import
 ```
 
 ### Save to file first
 
-```bash
+```sh
 uv run md2jsonl.py feature.md > issues.jsonl
 beads import -i issues.jsonl
 ```
 
 ### Preview before importing
 
-```bash
+```sh
 uv run md2jsonl.py feature.md | jq .
 ```
 
@@ -101,7 +101,7 @@ The script extracts these and creates dependency records.
 
 See `example-feature.md` for a complete example.
 
-```bash
+```sh
 # Convert the example
 uv run md2jsonl.py example-feature.md > example-issues.jsonl
 

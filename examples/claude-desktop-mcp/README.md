@@ -15,7 +15,7 @@ An MCP server that exposes beads functionality to Claude Desktop and other MCP c
 
 Install the beads MCP server:
 
-```bash
+```sh
 uv tool install beads-mcp
 ```
 
@@ -190,7 +190,7 @@ server.start();
 
 ## Installation (Future)
 
-```bash
+```sh
 # Install the MCP server
 npm install -g beads-mcp-server
 

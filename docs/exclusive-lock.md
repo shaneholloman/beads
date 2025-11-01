@@ -93,7 +93,7 @@ func releaseLock(beadsDir string) error {
 
 ### Creating a Lock (Shell)
 
-```bash
+```sh
 #!/bin/bash
 BEADS_DIR=".beads"
 LOCK_FILE="$BEADS_DIR/.exclusive-lock"

@@ -8,7 +8,7 @@ Utility scripts for maintaining the beads project.
 
 ### Usage
 
-```bash
+```sh
 # Full release (does everything)
 ./scripts/release.sh 0.0.0
 
@@ -33,7 +33,7 @@ This master script automates the **entire release process**:
 
 ### Examples
 
-```bash
+```sh
 # Release version 0.0.0
 ./scripts/release.sh 0.0.0
 
@@ -75,7 +75,7 @@ Bumps the version number across all beads components in a single command.
 
 ### Usage
 
-```bash
+```sh
 # Show usage
 ./scripts/bump-version.sh
 
@@ -107,7 +107,7 @@ Updates version in all these files:
 
 ### Examples
 
-```bash
+```sh
 # Bump to 0.0.0 and review changes
 ./scripts/bump-version.sh 0.0.0
 # Review the diff, then manually commit

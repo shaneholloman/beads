@@ -20,7 +20,7 @@ A bash script demonstrating how an AI agent can use beads to manage tasks autono
 
 ## Usage
 
-```bash
+```sh
 # Make executable
 chmod +x agent.sh
 
@@ -73,21 +73,21 @@ Open: 5  In Progress: 0  Closed: 2
 
 **Continuous Integration**
 
-```bash
+```sh
 # Run agent in CI to process testing tasks
 ./agent.sh 5
 ```
 
 **Cron Jobs**
 
-```bash
+```sh
 # Run agent every hour
 0 * * * * cd /path/to/project && /path/to/agent.sh 3
 ```
 
 **One-off Task Processing**
 
-```bash
+```sh
 # Process exactly one task and exit
 ./agent.sh 1
 ```
@@ -96,7 +96,7 @@ Open: 5  In Progress: 0  Closed: 2
 
 Edit the script to customize behavior:
 
-```bash
+```sh
 # Change discovery probability (line ~80)
 if [[ $((RANDOM % 2)) -eq 0 ]]; then  # 50% chance
 # Change to:

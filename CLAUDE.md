@@ -1,9 +1,8 @@
+# Instructions for Claude
 
 <!-- beads integration note -->
 **Note**: This project uses [beads (beads)](https://github.com/shaneholloman/beads) for issue tracking. Use `beads` commands or the beads MCP server instead of markdown TODOs. See AGENTS.md for workflow details.
 <!-- /beads integration note -->
-
-# Instructions for Claude
 
 This file has been moved to **AGENTS.md** to support all AI agents, not just Claude.
 
@@ -21,6 +20,7 @@ If Shane says "install X" or "use Y", assume he knows what he's talking about an
 **Never waste time with confident assertions about what exists or doesn't exist without verification.**
 
 This applies especially to:
+
 - Package installations (e.g., "install ty" - just do it, don't say it doesn't exist)
 - Tool usage (e.g., "use uv add" - just do it)
 - Technical decisions (e.g., "remove hatchling" - just do it)
@@ -42,6 +42,7 @@ Shane uses exclusively Astral products for Python development:
 ### Package Management - UV Only
 
 **DO**:
+
 - `uv add <package>` - Add runtime dependency
 - `uv add --dev <package>` - Add dev dependency
 - `uv remove <package>` - Remove dependency
@@ -49,6 +50,7 @@ Shane uses exclusively Astral products for Python development:
 - `uv lock` - Update lockfile
 
 **DON'T**:
+
 - `pip install` - NEVER
 - `pip uninstall` - NEVER
 - Manually editing pyproject.toml dependencies - Use `uv add` instead
@@ -56,6 +58,7 @@ Shane uses exclusively Astral products for Python development:
 ### Running Python Code - UV Run Only
 
 **DO**:
+
 - `uv run script.py` - Run Python scripts
 - `uv run pytest` - Run tests
 - `uv run ruff check .` - Run linter
@@ -63,6 +66,7 @@ Shane uses exclusively Astral products for Python development:
 - `uv run mycommand` - Run any entry point
 
 **DON'T**:
+
 - `python script.py` - NEVER call Python directly
 - `python3 script.py` - NEVER
 - `uv run python script.py` - NEVER (UV handles Python automatically)
@@ -74,9 +78,11 @@ Shane uses exclusively Astral products for Python development:
 ### Building Packages - UV Build
 
 **DO**:
+
 - `uv build` - Build source distribution and wheel
 
 **DON'T**:
+
 - `python -m build` - NEVER
 - `python setup.py` - NEVER
 - Explicitly configuring hatchling/setuptools in pyproject.toml - Let UV use defaults
@@ -86,7 +92,8 @@ Shane uses exclusively Astral products for Python development:
 ### Code Quality Tools
 
 **Linting and Formatting** (Ruff):
-```bash
+
+```sh
 uv run ruff check src/           # Lint
 uv run ruff check src/ --fix     # Auto-fix
 uv run ruff check src/ --fix --unsafe-fixes  # Fix everything including unsafe
@@ -95,12 +102,14 @@ uv run ruff format src/ --check  # Check formatting without changes
 ```
 
 **Type Checking** (ty):
-```bash
+
+```sh
 uv run ty check src/             # Type check with Astral's ty
 ```
 
 **Testing** (pytest):
-```bash
+
+```sh
 uv run pytest tests/             # Run tests
 uv run pytest tests/ -v          # Verbose
 uv run pytest tests/ --cov       # With coverage
@@ -109,6 +118,7 @@ uv run pytest tests/ --cov       # With coverage
 ### pyproject.toml Best Practices
 
 **Dependencies**:
+
 ```toml
 [dependency-groups]
 dev = [
@@ -119,11 +129,13 @@ dev = [
 ```
 
 **License** (modern SPDX format):
+
 ```toml
 license = "MIT"  # NOT: license = {text = "MIT"}
 ```
 
 **Build System** (minimal or omitted):
+
 ```toml
 # Either omit [build-system] entirely or use minimal:
 # [build-system]
@@ -143,7 +155,8 @@ license = "MIT"  # NOT: license = {text = "MIT"}
 ### Migration Pattern
 
 When inheriting old Python projects:
-```bash
+
+```sh
 # Remove old tools
 uv remove mypy black isort flake8 pylint
 
@@ -166,7 +179,8 @@ uv build
 ### This Is Not 2020 Anymore
 
 Old way (boomer):
-```bash
+
+```sh
 pip install -r requirements.txt
 python -m venv venv
 source venv/bin/activate
@@ -177,7 +191,8 @@ python -m pytest
 ```
 
 New way (2025):
-```bash
+
+```sh
 uv sync
 uv run ty check src/
 uv run ruff format src/

@@ -64,7 +64,7 @@ GROUP BY i.id, e.id
 
 ### Install
 
-```bash
+```sh
 # Install from the repository
 go install github.com/shaneholloman/beads/examples/beads-example-extension-go@latest
 
@@ -77,7 +77,7 @@ The binary will be installed as `beads-example-extension-go` in your `$GOPATH/bi
 
 ### Running
 
-```bash
+```sh
 # Auto-discover database and run
 beads-example-extension-go
 
@@ -197,13 +197,13 @@ rows, err := db.Query("SELECT * FROM example_executions WHERE status = ?", "runn
 
 1. **Initialize beads:**
 
-   ```bash
+   ```sh
    beads init --prefix demo
    ```
 
 2. **Create some test issues:**
 
-   ```bash
+   ```sh
    beads create "Implement authentication" -p 1 -t feature
    beads create "Add API documentation" -p 1 -t task
    beads create "Refactor database layer" -p 2 -t task
@@ -211,13 +211,13 @@ rows, err := db.Query("SELECT * FROM example_executions WHERE status = ?", "runn
 
 3. **Run the demo:**
 
-   ```bash
+   ```sh
    beads-example-extension-go -cmd demo
    ```
 
 4. **Check the results:**
 
-   ```bash
+   ```sh
    beads list
    sqlite3 .beads/demo.db "SELECT * FROM example_executions"
    ```

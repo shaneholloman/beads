@@ -4,7 +4,7 @@ Get up and running with Beads in 2 minutes.
 
 ## Installation
 
-```bash
+```sh
 cd ~/src/beads
 go build -o beads ./cmd/beads
 ./beads --help
@@ -12,7 +12,7 @@ go build -o beads ./cmd/beads
 
 ## Your First Issues
 
-```bash
+```sh
 # Create a few issues
 ./beads create "Set up database" -p 1 -t task
 ./beads create "Create API" -p 2 -t feature
@@ -28,7 +28,7 @@ go build -o beads ./cmd/beads
 
 For large features, use hierarchical IDs to organize work:
 
-```bash
+```sh
 # Create epic (generates parent hash ID)
 ./beads create "Auth System" -t epic -p 1
 # Returns: beads-a3f8e9
@@ -55,7 +55,7 @@ Dependency tree for beads-a3f8e9:
 
 ## Add Dependencies
 
-```bash
+```sh
 # API depends on database
 ./beads dep add beads-2 beads-1
 
@@ -78,7 +78,7 @@ Dependency tree for beads-3:
 
 ## Find Ready Work
 
-```bash
+```sh
 ./beads ready
 ```
 
@@ -94,7 +94,7 @@ Only beads-1 is ready because beads-2 and beads-3 are blocked!
 
 ## Work the Queue
 
-```bash
+```sh
 # Start working on beads-1
 ./beads update beads-1 --status in_progress
 
@@ -109,7 +109,7 @@ Now beads-2 is ready!
 
 ## Track Progress
 
-```bash
+```sh
 # See blocked issues
 ./beads blocked
 
@@ -123,7 +123,7 @@ By default: `~/.beads/default.db`
 
 You can use project-specific databases:
 
-```bash
+```sh
 ./beads --db ./my-project.db create "Task"
 ```
 
@@ -131,7 +131,7 @@ You can use project-specific databases:
 
 After upgrading beads, use `beads migrate` to check for and migrate old database files:
 
-```bash
+```sh
 # Check for migration opportunities
 ./beads migrate --dry-run
 

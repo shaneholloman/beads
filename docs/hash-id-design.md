@@ -167,7 +167,7 @@ BenchmarkGenerateChildID-10   19689157     60.96 ns/op
 **CLI Output:** Always shows prefix (copy-paste clarity)
 **External refs:** Always use prefix (git commits, docs, Slack)
 
-```bash
+```sh
 # All of these work (prefix optional in input):
 beads show a3f2dd
 beads show beads-a3f2dd
@@ -184,7 +184,7 @@ beads-a3f2dd [epic] Auth System
 
 Like Git commit SHAs, beads accepts abbreviated IDs:
 
-```bash
+```sh
 beads show af78      # Matches beads-af78e9a2 if unique
 beads show af7       # ERROR: ambiguous (matches beads-af78e9a2 and beads-af78e9a2.1)
 ```
@@ -193,7 +193,7 @@ beads show af7       # ERROR: ambiguous (matches beads-af78e9a2 and beads-af78e9
 
 ### Database Migration
 
-```bash
+```sh
 # Preview migration
 beads migrate --hash-ids --dry-run
 

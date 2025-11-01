@@ -114,7 +114,7 @@ The context management tools are tested in:
 
 Run tests:
 
-```bash
+```sh
 uv run pytest tests/test_mcp_server_integration.py -v
 ```
 

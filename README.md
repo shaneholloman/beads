@@ -22,20 +22,20 @@ Dependency-aware issue tracker for AI coding agents. Issues chain together like 
 
 **Quick install:**
 
-```bash
+```sh
 curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
 ```
 
 **Homebrew:**
 
-```bash
+```sh
 brew tap shaneholloman/beads
 brew install beads
 ```
 
 **From source:**
 
-```bash
+```sh
 git clone https://github.com/shaneholloman/beads.git
 cd beads
 go build -o beads ./cmd/beads
@@ -48,14 +48,14 @@ sudo cp beads /usr/local/bin/beads  # Or: cp beads ~/bin/beads
 
 **Initialize in your project:**
 
-```bash
+```sh
 cd your-project
 beads init
 ```
 
 **Tell your AI agent:**
 
-```bash
+```sh
 echo "Use 'beads' for issue tracking. Run 'beads onboard' for instructions." AGENTS.md
 ```
 
@@ -63,7 +63,7 @@ Your agent handles the rest - creating issues, tracking dependencies, finding re
 
 **Manual usage:**
 
-```bash
+```sh
 beads ready                           # Show unblocked work
 beads create "Fix bug" -p 1 -t bug    # Create issue
 beads show beads-a1b2                    # View details
@@ -90,7 +90,7 @@ beads close beads-a1b2 --reason "Done"   # Mark complete
 
 beads auto-syncs with git:
 
-```bash
+```sh
 beads create "Fix bug" -p 1
 # After 5 seconds: exports to .beads/issues.jsonl
 
@@ -105,7 +105,7 @@ beads ready  # Auto-imports updated JSONL
 
 Install git hooks for instant sync:
 
-```bash
+```sh
 cd examples/git-hooks && ./install.sh
 ```
 
@@ -115,7 +115,7 @@ See [advanced.md](docs/advanced.md) for merge conflict handling and daemon confi
 
 **Build and test:**
 
-```bash
+```sh
 # Build local binary
 go build -o beads ./cmd/beads
 
@@ -134,14 +134,14 @@ sudo cp ./beads /usr/local/bin/beads
 
 **Version management:**
 
-```bash
+```sh
 ./scripts/bump-version.sh 0.24.0 --commit  # Bump all version files
 git push origin main
 ```
 
 **Before committing:**
 
-```bash
+```sh
 go test ./...                    # All tests pass
 go fmt ./...                     # Format code
 golangci-lint run ./...          # Check linting (see docs/linting.md for baseline)

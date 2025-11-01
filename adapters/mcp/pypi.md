@@ -18,13 +18,13 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
 1. **Clean previous builds** (if any):
 
-   ```bash
+   ```sh
    rm -rf dist/ build/ src/*.egg-info
    ```
 
 2. **Build the distribution packages**:
 
-   ```bash
+   ```sh
    uv build
    ```
 
@@ -34,7 +34,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
 3. **Verify the build**:
 
-   ```bash
+   ```sh
    tar -tzf dist/mcp_beads-0.30.0.tar.gz
    ```
 
@@ -50,7 +50,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
 1. **Upload to Test PyPI**:
 
-   ```bash
+   ```sh
    uv run twine upload --repository testpypi dist/*
    ```
 
@@ -60,7 +60,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
 2. **Install from Test PyPI**:
 
-   ```bash
+   ```sh
    # Test installation
    uv tool install --index-url https://test.pypi.org/simple/ beads-mcp
 
@@ -70,7 +70,7 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
 3. **Verify the installation**:
 
-   ```bash
+   ```sh
    uv run python -c "import mcp_beads; print(mcp_beads.__version__)"
    ```
 
@@ -80,7 +80,7 @@ Once you've verified the package works on Test PyPI:
 
 1. **Upload to PyPI**:
 
-   ```bash
+   ```sh
    uv run twine upload dist/*
    ```
 
@@ -95,7 +95,7 @@ Once you've verified the package works on Test PyPI:
 
 3. **Test installation**:
 
-   ```bash
+   ```sh
    uv tool install mcp-beads
    beads-mcp --help
    ```
@@ -104,7 +104,7 @@ Once you've verified the package works on Test PyPI:
 
 After publishing, users can install simply with:
 
-```bash
+```sh
 uv tool install mcp-beads
 ```
 
@@ -116,14 +116,14 @@ When releasing a new version:
 
 1. Use the version bump script from the parent project (updates all files automatically):
 
-   ```bash
+   ```sh
    cd ../..
    ./scripts/bump-version.sh 0.9.5 --commit
    ```
 
 4. Create a git tag:
 
-   ```bash
+   ```sh
    git tag v0.9.5
    git push origin v0.9.5
    ```

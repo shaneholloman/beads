@@ -21,24 +21,24 @@ const agentsContent = `## Issue Tracking with beads (beads)
 ### Quick Start
 
 **Check for ready work:**
-` + "```bash" + `
+` + "```sh" + `
 beads ready --json
 ` + "```" + `
 
 **Create new issues:**
-` + "```bash" + `
+` + "```sh" + `
 beads create "Issue title" -t bug|feature|task -p 0-4 --json
 beads create "Issue title" -p 1 --deps discovered-from:beads-123 --json
 ` + "```" + `
 
 **Claim and update:**
-` + "```bash" + `
+` + "```sh" + `
 beads update beads-42 --status in_progress --json
 beads update beads-42 --priority 1 --json
 ` + "```" + `
 
 **Complete work:**
-` + "```bash" + `
+` + "```sh" + `
 beads close beads-42 --reason "Completed" --json
 ` + "```" + `
 
@@ -79,7 +79,7 @@ beads automatically syncs with git:
 
 If using Claude or MCP-compatible clients, install the beads MCP server:
 
-` + "```bash" + `
+` + "```sh" + `
 pip install beads-mcp
 ` + "```" + `
 

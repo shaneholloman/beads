@@ -16,7 +16,7 @@ This guide covers advanced features for power users and specific use cases.
 
 Change the issue prefix for all issues in your database. This is useful if your prefix is too long or you want to standardize naming.
 
-```bash
+```sh
 # Preview changes without applying
 beads rename-prefix kw- --dry-run
 
@@ -44,7 +44,7 @@ The rename operation:
 
 Example workflow:
 
-```bash
+```sh
 # You have issues like knowledge-work-1, knowledge-work-2, etc.
 beads list  # Shows knowledge-work-* issues
 
@@ -62,7 +62,7 @@ beads list  # Shows kw-* issues
 
 Find issues with identical content using automated duplicate detection:
 
-```bash
+```sh
 # Find all content duplicates in the database
 beads duplicates
 
@@ -110,7 +110,7 @@ Run with --auto-merge to execute all suggested merges
 
 Consolidate duplicate issues into a single issue while preserving dependencies and references:
 
-```bash
+```sh
 # Merge beads-42 and beads-43 into beads-41
 beads merge beads-42 beads-43 --into beads-41
 
@@ -133,7 +133,7 @@ beads merge beads-42 beads-43 --into beads-41 --json
 
 **Example workflow:**
 
-```bash
+```sh
 # You discover beads-42 and beads-43 are duplicates of beads-41
 beads show beads-41 beads-42 beads-43
 
@@ -183,7 +183,7 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 1. **Use `--no-daemon` flag** (recommended):
 
-   ```bash
+   ```sh
    beads --no-daemon ready
    beads --no-daemon create "Fix bug" -p 1
    beads --no-daemon update beads-42 --status in_progress
@@ -191,14 +191,14 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 2. **Disable daemon via environment variable** (for entire worktree session):
 
-   ```bash
+   ```sh
    export BEADS_NO_DAEMON=1
    beads ready  # All commands use direct mode
    ```
 
 3. **Disable auto-start** (less safe, still warns):
 
-   ```bash
+   ```sh
    export BEADS_AUTO_START_DAEMON=false
    ```
 
@@ -222,7 +222,7 @@ When you encounter the same ID during import, it's an **update operation**, not 
 
 **Preview changes before importing:**
 
-```bash
+```sh
 # After git merge or pull
 beads import -i .beads/issues.jsonl --dry-run
 
@@ -242,7 +242,7 @@ The conflicts you'll encounter are **git merge conflicts** in the JSONL file whe
 
 **Resolution:**
 
-```bash
+```sh
 # After git merge creates conflict
 git checkout --theirs .beads/beads.jsonl  # Accept remote version
 # OR
@@ -275,7 +275,7 @@ For immediate export (no 5-second wait) and guaranteed import after git operatio
 
 ### Using the Installer
 
-```bash
+```sh
 cd examples/git-hooks
 ./install.sh
 ```
@@ -284,7 +284,7 @@ cd examples/git-hooks
 
 Create `.git/hooks/pre-commit`:
 
-```bash
+```sh
 #!/bin/bash
 beads export -o .beads/issues.jsonl
 git add .beads/issues.jsonl
@@ -292,21 +292,21 @@ git add .beads/issues.jsonl
 
 Create `.git/hooks/post-merge`:
 
-```bash
+```sh
 #!/bin/bash
 beads import -i .beads/issues.jsonl
 ```
 
 Create `.git/hooks/post-checkout`:
 
-```bash
+```sh
 #!/bin/bash
 beads import -i .beads/issues.jsonl
 ```
 
 Make hooks executable:
 
-```bash
+```sh
 chmod +x .git/hooks/pre-commit .git/hooks/post-merge .git/hooks/post-checkout
 ```
 

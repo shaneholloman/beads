@@ -56,7 +56,7 @@ Complete command reference for beads (beads) CLI tool. All commands support `--j
 
 Available for all commands:
 
-```bash
+```sh
 --json                 # Output in JSON format
 --db /path/to/db       # Specify database path (default: auto-discover)
 --actor "name"         # Actor name for audit trail
@@ -70,7 +70,7 @@ Available for all commands:
 
 Find tasks with no blockers - ready to be worked on.
 
-```bash
+```sh
 beads ready                      # All ready work
 beads ready --json               # JSON format
 beads ready --priority 0         # Only priority 0 (critical)
@@ -86,7 +86,7 @@ beads ready --limit 5            # Limit to 5 results
 
 Create a new issue with optional metadata.
 
-```bash
+```sh
 beads create "Title"
 beads create "Title" -t bug -p 0
 beads create "Title" -d "Description"
@@ -110,7 +110,7 @@ beads create "Title" --assignee alice
 
 Update an existing issue's metadata.
 
-```bash
+```sh
 beads update issue-123 --status in_progress
 beads update issue-123 --priority 0
 beads update issue-123 --design "Decided to use Redis"
@@ -125,7 +125,7 @@ beads update issue-123 --acceptance "Tests passing"
 
 Close (complete) an issue.
 
-```bash
+```sh
 beads close issue-123
 beads close issue-123 --reason "Implemented in PR #42"
 beads close issue-1 issue-2 issue-3 --reason "Bulk close"
@@ -139,7 +139,7 @@ beads close issue-1 issue-2 issue-3 --reason "Bulk close"
 
 Show detailed information about a specific issue.
 
-```bash
+```sh
 beads show issue-123
 beads show issue-123 --json
 ```
@@ -152,7 +152,7 @@ Shows: all fields, dependencies, dependents, audit history.
 
 List all issues with optional filters.
 
-```bash
+```sh
 beads list                          # All issues
 beads list --status open            # Only open
 beads list --priority 0             # Critical
@@ -169,7 +169,7 @@ beads list --status closed --limit 10  # Recent completions
 
 Add a dependency between issues.
 
-```bash
+```sh
 beads dep add from-issue to-issue                      # blocks (default)
 beads dep add from-issue to-issue --type blocks
 beads dep add from-issue to-issue --type related
@@ -190,7 +190,7 @@ beads dep add original-id found-id --type discovered-from
 
 Visualize full dependency tree for an issue.
 
-```bash
+```sh
 beads dep tree issue-123
 ```
 
@@ -202,7 +202,7 @@ Shows all dependencies and dependents in tree format.
 
 Detect circular dependencies.
 
-```bash
+```sh
 beads dep cycles
 ```
 
@@ -216,7 +216,7 @@ Finds dependency cycles that would prevent work from being ready.
 
 Get project statistics.
 
-```bash
+```sh
 beads stats
 beads stats --json
 ```
@@ -229,7 +229,7 @@ Returns: total, open, in_progress, closed, blocked, ready, avg lead time.
 
 Get blocked issues with blocker information.
 
-```bash
+```sh
 beads blocked
 beads blocked --json
 ```
@@ -244,7 +244,7 @@ Use to identify bottlenecks when ready list is empty.
 
 Export all issues to JSONL format.
 
-```bash
+```sh
 beads export > issues.jsonl
 beads export --json  # Same output, explicit flag
 ```
@@ -264,7 +264,7 @@ beads export --json  # Same output, explicit flag
 
 Import issues from JSONL format.
 
-```bash
+```sh
 beads import < issues.jsonl
 beads import -i issues.jsonl --dry-run  # Preview changes
 ```
@@ -277,7 +277,7 @@ beads import -i issues.jsonl --dry-run  # Preview changes
 
 **Use `--dry-run` to preview:**
 
-```bash
+```sh
 beads import -i issues.jsonl --dry-run
 # Shows: new issues, updates, exact matches
 ```
@@ -296,7 +296,7 @@ beads import -i issues.jsonl --dry-run
 
 Initialize beads in current directory.
 
-```bash
+```sh
 beads init                    # Auto-detect prefix
 beads init --prefix api       # Custom prefix
 ```
@@ -309,7 +309,7 @@ Creates `.beads/` directory and database.
 
 Show comprehensive quick start guide.
 
-```bash
+```sh
 beads quickstart
 ```
 
@@ -321,7 +321,7 @@ Displays built-in reference for command syntax and workflows.
 
 ### Session Start
 
-```bash
+```sh
 beads ready --json
 beads show issue-123
 beads update issue-123 --status in_progress
@@ -329,21 +329,21 @@ beads update issue-123 --status in_progress
 
 ### Discovery During Work
 
-```bash
+```sh
 beads create "Found: bug in auth" -t bug
 beads dep add current-issue new-issue --type discovered-from
 ```
 
 ### Completing Work
 
-```bash
+```sh
 beads close issue-123 --reason "Implemented with tests passing"
 beads ready  # See what unblocked
 ```
 
 ### Planning Epic
 
-```bash
+```sh
 beads create "OAuth Integration" -t epic
 beads create "Set up credentials" -t task
 beads create "Implement flow" -t task
@@ -361,7 +361,7 @@ beads dep tree oauth-epic
 
 All commands support `--json` for structured output:
 
-```bash
+```sh
 beads ready --json
 beads show issue-123 --json
 beads list --status open --json
@@ -409,7 +409,7 @@ beads automatically syncs with git:
 
 **Fix**:
 
-```bash
+```sh
 # Check .gitignore
 cat .gitignore | grep beads
 
@@ -447,7 +447,7 @@ cat .gitignore | grep beads
 
 **Common beads Commands to Approve**:
 
-```bash
+```sh
 beads ready
 beads list
 beads stats
@@ -468,25 +468,25 @@ beads [command] --help  # For any subcommand help
 
 **Use JSON for parsing**:
 
-```bash
+```sh
 beads ready --json | jq '.[0].id'
 ```
 
 **Bulk operations**:
 
-```bash
+```sh
 beads close issue-1 issue-2 issue-3 --reason "Sprint complete"
 ```
 
 **Quick filtering**:
 
-```bash
+```sh
 beads list --status open --priority 0 --type bug
 ```
 
 **Built-in help**:
 
-```bash
+```sh
 beads quickstart       # Comprehensive guide
 beads create --help    # Command-specific help
 ```

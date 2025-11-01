@@ -45,7 +45,7 @@ The skill helps Claude understand:
 
 1. Install beads CLI:
 
-   ```bash
+   ```sh
    curl -sSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
    ```
 
@@ -57,7 +57,7 @@ You can install this skill in two ways:
 
 #### Option 1: Copy to Claude Code Skills Directory
 
-```bash
+```sh
 # Clone this repo (if you haven't already)
 git clone https://github.com/shaneholloman/beads.git
 cd beads/examples/claude-code-skill
@@ -68,7 +68,7 @@ ln -s "$(pwd)" ~/.claude/skills/beads-issue-tracking
 
 #### Option 2: Copy Files Directly
 
-```bash
+```sh
 # Create the skill directory
 mkdir -p ~/.claude/skills/beads-issue-tracking
 

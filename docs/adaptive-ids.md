@@ -56,7 +56,7 @@ Adaptive ID length is automatically enabled when using `id_mode=hash`. You can c
 
 Default: 25% (0.25)
 
-```bash
+```sh
 # More lenient (allow up to 50% collision probability)
 beads config set max_collision_prob "0.50"
 
@@ -68,7 +68,7 @@ beads config set max_collision_prob "0.01"
 
 Default: 4 chars
 
-```bash
+```sh
 # Start with 5-char IDs minimum
 beads config set min_hash_length "5"
 
@@ -80,7 +80,7 @@ beads config set min_hash_length "3"
 
 Default: 8 chars
 
-```bash
+```sh
 # Allow even longer IDs for huge databases
 beads config set max_hash_length "10"
 ```
@@ -89,7 +89,7 @@ beads config set max_hash_length "10"
 
 ### Default Configuration
 
-```bash
+```sh
 # Initialize with hash IDs
 beads init --id-mode hash --prefix myproject
 
@@ -108,7 +108,7 @@ beads create "Refactor" -p 1
 
 ### Custom Configuration
 
-```bash
+```sh
 # Very strict collision tolerance
 beads config set max_collision_prob "0.01"
 
@@ -127,7 +127,7 @@ beads create "Task" -p 1
 
 Use `scripts/collision-calculator.go` to explore collision probabilities:
 
-```bash
+```sh
 go run scripts/collision-calculator.go
 ```
 

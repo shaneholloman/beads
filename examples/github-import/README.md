@@ -25,7 +25,7 @@ No dependencies required! Uses Python 3 standard library.
 
 For API access, set up a GitHub token:
 
-```bash
+```sh
 # Create token at: https://github.com/settings/tokens
 # Permissions needed: public_repo (or repo for private repos)
 
@@ -38,7 +38,7 @@ export GITHUB_TOKEN=ghp_your_token_here
 
 ### From GitHub API
 
-```bash
+```sh
 # Fetch all issues from a repository
 uv run gh2jsonl.py --repo owner/repo | beads import
 
@@ -58,7 +58,7 @@ uv run gh2jsonl.py --repo owner/repo --state closed
 
 Export issues from GitHub (via API or manually), then:
 
-```bash
+```sh
 # Single issue
 curl -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/owner/repo/issues/123 > issue.json
@@ -74,7 +74,7 @@ uv run gh2jsonl.py --file issues.json | beads import
 
 ### Custom Options
 
-```bash
+```sh
 # Use custom prefix (instead of 'beads')
 uv run gh2jsonl.py --repo owner/repo --prefix myproject
 
@@ -160,7 +160,7 @@ See also owner/other-repo#789.
 
 ### Example 1: Import Active Issues
 
-```bash
+```sh
 # Import only open issues for active work
 export GITHUB_TOKEN=ghp_...
 uv run gh2jsonl.py --repo mycompany/myapp --state open > open-issues.jsonl
@@ -175,7 +175,7 @@ beads ready  # See what's ready to work on
 
 ### Example 2: Full Repository Migration
 
-```bash
+```sh
 # Import all issues (open and closed)
 uv run gh2jsonl.py --repo mycompany/myapp > all-issues.jsonl
 
@@ -191,7 +191,7 @@ beads stats
 
 ### Example 3: Partial Import from JSON
 
-```bash
+```sh
 # Manually export specific issues via GitHub API
 gh api repos/owner/repo/issues?labels=p1,bug > high-priority-bugs.json
 
@@ -276,13 +276,13 @@ For large repositories (>1000 issues), authentication is recommended.
 
 Set the `GITHUB_TOKEN` environment variable:
 
-```bash
+```sh
 export GITHUB_TOKEN=ghp_your_token_here
 ```
 
 Or pass directly:
 
-```bash
+```sh
 uv run gh2jsonl.py --repo owner/repo --token ghp_...
 ```
 

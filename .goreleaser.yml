@@ -79,7 +79,7 @@ release:
     ### Installation
     
     **macOS/Linux:**
-    ```bash
+    ```sh
     curl -sSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
     ```
     

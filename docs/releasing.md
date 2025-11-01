@@ -6,7 +6,7 @@ Quick guide for releasing a new version of beads.
 
 Use the fully automated release script:
 
-```bash
+```sh
 ./scripts/release.sh 0.9.3
 ```
 
@@ -24,7 +24,7 @@ If you prefer step-by-step control:
 
 1. **Kill all running daemons (CRITICAL)**:
 
-   ```bash
+   ```sh
    # Kill by process name
    pkill -f "beads.*daemon"
    
@@ -44,7 +44,7 @@ If you prefer step-by-step control:
 
 2. **Run tests and build**:
 
-   ```bash
+   ```sh
    TMPDIR=/tmp go test ./...
    golangci-lint run ./...
    TMPDIR=/tmp go build -o beads ./cmd/beads
@@ -64,7 +64,7 @@ If you prefer step-by-step control:
 
 5. **Commit changelog**:
 
-   ```bash
+   ```sh
    git add CHANGELOG.md
    git commit -m "Add 0.9.X release notes"
    ```
@@ -73,7 +73,7 @@ If you prefer step-by-step control:
 
 Use the automated script to update all version files:
 
-```bash
+```sh
 ./scripts/bump-version.sh 0.9.X --commit
 git push origin main
 ```
@@ -90,7 +90,7 @@ This updates:
 
 **IMPORTANT**: After version bump, rebuild the local binary:
 
-```bash
+```sh
 go build -o beads ./cmd/beads
 ./beads version  # Should show new version
 ```
@@ -99,7 +99,7 @@ go build -o beads ./cmd/beads
 
 ### 1. Create Git Tag
 
-```bash
+```sh
 git tag v0.9.X
 git push origin main
 git push origin v0.9.X
@@ -125,7 +125,7 @@ The automation requires this secret to be configured:
 
 If the automated publish fails, you can manually upload:
 
-```bash
+```sh
 cd adapters/mcp
 
 # Clean and rebuild
@@ -144,7 +144,7 @@ See [adapters/mcp/pypi.md](adapters/mcp/pypi.md) for detailed PyPI instructions.
 
 The formula needs the SHA256 of the tag tarball:
 
-```bash
+```sh
 # Compute SHA256 from tag (wait a few seconds after pushing tag if you get 404)
 curl -sL https://github.com/shaneholloman/beads/archive/refs/tags/v0.9.X.tar.gz | shasum -a 256
 
@@ -176,7 +176,7 @@ beads version  # MUST show v0.9.X - if not, the release is incomplete!
 
 **Note:** If you have an old beads binary from `go install` in your PATH, remove it to avoid conflicts:
 
-```bash
+```sh
 # Find where beads is installed
 which beads
 
@@ -204,7 +204,7 @@ The `.github/workflows/release.yml` workflow:
 
 Just push your tag and wait ~5 minutes:
 
-```bash
+```sh
 git push origin v0.9.X
 ```
 
@@ -216,7 +216,7 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
 
 1. **Kill old daemons again**:
 
-   ```bash
+   ```sh
    pkill -f "beads.*daemon"
    pgrep -lf "beads.*daemon" || echo "No daemons running ✔"
    ```
@@ -225,7 +225,7 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
 
 2. **Verify installations**:
 
-   ```bash
+   ```sh
    # Homebrew
    brew update && brew upgrade beads && beads version
    

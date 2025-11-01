@@ -24,7 +24,7 @@ These git hooks ensure beads changes are always synchronized with your commits:
 
 From your repository root:
 
-```bash
+```sh
 ./examples/git-hooks/install.sh
 ```
 
@@ -36,7 +36,7 @@ This will:
 
 ### Manual Install
 
-```bash
+```sh
 cp examples/git-hooks/pre-commit .git/hooks/pre-commit
 cp examples/git-hooks/post-merge .git/hooks/post-merge
 chmod +x .git/hooks/pre-commit .git/hooks/post-merge
@@ -48,7 +48,7 @@ chmod +x .git/hooks/pre-commit .git/hooks/post-merge
 
 Before each commit, the hook runs:
 
-```bash
+```sh
 beads sync --flush-only
 ```
 
@@ -64,7 +64,7 @@ The hook is silent on success, fast (no git operations), and safe (fails commit 
 
 After a git pull or merge, the hook runs:
 
-```bash
+```sh
 beads import -i .beads/issues.jsonl
 ```
 
@@ -94,7 +94,7 @@ This ensures your local database reflects the merged state. The hook:
 
 Remove the hooks:
 
-```bash
+```sh
 rm .git/hooks/pre-commit .git/hooks/post-merge
 ```
 

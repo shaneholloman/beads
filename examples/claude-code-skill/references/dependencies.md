@@ -122,7 +122,7 @@ Effect: Can't start auth-2 until setup-1 complete
 
 ### Creating blocks Dependencies
 
-```bash
+```sh
 beads dep add prerequisite-issue blocked-issue
 # or explicitly:
 beads dep add prerequisite-issue blocked-issue --type blocks
@@ -240,7 +240,7 @@ Effect: Both show in beads ready; choosing one doesn't block the other
 
 ### Creating related Dependencies
 
-```bash
+```sh
 beads dep add issue-1 issue-2 --type related
 ```
 
@@ -331,7 +331,7 @@ Effect: Can track progress across all investigations
 
 ### Creating parent-child Dependencies
 
-```bash
+```sh
 beads dep add parent-epic-id child-task-id --type parent-child
 ```
 
@@ -453,7 +453,7 @@ Context: Issues discovered as side effect of refactoring
 
 ### Creating discovered-from Dependencies
 
-```bash
+```sh
 beads dep add original-work-id discovered-issue-id --type discovered-from
 ```
 
@@ -618,7 +618,7 @@ Everything blocks everything else in strict sequential order.
 
 **Wrong**:
 
-```bash
+```sh
 beads dep add api-endpoint database-schema
 
 Meaning: api-endpoint blocks database-schema
@@ -628,7 +628,7 @@ Meaning: api-endpoint blocks database-schema
 
 **Right**:
 
-```bash
+```sh
 beads dep add database-schema api-endpoint
 
 Meaning: database-schema blocks api-endpoint

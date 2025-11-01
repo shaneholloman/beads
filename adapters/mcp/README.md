@@ -7,7 +7,7 @@ Enables AI agents to manage tasks using beads CLI through Model Context Protocol
 
 Install from PyPI:
 
-```bash
+```sh
 # Using uv (recommended)
 uv tool install beads-mcp
 
@@ -31,7 +31,7 @@ Add to your Claude Desktop config:
 
 For development, clone the repository:
 
-```bash
+```sh
 git clone https://github.com/shaneholloman/beads
 cd beads/adapters/mcp
 uv sync
@@ -236,20 +236,20 @@ await beads_ready_work(workspace_root="/Users/you/project-a")
 
 Run MCP inspector:
 
-```bash
+```sh
 # inside beads-mcp dir
 uv run fastmcp dev src/beads_mcp/server.py
 ```
 
 Type checking:
 
-```bash
+```sh
 uv run mypy src/beads_mcp
 ```
 
 Linting and formatting:
 
-```bash
+```sh
 uv run ruff check src/beads_mcp
 uv run ruff format src/beads_mcp
 ```
@@ -258,13 +258,13 @@ uv run ruff format src/beads_mcp
 
 Run all tests:
 
-```bash
+```sh
 uv run pytest
 ```
 
 With coverage:
 
-```bash
+```sh
 uv run pytest --cov=beads_mcp tests/
 ```
 
@@ -274,7 +274,7 @@ Test suite includes both mocked unit tests and integration tests with real `bead
 
 Test daemon RPC with multiple repositories:
 
-```bash
+```sh
 # Start the daemon first
 cd /path/to/beads
 ./beads daemon start

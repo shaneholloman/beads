@@ -6,7 +6,7 @@ Complete installation guide for all platforms.
 
 ### Homebrew (macOS/Linux)
 
-```bash
+```sh
 brew tap shaneholloman/beads
 brew install beads
 ```
@@ -20,7 +20,7 @@ brew install beads
 
 ### Quick Install Script (All Platforms)
 
-```bash
+```sh
 curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
 ```
 
@@ -37,20 +37,20 @@ The installer will:
 
 **Via Homebrew** (recommended):
 
-```bash
+```sh
 brew tap shaneholloman/beads
 brew install beads
 ```
 
 **Via go install**:
 
-```bash
+```sh
 go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 **From source**:
 
-```bash
+```sh
 git clone https://github.com/shaneholloman/beads
 cd beads
 go build -o beads ./cmd/beads
@@ -61,14 +61,14 @@ sudo mv beads /usr/local/bin/
 
 **Via Homebrew** (works on Linux too):
 
-```bash
+```sh
 brew tap shaneholloman/beads
 brew install beads
 ```
 
 **Arch Linux** (AUR):
 
-```bash
+```sh
 # Install from AUR
 yay -S beads-git
 # or
@@ -79,13 +79,13 @@ Thanks to [@v4rgas](https://github.com/v4rgas) for maintaining the AUR package!
 
 **Via go install**:
 
-```bash
+```sh
 go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 **From source**:
 
-```bash
+```sh
 git clone https://github.com/shaneholloman/beads
 cd beads
 go build -o beads ./cmd/beads
@@ -145,7 +145,7 @@ For Claude Code users, the beads plugin provides slash commands and MCP tools.
 1. First, install the beads CLI (see above)
 2. Then install the plugin:
 
-```bash
+```sh
 # In Claude Code
 /plugin marketplace add shaneholloman/beads
 /plugin install beads
@@ -164,7 +164,7 @@ See [plugin.md](./plugin.md) for complete plugin documentation.
 
 If you're using an MCP-compatible tool other than Claude Code:
 
-```bash
+```sh
 # Using uv (recommended)
 uv tool install beads-mcp
 
@@ -212,7 +212,7 @@ See [adapters/mcp/README.md](../adapters/mcp/README.md) for detailed MCP server 
 
 After installing, verify beads is working:
 
-```bash
+```sh
 beads version
 beads help
 ```
@@ -223,7 +223,7 @@ beads help
 
 beads is not in your PATH. Either:
 
-```bash
+```sh
 # Check if installed
 go list -f {{.Target}} github.com/shaneholloman/beads/cmd/beads
 
@@ -240,7 +240,7 @@ Some users report crashes when running `beads init` or other commands on macOS. 
 
 **Workaround:**
 
-```bash
+```sh
 # Build with CGO enabled
 CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/beads@latest
 
@@ -266,19 +266,19 @@ After installation:
 
 ### Homebrew
 
-```bash
+```sh
 brew upgrade beads
 ```
 
 ### go install
 
-```bash
+```sh
 go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 ### From source
 
-```bash
+```sh
 cd beads
 git pull
 go build -o beads ./cmd/beads

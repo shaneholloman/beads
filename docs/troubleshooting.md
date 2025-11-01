@@ -18,7 +18,7 @@ Common issues and solutions for beads users.
 
 beads is not in your PATH. Either:
 
-```bash
+```sh
 # Check if installed
 go list -f {{.Target}} github.com/shaneholloman/beads/cmd/beads
 
@@ -35,7 +35,7 @@ Some users report crashes when running `beads init` or other commands on macOS. 
 
 **Workaround:**
 
-```bash
+```sh
 # Build with CGO enabled
 CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/beads@latest
 
@@ -54,7 +54,7 @@ If you installed via Homebrew, this shouldn't be necessary as the formula alread
 
 Another beads process is accessing the database, or SQLite didn't close properly. Solutions:
 
-```bash
+```sh
 # Find and kill hanging processes
 ps aux | grep beads
 kill <pid>
@@ -69,7 +69,7 @@ rm .beads/*.db-journal .beads/*.db-wal .beads/*.db-shm
 
 `.beads/` already exists. Options:
 
-```bash
+```sh
 # Use existing database
 beads list  # Should work if already initialized
 
@@ -82,7 +82,7 @@ beads init
 
 You're trying to import issues that conflict with existing ones. Options:
 
-```bash
+```sh
 # Skip existing issues (only import new ones)
 beads import -i issues.jsonl --skip-existing
 
@@ -97,7 +97,7 @@ beads import -i .beads/issues.jsonl
 
 For **physical database corruption** (disk failures, power loss, filesystem errors):
 
-```bash
+```sh
 # Check database integrity
 sqlite3 .beads/*.db "PRAGMA integrity_check;"
 
@@ -109,7 +109,7 @@ beads import -i .beads/issues.jsonl
 
 For **logical consistency issues** (ID collisions from branch merges, parallel workers):
 
-```bash
+```sh
 # This is NOT corruption - use collision resolution instead
 beads import -i .beads/issues.jsonl --resolve-collisions
 ```
@@ -158,7 +158,7 @@ This means beads found multiple `.beads` directories in your directory hierarchy
 
 3. **Override database selection**:
 
-   ```bash
+   ```sh
    # Temporarily use specific database
    BEADS_DB=/path/to/.beads/issues.db beads list
 
@@ -182,7 +182,7 @@ When both sides add issues, you'll get conflicts. Resolution:
 
 Example resolution:
 
-```bash
+```sh
 # After resolving conflicts manually
 git add .beads/issues.jsonl
 git commit
@@ -197,7 +197,7 @@ See [advanced.md](advanced.md) for detailed merge strategies.
 
 If git shows a conflict in `.beads/issues.jsonl`, it's because the same issue was modified on both branches:
 
-```bash
+```sh
 # Preview what will be updated
 beads import -i .beads/issues.jsonl --dry-run
 
@@ -214,7 +214,7 @@ See [advanced.md#handling-git-merge-conflicts](advanced.md#handling-git-merge-co
 
 Git hooks need execute permissions:
 
-```bash
+```sh
 chmod +x .git/hooks/pre-commit
 chmod +x .git/hooks/post-merge
 chmod +x .git/hooks/post-checkout
@@ -226,7 +226,7 @@ Or use the installer: `cd examples/git-hooks && ./install.sh`
 
 Check if auto-sync is enabled:
 
-```bash
+```sh
 # Check if daemon is running
 ps aux | grep "beads daemon"
 
@@ -246,7 +246,7 @@ If you disabled auto-sync with `--no-auto-flush` or `--no-auto-import`, remove t
 
 Those issues probably have open blockers. Check:
 
-```bash
+```sh
 # See blocked issues
 beads blocked
 
@@ -266,7 +266,7 @@ Remember: Only `blocks` dependencies affect ready work.
 
 beads prevents dependency cycles, which break ready work detection. To fix:
 
-```bash
+```sh
 # Detect all cycles
 beads dep cycles
 
@@ -280,7 +280,7 @@ beads dep remove <from-id> <to-id>
 
 Check the dependency type:
 
-```bash
+```sh
 # Show full issue details including dependencies
 beads show <issue-id>
 
@@ -301,7 +301,7 @@ Remember: Different dependency types have different meanings:
 
 For large databases (10k+ issues):
 
-```bash
+```sh
 # Export only open issues
 beads export --format=jsonl --status=open -o .beads/issues.jsonl
 
@@ -315,7 +315,7 @@ Consider splitting large projects into multiple databases.
 
 Check database size and consider compaction:
 
-```bash
+```sh
 # Check database stats
 beads stats
 
@@ -330,7 +330,7 @@ beads compact --days 90
 
 If `.beads/issues.jsonl` is very large:
 
-```bash
+```sh
 # Check file size
 ls -lh .beads/issues.jsonl
 
@@ -357,7 +357,7 @@ Agents may not realize an issue already exists. Prevention strategies:
 
 Simplify the dependency structure:
 
-```bash
+```sh
 # Check for overly complex trees
 beads dep tree <issue-id>
 
@@ -372,7 +372,7 @@ beads label add <issue-id> related-to-feature-X
 
 Check if issues are blocked:
 
-```bash
+```sh
 # See what's blocked
 beads blocked
 
@@ -388,7 +388,7 @@ beads dep tree <issue-id>
 
 Check installation and configuration:
 
-```bash
+```sh
 # Verify MCP server is installed
 pip list | grep beads-mcp
 
@@ -411,7 +411,7 @@ See [adapters/mcp/README.md](../adapters/mcp/README.md) for MCP-specific trouble
 
 **Solution:** Use the `--sandbox` flag:
 
-```bash
+```sh
 # Sandbox mode disables daemon and auto-sync
 beads --sandbox ready
 beads --sandbox create "Fix bug" -p 1
@@ -430,7 +430,7 @@ beads --no-daemon --no-auto-flush --no-auto-import <command>
 
 **Note:** You'll need to manually sync when outside the sandbox:
 
-```bash
+```sh
 # After leaving sandbox, sync manually
 beads sync
 ```
@@ -469,7 +469,7 @@ The daemon listens on loopback TCP. Allow `beads.exe` through Windows Firewall:
 
 If macOS blocks beads:
 
-```bash
+```sh
 # Remove quarantine attribute
 xattr -d com.apple.quarantine /usr/local/bin/beads
 
@@ -481,7 +481,7 @@ xattr -d com.apple.quarantine /usr/local/bin/beads
 
 If you get permission errors:
 
-```bash
+```sh
 # Make beads executable
 chmod +x /usr/local/bin/beads
 

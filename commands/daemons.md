@@ -4,7 +4,7 @@ Manage beads daemon processes across all repositories and worktrees.
 
 ## Synopsis
 
-```bash
+```sh
 beads daemons <subcommand> [flags]
 ```
 
@@ -18,7 +18,7 @@ The `beads daemons` command provides tools for discovering, monitoring, and mana
 
 List all running beads daemons with metadata.
 
-```bash
+```sh
 beads daemons list [--search DIRS] [--json] [--no-cleanup]
 ```
 
@@ -30,7 +30,7 @@ beads daemons list [--search DIRS] [--json] [--no-cleanup]
 
 **Example:**
 
-```bash
+```sh
 beads daemons list
 beads daemons list --search /Users/me/projects --json
 ```
@@ -39,7 +39,7 @@ beads daemons list --search /Users/me/projects --json
 
 Check health of all beads daemons and report issues.
 
-```bash
+```sh
 beads daemons health [--search DIRS] [--json]
 ```
 
@@ -56,7 +56,7 @@ Reports:
 
 **Example:**
 
-```bash
+```sh
 beads daemons health
 beads daemons health --json
 ```
@@ -65,7 +65,7 @@ beads daemons health --json
 
 Stop a specific daemon gracefully.
 
-```bash
+```sh
 beads daemons stop <workspace-path|pid> [--json]
 ```
 
@@ -79,7 +79,7 @@ beads daemons stop <workspace-path|pid> [--json]
 
 **Example:**
 
-```bash
+```sh
 beads daemons stop /Users/me/projects/myapp
 beads daemons stop 12345
 beads daemons stop /Users/me/projects/myapp --json
@@ -89,7 +89,7 @@ beads daemons stop /Users/me/projects/myapp --json
 
 View logs for a specific daemon.
 
-```bash
+```sh
 beads daemons logs <workspace-path|pid> [-f] [-n LINES] [--json]
 ```
 
@@ -105,7 +105,7 @@ beads daemons logs <workspace-path|pid> [-f] [-n LINES] [--json]
 
 **Example:**
 
-```bash
+```sh
 beads daemons logs /Users/me/projects/myapp
 beads daemons logs 12345 -n 100
 beads daemons logs /Users/me/projects/myapp -f
@@ -116,7 +116,7 @@ beads daemons logs 12345 --json
 
 Stop all running beads daemons.
 
-```bash
+```sh
 beads daemons killall [--search DIRS] [--force] [--json]
 ```
 
@@ -134,7 +134,7 @@ Uses escalating shutdown strategy:
 
 **Example:**
 
-```bash
+```sh
 beads daemons killall
 beads daemons killall --force
 beads daemons killall --json
@@ -146,7 +146,7 @@ beads daemons killall --json
 
 After upgrading beads, restart all daemons to use the new version:
 
-```bash
+```sh
 beads daemons health  # Check for version mismatches
 beads daemons killall # Stop all old daemons
 # Daemons will auto-start with new version on next beads command
@@ -156,7 +156,7 @@ beads daemons killall # Stop all old daemons
 
 Check daemon status and view logs:
 
-```bash
+```sh
 beads daemons list
 beads daemons health
 beads daemons logs /path/to/workspace -n 100
@@ -166,7 +166,7 @@ beads daemons logs /path/to/workspace -n 100
 
 Remove stale daemon sockets:
 
-```bash
+```sh
 beads daemons list  # Auto-cleanup happens by default
 beads daemons list --no-cleanup  # Skip cleanup
 ```
@@ -175,7 +175,7 @@ beads daemons list --no-cleanup  # Skip cleanup
 
 Discover daemons in specific directories:
 
-```bash
+```sh
 beads daemons list --search /Users/me/projects
 beads daemons health --search /Users/me/work
 ```
@@ -186,7 +186,7 @@ beads daemons health --search /Users/me/work
 
 If you see stale sockets (dead process but socket file exists):
 
-```bash
+```sh
 beads daemons list  # Auto-cleanup removes stale sockets
 ```
 
@@ -194,7 +194,7 @@ beads daemons list  # Auto-cleanup removes stale sockets
 
 If daemon version != CLI version:
 
-```bash
+```sh
 beads daemons health  # Identify mismatched daemons
 beads daemons killall # Stop all daemons
 # Next beads command will auto-start new version
@@ -204,7 +204,7 @@ beads daemons killall # Stop all daemons
 
 If graceful shutdown fails:
 
-```bash
+```sh
 beads daemons killall --force  # Force kill with SIGKILL
 ```
 
@@ -212,13 +212,13 @@ beads daemons killall --force  # Force kill with SIGKILL
 
 If daemon isn't discovered:
 
-```bash
+```sh
 beads daemons list --search /path/to/workspace
 ```
 
 Or check the socket manually:
 
-```bash
+```sh
 ls -la /path/to/workspace/.beads/beads.sock
 ```
 
