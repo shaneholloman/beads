@@ -276,7 +276,7 @@ async def test_mcp_works_with_separate_databases(git_worktree_with_separate_dbs,
     # Create MCP client
     async with Client(mcp) as client:
         # Set context to worktree
-        await client.call_tool("beads__set_context", {"workspace_root": str(worktree)})
+        await client.call_tool("set_context", {"workspace_root": str(worktree)})
         
         # Create issue via MCP
         result = await client.call_tool(
@@ -296,7 +296,7 @@ async def test_mcp_works_with_separate_databases(git_worktree_with_separate_dbs,
         assert issue_data["id"].startswith("feature-"), "Issue should have feature- prefix"
         
         # List via MCP
-        list_result = await client.call_tool("beads__list", {})
+        list_result = await client.call_tool("list", {})
         assert list_result.is_error is False
         
         # Verify isolation - should only see worktree issues

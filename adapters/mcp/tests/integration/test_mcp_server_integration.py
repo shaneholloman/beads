@@ -80,7 +80,7 @@ async def mcp_client(beads_executable, temp_db, monkeypatch):
     # Create test client
     async with Client(mcp) as client:
         # Automatically set context for the tests
-        await client.call_tool("beads__set_context", {"workspace_root": temp_dir})
+        await client.call_tool("set_context", {"workspace_root": temp_dir})
         yield client
 
     # Reset client and context after test
@@ -142,7 +142,7 @@ async def test_show_issue_tool(mcp_client):
     issue_id = created["id"]
 
     # Show the issue
-    show_result = await mcp_client.call_tool("beads__show", {"issue_id": issue_id})
+    show_result = await mcp_client.call_tool("show", {"issue_id": issue_id})
 
     issue = json.loads(show_result.content[0].text)
     assert issue["id"] == issue_id
@@ -161,7 +161,7 @@ async def test_list_issues_tool(mcp_client):
     )
 
     # List all issues
-    result = await mcp_client.call_tool("beads__list", {})
+    result = await mcp_client.call_tool("list", {})
 
     import json
 
@@ -169,7 +169,7 @@ async def test_list_issues_tool(mcp_client):
     assert len(issues) >= 2
 
     # List with status filter
-    result = await mcp_client.call_tool("beads__list", {"status": "open"})
+    result = await mcp_client.call_tool("list", {"status": "open"})
     issues = json.loads(result.content[0].text)
     assert all(issue["status"] == "open" for issue in issues)
 
@@ -274,8 +274,8 @@ async def test_reopen_multiple_issues_tool(mcp_client):
     )
     issue2 = json.loads(issue2_result.content[0].text)
 
-    await mcp_client.call_tool("beads__close", {"issue_id": issue1["id"], "reason": "Done"})
-    await mcp_client.call_tool("beads__close", {"issue_id": issue2["id"], "reason": "Done"})
+    await mcp_client.call_tool("close", {"issue_id": issue1["id"], "reason": "Done"})
+    await mcp_client.call_tool("close", {"issue_id": issue2["id"], "reason": "Done"})
 
     # Reopen both issues
     reopen_result = await mcp_client.call_tool(
@@ -303,7 +303,7 @@ async def test_reopen_with_reason_tool(mcp_client):
     created = json.loads(create_result.content[0].text)
     issue_id = created["id"]
 
-    await mcp_client.call_tool("beads__close", {"issue_id": issue_id, "reason": "Done"})
+    await mcp_client.call_tool("close", {"issue_id": issue_id, "reason": "Done"})
 
     # Reopen with reason
     reopen_result = await mcp_client.call_tool(
@@ -352,7 +352,7 @@ async def test_ready_work_tool(mcp_client):
     )
 
     # Get ready work
-    result = await mcp_client.call_tool("beads__ready", {"limit": 100})
+    result = await mcp_client.call_tool("ready", {"limit": 100})
     ready_issues = json.loads(result.content[0].text)
 
     ready_ids = [issue["id"] for issue in ready_issues]
@@ -439,17 +439,17 @@ async def test_list_with_filters(mcp_client):
     )
 
     # Filter by priority
-    result = await mcp_client.call_tool("beads__list", {"priority": 0})
+    result = await mcp_client.call_tool("list", {"priority": 0})
     issues = json.loads(result.content[0].text)
     assert all(issue["priority"] == 0 for issue in issues)
 
     # Filter by type
-    result = await mcp_client.call_tool("beads__list", {"issue_type": "bug"})
+    result = await mcp_client.call_tool("list", {"issue_type": "bug"})
     issues = json.loads(result.content[0].text)
     assert all(issue["issue_type"] == "bug" for issue in issues)
 
     # Filter by assignee
-    result = await mcp_client.call_tool("beads__list", {"assignee": "alice"})
+    result = await mcp_client.call_tool("list", {"assignee": "alice"})
     issues = json.loads(result.content[0].text)
     assert all(issue["assignee"] == "alice" for issue in issues)
 
@@ -468,7 +468,7 @@ async def test_ready_work_with_priority_filter(mcp_client):
     )
 
     # Get ready work with priority filter
-    result = await mcp_client.call_tool("beads__ready", {"priority": 0, "limit": 100})
+    result = await mcp_client.call_tool("ready", {"priority": 0, "limit": 100})
     issues = json.loads(result.content[0].text)
     assert all(issue["priority"] == 0 for issue in issues)
 
@@ -542,7 +542,7 @@ async def test_stats_tool(mcp_client):
     )
 
     # Get stats
-    result = await mcp_client.call_tool("beads__stats", {})
+    result = await mcp_client.call_tool("stats", {})
     stats = json.loads(result.content[0].text)
 
     assert "total_issues" in stats
@@ -577,7 +577,7 @@ async def test_blocked_tool(mcp_client):
     )
 
     # Get blocked issues
-    result = await mcp_client.call_tool("beads__blocked", {})
+    result = await mcp_client.call_tool("blocked", {})
     blocked_issues = json.loads(result.content[0].text)
 
     # Should have at least the one we created
@@ -612,7 +612,7 @@ async def test_init_tool(mcp_client, beads_executable):
 
         try:
             # Call init tool
-            result = await mcp_client.call_tool("beads__init", {"prefix": "test-init"})
+            result = await mcp_client.call_tool("init", {"prefix": "test-init"})
             output = result.content[0].text
 
             # Verify output contains success message

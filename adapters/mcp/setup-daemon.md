@@ -60,7 +60,7 @@ After updating the config, restart Claude Desktop to load the new MCP server con
 ```
 Claude/Amp → Single MCP Server → Daemon Client → Daemon → Correct Database
                   ↓
-          Uses beads__set_context to pass workspace_root
+          Uses set_context to pass workspace_root
                   ↓
           Daemon uses cwd to find .beads/*.db
 ```
@@ -90,7 +90,7 @@ Claude/Amp → Single MCP Server → Daemon Client → Daemon → Correct Databa
 ```
 
 - `BEADS_USE_DAEMON` - Use daemon (default: `1`)
-- `BEADS_REQUIRE_CONTEXT` - Enforce beads__set_context before writes (default: `0`)
+- `BEADS_REQUIRE_CONTEXT` - Enforce set_context before writes (default: `0`)
 - `BEADS_ACTOR` - Actor name for audit trail (default: `$USER`)
 
 ### Disable Daemon (Fallback to CLI)
@@ -143,13 +143,13 @@ beads daemon start
    beads daemon status
    ```
 
-2. Use `beads__set_context` tool in Claude to set workspace root:
+2. Use `set_context` tool in Claude to set workspace root:
 
    ```
-   beads__set_context /path/to/your/project
+   set_context /path/to/your/project
    ```
 
-3. Verify with `beads__where_am_i` tool
+3. Verify with `where_am_i` tool
 
 ### Multiple repos not working
 
@@ -157,7 +157,7 @@ Ensure:
 
 - Daemon is running in a parent directory that can reach all repos
 - Each repo has `.beads/*.db` properly initialized
-- MCP server is passing correct workspace_root via `beads__set_context`
+- MCP server is passing correct workspace_root via `set_context`
 
 ## Migration from Multi-Server Setup
 
