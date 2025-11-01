@@ -2,13 +2,6 @@
 
 > Issue Tracker for agents
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/shaneholloman/beads)](https://go.dev/)
-[![Release](https://img.shields.io/github/v/release/shaneholloman/beads)](https://github.com/shaneholloman/beads/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/shaneholloman/beads/ci.yml?branch=main&label=tests)](https://github.com/shaneholloman/beads/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/shaneholloman/beads)](https://goreportcard.com/report/github.com/shaneholloman/beads)
-[![License](https://img.shields.io/github/license/shaneholloman/beads)](LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/beads-mcp)](https://pypi.org/project/beads-mcp/)
-
 ## What is it?
 
 Dependency-aware issue tracker for AI coding agents. Issues chain together like beads through four dependency types (blocks, related, parent-child, discovered-from). Local SQLite database syncs via git through JSONL export/import, acting like a distributed database without any server infrastructure.
