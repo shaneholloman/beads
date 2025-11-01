@@ -67,8 +67,8 @@ for i in $(seq 1 $MAX_RETRIES); do
             break
         fi
     fi
-    
-    if [ $i -lt $MAX_RETRIES ]; then
+
+    if [ "$i" -lt $MAX_RETRIES ]; then
         echo -e "${YELLOW}Tarball not ready, retrying in ${RETRY_DELAY}s... (attempt $i/$MAX_RETRIES)${NC}"
         sleep $RETRY_DELAY
     else

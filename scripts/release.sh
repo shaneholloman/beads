@@ -109,9 +109,9 @@ echo -e "${GREEN}✓ Tests passed${NC}\n"
 echo -e "${YELLOW}Step 3/8: Bumping version to ${VERSION}...${NC}"
 if [ "$DRY_RUN" = true ]; then
     echo "[DRY RUN] Would run: $SCRIPT_DIR/bump-version.sh $VERSION --commit"
-    $SCRIPT_DIR/bump-version.sh "$VERSION" 2>/dev/null || true
+    "$SCRIPT_DIR"/bump-version.sh "$VERSION" 2>/dev/null || true
 else
-    if ! $SCRIPT_DIR/bump-version.sh "$VERSION" --commit; then
+    if ! "$SCRIPT_DIR"/bump-version.sh "$VERSION" --commit; then
         echo -e "${RED}✗ Version bump failed${NC}"
         exit 1
     fi
@@ -155,7 +155,7 @@ else
     else
         git tag "v${VERSION}"
     fi
-    
+
     if ! git push origin "v${VERSION}"; then
         echo -e "${RED}✗ Tag push failed${NC}"
         exit 1
@@ -174,7 +174,7 @@ echo -e "${YELLOW}Step 7/8: Updating Homebrew formula...${NC}"
 if [ "$DRY_RUN" = true ]; then
     echo "[DRY RUN] Would run: $SCRIPT_DIR/update-homebrew.sh ${VERSION}"
 else
-    if ! $SCRIPT_DIR/update-homebrew.sh "$VERSION"; then
+    if ! "$SCRIPT_DIR"/update-homebrew.sh "$VERSION"; then
         echo -e "${RED}✗ Homebrew update failed${NC}"
         exit 1
     fi
@@ -188,7 +188,7 @@ if [ "$DRY_RUN" = true ]; then
     echo "[DRY RUN] Would run: brew upgrade beads"
 else
     brew update
-    
+
     # Check if beads is installed via brew
     if brew list beads >/dev/null 2>&1; then
         brew upgrade beads || brew reinstall beads
