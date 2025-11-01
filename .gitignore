@@ -1,0 +1,58 @@
+# Binaries
+/beads
+/bd
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+*.out
+
+# Go workspace file
+go.work
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite databases (now using JSONL as source of truth)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Daemon runtime files
+.beads/daemon.log
+.beads/daemon.pid
+.beads/daemon.lock
+.beads/bd.sock
+.beads/.exclusive-lock
+
+# .beads directory files (keep JSONL only)
+.beads/.gitignore
+.beads/db.sqlite
+.beads/bd.db
+
+# Keep JSONL exports (source of truth for git)
+!.beads/*.jsonl
+
+# Ignore nix result
+result
+
+# GoReleaser build artifacts
+dist/
+
+# Git worktrees
+.worktrees/
