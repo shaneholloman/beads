@@ -434,25 +434,25 @@ beads import -i issues.jsonl --dedupe-after
 
 1. **Before creating new issues**: Search for similar existing issues
 
-   ```sh
-   beads list --json | grep -i "authentication"
-   beads show beads-41 beads-42 --json  # Compare candidates
-   ```
+    ```sh
+    beads list --json | grep -i "authentication"
+    beads show beads-41 beads-42 --json  # Compare candidates
+    ```
 
 2. **Periodic duplicate scans**: Review issues by type or priority
 
-   ```sh
-   beads list --status open --priority 1 --json  # High-priority issues
-   beads list --issue-type bug --json             # All bugs
-   ```
+    ```sh
+    beads list --status open --priority 1 --json  # High-priority issues
+    beads list --issue-type bug --json             # All bugs
+    ```
 
 3. **During work discovery**: Check for duplicates when filing discovered-from issues
 
-   ```sh
-   # Before: beads create "Fix auth bug" --deps discovered-from:beads-100
-   # First: beads list --json | grep -i "auth bug"
-   # Then decide: create new or link to existing
-   ```
+    ```sh
+    # Before: beads create "Fix auth bug" --deps discovered-from:beads-100
+    # First: beads list --json | grep -i "auth bug"
+    # Then decide: create new or link to existing
+    ```
 
 **Merge workflow:**
 
@@ -492,9 +492,9 @@ beads show beads-41 --json  # Verify merged content
 - Add labels like `duplicate` to source issues before merging (for tracking)
 - File a discovered-from issue if you found duplicates during work:
 
-  ```sh
-  beads create "Found duplicates during beads-X" -p 2 --deps discovered-from:beads-X --json
-  ```
+    ```sh
+    beads create "Found duplicates during beads-X" -p 2 --deps discovered-from:beads-X --json
+    ```
 
 ## Development Guidelines
 
@@ -603,24 +603,24 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 1. **Use `--no-daemon` flag** (recommended):
 
-   ```sh
-   beads --no-daemon ready
-   beads --no-daemon create "Fix bug" -p 1
-   beads --no-daemon update beads-42 --status in_progress
-   ```
+    ```sh
+    beads --no-daemon ready
+    beads --no-daemon create "Fix bug" -p 1
+    beads --no-daemon update beads-42 --status in_progress
+    ```
 
 2. **Disable daemon via environment variable** (for entire worktree session):
 
-   ```sh
-   export BEADS_NO_DAEMON=1
-   beads ready  # All commands use direct mode
-   ```
+    ```sh
+    export BEADS_NO_DAEMON=1
+    beads ready  # All commands use direct mode
+    ```
 
 3. **Disable auto-start** (less safe, still warns):
 
-   ```sh
-   export BEADS_AUTO_START_DAEMON=false
-   ```
+    ```sh
+    export BEADS_AUTO_START_DAEMON=false
+    ```
 
 **Automatic Detection:**
 beads automatically detects when you're in a worktree and shows a prominent warning if daemon mode is active. The `--no-daemon` mode works correctly with worktrees since it operates directly on the database without shared state.

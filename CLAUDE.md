@@ -201,4 +201,5 @@ uv run pytest
 uv build
 ```
 
-**Everything through UV. Always.**
+> [!IMPORTANT]
+> **Everything through UV. Always.**
