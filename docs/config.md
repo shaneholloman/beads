@@ -14,7 +14,7 @@ Tool preferences control how `beads` behaves globally or per-user. These are sto
 **Configuration precedence** (highest to lowest):
 
 1. Command-line flags (`--json`, `--no-daemon`, etc.)
-2. Environment variables (`BD_JSON`, `BD_NO_DAEMON`, etc.)
+2. Environment variables (`BEADS_JSON`, `BEADS_NO_DAEMON`, etc.)
 3. Config file (`~/.config/beads/config.yaml` or `.beads/config.yaml`)
 4. Defaults
 
@@ -32,12 +32,12 @@ Tool-level settings you can configure:
 
 | Setting | Flag | Environment Variable | Default | Description |
 |---------|------|---------------------|---------|-------------|
-| `json` | `--json` | `BD_JSON` | `false` | Output in JSON format |
-| `no-daemon` | `--no-daemon` | `BD_NO_DAEMON` | `false` | Force direct mode, bypass daemon |
-| `no-auto-flush` | `--no-auto-flush` | `BD_NO_AUTO_FLUSH` | `false` | Disable auto JSONL export |
-| `no-auto-import` | `--no-auto-import` | `BD_NO_AUTO_IMPORT` | `false` | Disable auto JSONL import |
-| `db` | `--db` | `BD_DB` | (auto-discover) | Database path |
-| `actor` | `--actor` | `BD_ACTOR` | `$USER` | Actor name for audit trail |
+| `json` | `--json` | `BEADS_JSON` | `false` | Output in JSON format |
+| `no-daemon` | `--no-daemon` | `BEADS_NO_DAEMON` | `false` | Force direct mode, bypass daemon |
+| `no-auto-flush` | `--no-auto-flush` | `BEADS_NO_AUTO_FLUSH` | `false` | Disable auto JSONL export |
+| `no-auto-import` | `--no-auto-import` | `BEADS_NO_AUTO_IMPORT` | `false` | Disable auto JSONL import |
+| `db` | `--db` | `BEADS_DB` | (auto-discover) | Database path |
+| `actor` | `--actor` | `BEADS_ACTOR` | `$USER` | Actor name for audit trail |
 | `flush-debounce` | - | `BEADS_FLUSH_DEBOUNCE` | `5s` | Debounce time for auto-flush |
 | `auto-start-daemon` | - | `BEADS_AUTO_START_DAEMON` | `true` | Auto-start daemon if not running |
 

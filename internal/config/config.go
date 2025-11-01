@@ -23,7 +23,7 @@ func Initialize() error {
 
 	// Add config search paths (in order of precedence)
 	// 1. Walk up from CWD to find project .beads/ directory
-	//    This allows commands to work from subeadsirectories
+	//    This allows commands to work from subdirectories
 	cwd, err := os.Getwd()
 	if err == nil {
 		// Walk up parent directories to find .beads/config.yaml
@@ -59,7 +59,7 @@ func Initialize() error {
 	// Automatic environment variable binding
 	// Environment variables take precedence over config file
 	// E.g., BEADS_JSON, BEADS_NO_DAEMON, BEADS_ACTOR, BEADS_DB
-	v.SetEnvPrefix("BD")
+	v.SetEnvPrefix("BEADS")
 
 	// Replace hyphens and dots with underscores for env var mapping
 	// This allows BEADS_NO_DAEMON to map to "no-daemon" config key

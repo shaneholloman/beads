@@ -170,8 +170,8 @@ func TestCheckVersionMismatch_DebugMode(t *testing.T) {
 	defer func() { store = oldStore }()
 
 	// Set debug mode
-	os.Setenv("BD_DEBUG", "1")
-	defer os.Unsetenv("BD_DEBUG")
+	os.Setenv("BEADS_DEBUG", "1")
+	defer os.Unsetenv("BEADS_DEBUG")
 
 	// Close the store to trigger metadata error
 	sqliteStore.Close()

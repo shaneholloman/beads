@@ -139,7 +139,7 @@ var rootCmd = &cobra.Command{
 
 			// Set actor for audit trail
 			if actor == "" {
-				if beadsActor := os.Getenv("BD_ACTOR"); beadsActor != "" {
+				if beadsActor := os.Getenv("BEADS_ACTOR"); beadsActor != "" {
 					actor = beadsActor
 				} else if user := os.Getenv("USER"); user != "" {
 					actor = user
@@ -222,7 +222,7 @@ var rootCmd = &cobra.Command{
 		// Try to connect to daemon first (unless --no-daemon flag is set)
 		if noDaemon {
 			daemonStatus.FallbackReason = FallbackFlagNoDaemon
-			if os.Getenv("BD_DEBUG") != "" {
+			if os.Getenv("BEADS_DEBUG") != "" {
 				fmt.Fprintf(os.Stderr, "Debug: --no-daemon flag set, using direct mode\n")
 			}
 		} else {
@@ -240,7 +240,7 @@ var rootCmd = &cobra.Command{
 				if healthErr == nil && health.Status == statusHealthy {
 					// Check version compatibility
 					if !health.Compatible {
-						if os.Getenv("BD_DEBUG") != "" {
+						if os.Getenv("BEADS_DEBUG") != "" {
 							fmt.Fprintf(os.Stderr, "Debug: daemon version mismatch (daemon: %s, client: %s), restarting daemon\n",
 								health.Version, Version)
 						}
@@ -262,7 +262,7 @@ var rootCmd = &cobra.Command{
 									daemonStatus.Connected = true
 									daemonStatus.Degraded = false
 									daemonStatus.Health = health.Status
-									if os.Getenv("BD_DEBUG") != "" {
+									if os.Getenv("BEADS_DEBUG") != "" {
 										fmt.Fprintf(os.Stderr, "Debug: connected to restarted daemon (version: %s)\n", health.Version)
 									}
 									warnWorktreeDaemon(dbPath)
@@ -281,7 +281,7 @@ var rootCmd = &cobra.Command{
 						daemonStatus.Connected = true
 						daemonStatus.Degraded = false
 						daemonStatus.Health = health.Status
-						if os.Getenv("BD_DEBUG") != "" {
+						if os.Getenv("BEADS_DEBUG") != "" {
 							fmt.Fprintf(os.Stderr, "Debug: connected to daemon at %s (health: %s)\n", socketPath, health.Status)
 						}
 						// Warn if using daemon with git worktrees
@@ -294,13 +294,13 @@ var rootCmd = &cobra.Command{
 					daemonStatus.FallbackReason = FallbackHealthFailed
 					if healthErr != nil {
 						daemonStatus.Detail = healthErr.Error()
-						if os.Getenv("BD_DEBUG") != "" {
+						if os.Getenv("BEADS_DEBUG") != "" {
 							fmt.Fprintf(os.Stderr, "Debug: daemon health check failed: %v\n", healthErr)
 						}
 					} else {
 						daemonStatus.Health = health.Status
 						daemonStatus.Detail = health.Error
-						if os.Getenv("BD_DEBUG") != "" {
+						if os.Getenv("BEADS_DEBUG") != "" {
 							fmt.Fprintf(os.Stderr, "Debug: daemon unhealthy (status=%s): %s\n", health.Status, health.Error)
 						}
 					}
@@ -310,7 +310,7 @@ var rootCmd = &cobra.Command{
 				daemonStatus.FallbackReason = FallbackConnectFailed
 				if err != nil {
 					daemonStatus.Detail = err.Error()
-					if os.Getenv("BD_DEBUG") != "" {
+					if os.Getenv("BEADS_DEBUG") != "" {
 						fmt.Fprintf(os.Stderr, "Debug: daemon connect failed at %s: %v\n", socketPath, err)
 					}
 				}
@@ -319,7 +319,7 @@ var rootCmd = &cobra.Command{
 			// Daemon not running or unhealthy - try auto-start if enabled
 			if daemonStatus.AutoStartEnabled {
 				daemonStatus.AutoStartAttempted = true
-				if os.Getenv("BD_DEBUG") != "" {
+				if os.Getenv("BEADS_DEBUG") != "" {
 					fmt.Fprintf(os.Stderr, "Debug: attempting to auto-start daemon\n")
 				}
 				startTime := time.Now()
@@ -343,7 +343,7 @@ var rootCmd = &cobra.Command{
 							daemonStatus.AutoStartSucceeded = true
 							daemonStatus.Health = health.Status
 							daemonStatus.FallbackReason = FallbackNone
-							if os.Getenv("BD_DEBUG") != "" {
+							if os.Getenv("BEADS_DEBUG") != "" {
 								elapsed := time.Since(startTime).Milliseconds()
 								fmt.Fprintf(os.Stderr, "Debug: auto-start succeeded; connected at %s in %dms\n", socketPath, elapsed)
 							}
@@ -360,7 +360,7 @@ var rootCmd = &cobra.Command{
 								daemonStatus.Health = health.Status
 								daemonStatus.Detail = health.Error
 							}
-							if os.Getenv("BD_DEBUG") != "" {
+							if os.Getenv("BEADS_DEBUG") != "" {
 								fmt.Fprintf(os.Stderr, "Debug: auto-started daemon is unhealthy; falling back to direct mode\n")
 							}
 						}
@@ -370,14 +370,14 @@ var rootCmd = &cobra.Command{
 						if err != nil {
 							daemonStatus.Detail = err.Error()
 						}
-						if os.Getenv("BD_DEBUG") != "" {
+						if os.Getenv("BEADS_DEBUG") != "" {
 							fmt.Fprintf(os.Stderr, "Debug: auto-start did not yield a running daemon; falling back to direct mode\n")
 						}
 					}
 				} else {
 					// Auto-start itself failed
 					daemonStatus.FallbackReason = FallbackAutoStartFailed
-					if os.Getenv("BD_DEBUG") != "" {
+					if os.Getenv("BEADS_DEBUG") != "" {
 						fmt.Fprintf(os.Stderr, "Debug: auto-start failed; falling back to direct mode\n")
 					}
 				}
@@ -389,17 +389,17 @@ var rootCmd = &cobra.Command{
 						daemonStatus.FallbackReason = FallbackAutoStartDisabled
 					}
 				}
-				if os.Getenv("BD_DEBUG") != "" {
+				if os.Getenv("BEADS_DEBUG") != "" {
 					fmt.Fprintf(os.Stderr, "Debug: auto-start disabled by BEADS_AUTO_START_DAEMON\n")
 				}
 			}
 
 			// Emit BEADS_VERBOSE warning if falling back to direct mode
-			if os.Getenv("BD_VERBOSE") != "" {
+			if os.Getenv("BEADS_VERBOSE") != "" {
 				emitVerboseWarning()
 			}
 
-			if os.Getenv("BD_DEBUG") != "" {
+			if os.Getenv("BEADS_DEBUG") != "" {
 				fmt.Fprintf(os.Stderr, "Debug: using direct mode (reason: %s)\n", daemonStatus.FallbackReason)
 			}
 		}
@@ -431,7 +431,7 @@ var rootCmd = &cobra.Command{
 			if cmd.Name() == "sync" {
 				if dryRun, _ := cmd.Flags().GetBool("dry-run"); dryRun {
 					// Skip auto-import in dry-run mode
-					if os.Getenv("BD_DEBUG") != "" {
+					if os.Getenv("BEADS_DEBUG") != "" {
 						fmt.Fprintf(os.Stderr, "Debug: auto-import skipped for sync --dry-run\n")
 					}
 				} else {

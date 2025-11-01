@@ -9,7 +9,7 @@ import (
 	"github.com/shaneholloman/beads/internal/types"
 )
 
-const testIssueBD1 = "beads-1"
+const testIssueBeads1 = "beads-1"
 
 func TestGetTier1Candidates(t *testing.T) {
 	store, cleanup := setupTestDB(t)
@@ -19,7 +19,7 @@ func TestGetTier1Candidates(t *testing.T) {
 	// Create test issues
 	// Old closed issue (eligible)
 	issue1 := &types.Issue{
-		ID:          testIssueBD1,
+		ID:          testIssueBeads1,
 		Title:       "Old closed issue",
 		Description: "This is a test description",
 		Status:      "closed",
@@ -93,7 +93,7 @@ func TestGetTier1Candidates(t *testing.T) {
 		t.Errorf("Expected 1 candidate, got %d", len(candidates))
 	}
 
-	if len(candidates) > 0 && candidates[0].IssueID != testIssueBD1 {
+	if len(candidates) > 0 && candidates[0].IssueID != testIssueBeads1 {
 		t.Errorf("Expected candidate beads-1, got %s", candidates[0].IssueID)
 	}
 }
@@ -147,7 +147,7 @@ func TestGetTier2Candidates(t *testing.T) {
 		t.Errorf("Expected 1 candidate, got %d", len(candidates))
 	}
 
-	if len(candidates) > 0 && candidates[0].IssueID != testIssueBD1 {
+	if len(candidates) > 0 && candidates[0].IssueID != testIssueBeads1 {
 		t.Errorf("Expected candidate beads-1, got %s", candidates[0].IssueID)
 	}
 }

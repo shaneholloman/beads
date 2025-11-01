@@ -595,7 +595,7 @@ err = db.QueryRow(`
 
 // Find corresponding JSONL path (for git hooks, monitoring, etc.)
 jsonlPath := beads.FindJSONLPath(dbPath)
-fmt.Printf("BD exports to: %s\n", jsonlPath)
+fmt.Printf("beads exports to: %s\n", jsonlPath)
 ```
 
 ## Batch Operations for Performance

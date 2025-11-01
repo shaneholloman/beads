@@ -38,7 +38,7 @@ func walkWithDepth(root string, currentDepth, maxDepth int, fn func(path string,
 			if name == "node_modules" || name == "vendor" || name == ".git" {
 				continue
 			}
-			// Recurse into subeadsirectory
+			// Recurse into subdirectory
 			if err := walkWithDepth(path, currentDepth+1, maxDepth, fn); err != nil {
 				return err
 			}

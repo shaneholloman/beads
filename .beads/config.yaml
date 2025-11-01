@@ -1,6 +1,6 @@
 # Beads Configuration File
 # This file configures default behavior for all beads commands in this repository
-# All settings can also be set via environment variables (BD_* prefix)
+# All settings can also be set via environment variables (BEADS_* prefix)
 # or overridden with command-line flags
 
 # Issue prefix for this repository (used by beads init)

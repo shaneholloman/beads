@@ -44,11 +44,11 @@ func initializeNoDbMode() error {
 			return fmt.Errorf("failed to load issues into memory: %w", err)
 		}
 
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: loaded %d issues from %s\n", len(issues), jsonlPath)
 		}
 	} else {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: no existing %s, starting with empty database\n", jsonlPath)
 		}
 	}
@@ -64,7 +64,7 @@ func initializeNoDbMode() error {
 		return fmt.Errorf("failed to set prefix: %w", err)
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: using prefix '%s'\n", prefix)
 	}
 
@@ -192,7 +192,7 @@ func writeIssuesToJSONL(memStore *memory.MemoryStorage, beadsDir string) error {
 		return err
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: wrote %d issues to %s\n", len(issues), jsonlPath)
 	}
 

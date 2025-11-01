@@ -1,4 +1,6 @@
-# beads - Beads Issue Tracker
+# `beads`
+
+> Issue Tracker for agents
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/shaneholloman/beads)](https://go.dev/)
 [![Release](https://img.shields.io/github/v/release/shaneholloman/beads)](https://github.com/shaneholloman/beads/releases)

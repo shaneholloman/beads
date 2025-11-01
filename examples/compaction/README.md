@@ -97,8 +97,8 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 
 Additional environment variables:
 
-- `BD_REPO_PATH`: Repository path (cron-compact.sh)
-- `BD_LOG_FILE`: Log file location (cron-compact.sh)
+- `BEADS_REPO_PATH`: Repository path (cron-compact.sh)
+- `BEADS_LOG_FILE`: Log file location (cron-compact.sh)
 
 ## Recommendations
 

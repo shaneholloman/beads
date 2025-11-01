@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/shaneholloman/beads/internal/rpc"
 	"github.com/shaneholloman/beads/internal/storage/sqlite"
@@ -29,7 +30,14 @@ func TestDiscoverDaemon(t *testing.T) {
 	defer cancel()
 
 	go server.Start(ctx)
-	<-server.WaitReady()
+
+	// Wait for server to be ready with timeout
+	select {
+	case <-server.WaitReady():
+		// Server ready
+	case <-time.After(5 * time.Second):
+		t.Fatal("timeout waiting for server to be ready")
+	}
 	defer server.Stop()
 
 	// Test discoverDaemon directly
@@ -67,7 +75,14 @@ func TestFindDaemonByWorkspace(t *testing.T) {
 	defer cancel()
 
 	go server.Start(ctx)
-	<-server.WaitReady()
+
+	// Wait for server to be ready with timeout
+	select {
+	case <-server.WaitReady():
+		// Server ready
+	case <-time.After(5 * time.Second):
+		t.Fatal("timeout waiting for server to be ready")
+	}
 	defer server.Stop()
 
 	// Find daemon by workspace
@@ -237,7 +252,14 @@ func TestDiscoverDaemons_Legacy(t *testing.T) {
 	defer cancel()
 
 	go server.Start(ctx)
-	<-server.WaitReady()
+
+	// Wait for server to be ready with timeout
+	select {
+	case <-server.WaitReady():
+		// Server ready
+	case <-time.After(5 * time.Second):
+		t.Fatal("timeout waiting for server to be ready")
+	}
 	defer server.Stop()
 
 	// Test legacy discovery with explicit search roots

@@ -49,7 +49,7 @@ func restartDaemonForVersionMismatch() bool {
 	// Use local daemon (global is deprecated)
 	pidFile, err := getPIDFilePath(false)
 	if err != nil {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: failed to get PID file path: %v\n", err)
 		}
 		return false
@@ -60,13 +60,13 @@ func restartDaemonForVersionMismatch() bool {
 	// Check if daemon is running and stop it
 	forcedKill := false
 	if isRunning, pid := isDaemonRunning(pidFile); isRunning {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: stopping old daemon (PID %d)\n", pid)
 		}
 
 		process, err := os.FindProcess(pid)
 		if err != nil {
-			if os.Getenv("BD_DEBUG") != "" {
+			if os.Getenv("BEADS_DEBUG") != "" {
 				fmt.Fprintf(os.Stderr, "Debug: failed to find process: %v\n", err)
 			}
 			return false
@@ -74,7 +74,7 @@ func restartDaemonForVersionMismatch() bool {
 
 		// Send stop signal
 		if err := sendStopSignal(process); err != nil {
-			if os.Getenv("BD_DEBUG") != "" {
+			if os.Getenv("BEADS_DEBUG") != "" {
 				fmt.Fprintf(os.Stderr, "Debug: failed to signal daemon: %v\n", err)
 			}
 			return false
@@ -84,7 +84,7 @@ func restartDaemonForVersionMismatch() bool {
 		for i := 0; i < 50; i++ {
 			time.Sleep(100 * time.Millisecond)
 			if isRunning, _ := isDaemonRunning(pidFile); !isRunning {
-				if os.Getenv("BD_DEBUG") != "" {
+				if os.Getenv("BEADS_DEBUG") != "" {
 					fmt.Fprintf(os.Stderr, "Debug: old daemon stopped successfully\n")
 				}
 				break
@@ -93,7 +93,7 @@ func restartDaemonForVersionMismatch() bool {
 
 		// Force kill if still running
 		if isRunning, _ := isDaemonRunning(pidFile); isRunning {
-			if os.Getenv("BD_DEBUG") != "" {
+			if os.Getenv("BEADS_DEBUG") != "" {
 				fmt.Fprintf(os.Stderr, "Debug: force killing old daemon\n")
 			}
 			_ = process.Kill()
@@ -110,7 +110,7 @@ func restartDaemonForVersionMismatch() bool {
 	// Start new daemon with current binary version
 	exe, err := os.Executable()
 	if err != nil {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: failed to get executable path: %v\n", err)
 		}
 		return false
@@ -118,7 +118,7 @@ func restartDaemonForVersionMismatch() bool {
 
 	args := []string{"daemon"}
 	cmd := exec.Command(exe, args...)
-	cmd.Env = append(os.Environ(), "BD_DAEMON_FOREGROUND=1")
+	cmd.Env = append(os.Environ(), "BEADS_DAEMON_FOREGROUND=1")
 
 	// Set working directory to database directory so daemon finds correct DB
 	if dbPath != "" {
@@ -136,7 +136,7 @@ func restartDaemonForVersionMismatch() bool {
 	}
 
 	if err := cmd.Start(); err != nil {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: failed to start new daemon: %v\n", err)
 		}
 		return false
@@ -147,13 +147,13 @@ func restartDaemonForVersionMismatch() bool {
 
 	// Wait for daemon to be ready using shared helper
 	if waitForSocketReadiness(socketPath, 5*time.Second) {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: new daemon started successfully\n")
 		}
 		return true
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: new daemon failed to become ready\n")
 	}
 	return false
@@ -197,7 +197,7 @@ func tryAutoStartDaemon(socketPath string) bool {
 }
 
 func debugLog(msg string, args ...interface{}) {
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: "+msg+"\n", args...)
 	}
 }

@@ -7,8 +7,8 @@
 #   0 2 1 * * /path/to/cron-compact.sh
 
 # Configuration
-REPO_PATH="${BD_REPO_PATH:-$HOME/your-project}"
-LOG_FILE="${BD_LOG_FILE:-$HOME/.beads-compact.log}"
+REPO_PATH="${BEADS_REPO_PATH:-$HOME/your-project}"
+LOG_FILE="${BEADS_LOG_FILE:-$HOME/.beads-compact.log}"
 API_KEY="${ANTHROPIC_API_KEY}"
 
 # Exit on error

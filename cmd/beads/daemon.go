@@ -89,9 +89,9 @@ Use --health to check daemon health and metrics.`,
 			return
 		}
 
-		// Skip daemon-running check if we're the forked child (BD_DAEMON_FOREGROUND=1)
+		// Skip daemon-running check if we're the forked child (BEADS_DAEMON_FOREGROUND=1)
 		// because the check happens in the parent process before forking
-		if os.Getenv("BD_DAEMON_FOREGROUND") != "1" {
+		if os.Getenv("BEADS_DAEMON_FOREGROUND") != "1" {
 			// Check if daemon is already running
 			if isRunning, pid := isDaemonRunning(pidFile); isRunning {
 				// Check if running daemon has compatible version
@@ -597,7 +597,7 @@ func startDaemon(interval time.Duration, autoCommit, autoPush bool, logFile, pid
 		os.Exit(1)
 	}
 
-	if os.Getenv("BD_DAEMON_FOREGROUND") == "1" {
+	if os.Getenv("BEADS_DAEMON_FOREGROUND") == "1" {
 		runDaemonLoop(interval, autoCommit, autoPush, logPath, pidFile, global)
 		return
 	}
@@ -625,7 +625,7 @@ func startDaemon(interval time.Duration, autoCommit, autoPush bool, logFile, pid
 	}
 
 	cmd := exec.Command(exe, args...) // #nosec G204 - beads daemon command from trusted binary
-	cmd.Env = append(os.Environ(), "BD_DAEMON_FOREGROUND=1")
+	cmd.Env = append(os.Environ(), "BEADS_DAEMON_FOREGROUND=1")
 	configureDaemonProcess(cmd)
 
 	devNull, err := os.OpenFile(os.DevNull, os.O_RDWR, 0)

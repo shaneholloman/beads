@@ -19,7 +19,7 @@ func setupTestServer(t *testing.T) (*Server, *Client, func()) {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0750); err != nil {
 		os.RemoveAll(tmpDir)
@@ -132,7 +132,7 @@ func setupTestServerIsolated(t *testing.T) (tmpDir, beadsDir, dbPath, socketPath
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir = filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0750); err != nil {
 		os.RemoveAll(tmpDir)

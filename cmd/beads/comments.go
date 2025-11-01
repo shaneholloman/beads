@@ -138,7 +138,7 @@ Examples:
 		// Get author from author flag, BEADS_ACTOR var, or system USER var
 		author, _ := cmd.Flags().GetString("author")
 		if author == "" {
-			author = os.Getenv("BD_ACTOR")
+			author = os.Getenv("BEADS_ACTOR")
 			if author == "" {
 				author = os.Getenv("USER")
 			}

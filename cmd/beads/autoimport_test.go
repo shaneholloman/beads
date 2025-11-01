@@ -142,19 +142,19 @@ func TestFindBeadsDir_NotFound(t *testing.T) {
 }
 
 func TestFindBeadsDir_ParentDirectory(t *testing.T) {
-	// Create structure: tmpDir/.beads and tmpDir/subeadsir
+	// Create structure: tmpDir/.beads and tmpDir/subdir
 	tmpDir := t.TempDir()
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0755); err != nil {
 		t.Fatalf("Failed to create .beads dir: %v", err)
 	}
 
-	subDir := filepath.Join(tmpDir, "subeadsir")
+	subDir := filepath.Join(tmpDir, "subdir")
 	if err := os.MkdirAll(subDir, 0755); err != nil {
-		t.Fatalf("Failed to create subeadsir: %v", err)
+		t.Fatalf("Failed to create subdir: %v", err)
 	}
 
-	// Change to subeadsir
+	// Change to subdir
 	oldWd, _ := os.Getwd()
 	defer os.Chdir(oldWd)
 	os.Chdir(subDir)

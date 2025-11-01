@@ -66,7 +66,7 @@ func autoImportIfNewer() {
 	jsonlData, err := os.ReadFile(jsonlPath)
 	if err != nil {
 		// JSONL doesn't exist or can't be accessed, skip import
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: auto-import skipped, JSONL not found: %v\n", err)
 		}
 		return
@@ -83,7 +83,7 @@ func autoImportIfNewer() {
 	if err != nil {
 		// Metadata error - treat as first import rather than skipping (beads-663)
 		// This allows auto-import to recover from corrupt/missing metadata
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: metadata read failed (%v), treating as first import\n", err)
 		}
 		lastHash = ""
@@ -92,13 +92,13 @@ func autoImportIfNewer() {
 	// Compare hashes
 	if currentHash == lastHash {
 		// Content unchanged, skip import
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: auto-import skipped, JSONL unchanged (hash match)\n")
 		}
 		return
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: auto-import triggered (hash changed)\n")
 	}
 
@@ -254,7 +254,7 @@ func checkVersionMismatch() {
 	dbVersion, err := store.GetMetadata(ctx, "beads_version")
 	if err != nil {
 		// Metadata error - skip check (shouldn't happen, but be defensive)
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: version check skipped, metadata error: %v\n", err)
 		}
 		return
@@ -468,7 +468,7 @@ func writeJSONLAtomic(jsonlPath string, issues []*types.Issue) ([]string, error)
 		// DISABLED: timestamp-only deduplication causes data loss (beads-160)
 		// skip, err := shouldSkipExport(ctx, issue)
 		// if err != nil {
-		// 	if os.Getenv("BD_DEBUG") != "" {
+		// 	if os.Getenv("BEADS_DEBUG") != "" {
 		// 		fmt.Fprintf(os.Stderr, "Debug: failed to check if %s should skip: %v\n", issue.ID, err)
 		// 	}
 		// 	skip = false
@@ -485,11 +485,11 @@ func writeJSONLAtomic(jsonlPath string, issues []*types.Issue) ([]string, error)
 		// DISABLED: export hash tracking (beads-160)
 		// contentHash, err := computeIssueContentHash(issue)
 		// if err != nil {
-		// 	if os.Getenv("BD_DEBUG") != "" {
+		// 	if os.Getenv("BEADS_DEBUG") != "" {
 		// 		fmt.Fprintf(os.Stderr, "Debug: failed to compute hash for %s: %v\n", issue.ID, err)
 		// 	}
 		// } else if err := store.SetExportHash(ctx, issue.ID, contentHash); err != nil {
-		// 	if os.Getenv("BD_DEBUG") != "" {
+		// 	if os.Getenv("BEADS_DEBUG") != "" {
 		// 		fmt.Fprintf(os.Stderr, "Debug: failed to save export hash for %s: %v\n", issue.ID, err)
 		// 	}
 		// }
@@ -498,7 +498,7 @@ func writeJSONLAtomic(jsonlPath string, issues []*types.Issue) ([]string, error)
 	}
 
 	// Report skipped issues if any (helps debugging beads-159)
-	if skippedCount > 0 && os.Getenv("BD_DEBUG") != "" {
+	if skippedCount > 0 && os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: auto-flush skipped %d issue(s) with timestamp-only changes\n", skippedCount)
 	}
 
@@ -517,7 +517,7 @@ func writeJSONLAtomic(jsonlPath string, issues []*types.Issue) ([]string, error)
 	// Set appropriate file permissions (0644: rw-r--r--)
 	if err := os.Chmod(jsonlPath, 0644); err != nil {
 		// Non-fatal - file is already written
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: failed to set file permissions: %v\n", err)
 		}
 	}

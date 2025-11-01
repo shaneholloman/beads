@@ -64,11 +64,11 @@ func TestFindDatabasePathInTree(t *testing.T) {
 	}
 	f.Close()
 
-	// Create a subeadsirectory and change to it
+	// Create a subdirectory and change to it
 	subDir := filepath.Join(tmpDir, "sub", "nested")
 	err = os.MkdirAll(subDir, 0o750)
 	if err != nil {
-		t.Fatalf("Failed to create subeadsirectory: %v", err)
+		t.Fatalf("Failed to create subdirectory: %v", err)
 	}
 
 	err = os.Chdir(subDir)

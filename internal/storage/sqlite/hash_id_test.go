@@ -37,11 +37,11 @@ func TestHashIDGeneration(t *testing.T) {
 
 	// Verify hash ID format: beads-<4-8 hex chars> with adaptive length (beads-ea2a13)
 	// For empty/small database, should use 4 chars
-	if len(issue.ID) < 7 || len(issue.ID) > 11 { // "beads-" (3) + 4-8 hex chars = 7-11
-		t.Errorf("Expected ID length 7-11, got %d: %s", len(issue.ID), issue.ID)
+	if len(issue.ID) < 10 || len(issue.ID) > 14 { // "beads-" (6) + 4-8 hex chars = 10-14
+		t.Errorf("Expected ID length 10-14, got %d: %s", len(issue.ID), issue.ID)
 	}
 
-	if issue.ID[:3] != "beads-" {
+	if len(issue.ID) < 6 || issue.ID[:6] != "beads-" {
 		t.Errorf("Expected ID to start with 'beads-', got: %s", issue.ID)
 	}
 
@@ -183,10 +183,10 @@ func TestHashIDBatchCreation(t *testing.T) {
 		ids[issue.ID] = true
 
 		// Verify hash ID format (4-8 chars with adaptive length)
-		if len(issue.ID) < 7 || len(issue.ID) > 11 {
-			t.Errorf("Expected ID length 7-11, got %d: %s", len(issue.ID), issue.ID)
+		if len(issue.ID) < 10 || len(issue.ID) > 14 {
+			t.Errorf("Expected ID length 10-14, got %d: %s", len(issue.ID), issue.ID)
 		}
-		if issue.ID[:3] != "beads-" {
+		if len(issue.ID) < 6 || issue.ID[:6] != "beads-" {
 			t.Errorf("Expected ID to start with 'beads-', got: %s", issue.ID)
 		}
 	}

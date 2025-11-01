@@ -25,7 +25,7 @@ func TestFindAllDatabases(t *testing.T) {
 	//   .beads/test.db
 	//   project1/
 	//     .beads/project1.db
-	//     subeadsir/
+	//     subdir/
 	//       (working directory here)
 
 	// Root .beads
@@ -50,8 +50,8 @@ func TestFindAllDatabases(t *testing.T) {
 	}
 
 	// Subeadsir for working directory
-	subeadsir := filepath.Join(project1Dir, "subeadsir")
-	if err := os.MkdirAll(subeadsir, 0750); err != nil {
+	subdir := filepath.Join(project1Dir, "subdir")
+	if err := os.MkdirAll(subdir, 0750); err != nil {
 		t.Fatal(err)
 	}
 
@@ -62,8 +62,8 @@ func TestFindAllDatabases(t *testing.T) {
 	}
 	defer os.Chdir(origDir)
 
-	// Change to subeadsir and test FindAllDatabases
-	if err := os.Chdir(subeadsir); err != nil {
+	// Change to subdir and test FindAllDatabases
+	if err := os.Chdir(subdir); err != nil {
 		t.Fatal(err)
 	}
 

@@ -365,9 +365,9 @@ func TestInitWithCustomDBPath(t *testing.T) {
 	})
 
 	// Test with multiple BEADS_DB variations
-	t.Run("BEADS_DB with subeadsirectories", func(t *testing.T) {
+	t.Run("BEADS_DB with subdirectories", func(t *testing.T) {
 		dbPath = "" // Reset global
-		envPath := filepath.Join(tmpDir, "env", "subeadsirs", "test.db")
+		envPath := filepath.Join(tmpDir, "env", "subdirs", "test.db")
 
 		os.Setenv("BEADS_DB", envPath)
 		defer os.Unsetenv("BEADS_DB")
@@ -375,7 +375,7 @@ func TestInitWithCustomDBPath(t *testing.T) {
 		rootCmd.SetArgs([]string{"init", "--prefix", "envtest2", "--quiet"})
 
 		if err := rootCmd.Execute(); err != nil {
-			t.Fatalf("Init with BEADS_DB subeadsirs failed: %v", err)
+			t.Fatalf("Init with BEADS_DB subdirs failed: %v", err)
 		}
 
 		// Verify database was created at env location

@@ -168,7 +168,7 @@ func getTitlesFromClone(t *testing.T, cloneDir string) map[string]bool {
 	t.Helper()
 	listJSON := runCmdOutputWithEnv(t, cloneDir, map[string]string{
 		"BEADS_NO_DAEMON":   "1",
-		"BD_NO_AUTO_IMPORT": "1",
+		"BEADS_NO_AUTO_IMPORT": "1",
 	}, "./beads", "list", "--json")
 
 	jsonStart := strings.Index(listJSON, "[")

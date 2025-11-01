@@ -269,7 +269,7 @@ func setupBenchServer(b *testing.B) (*Server, *Client, func(), string) {
 		b.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0755); err != nil {
 		os.RemoveAll(tmpDir)

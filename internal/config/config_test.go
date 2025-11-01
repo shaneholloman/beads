@@ -60,10 +60,10 @@ func TestEnvironmentBinding(t *testing.T) {
 		expected interface{}
 		getter   func(string) interface{}
 	}{
-		{"BD_JSON", "json", "true", true, func(k string) interface{} { return GetBool(k) }},
-		{"BD_NO_DAEMON", "no-daemon", "true", true, func(k string) interface{} { return GetBool(k) }},
-		{"BD_ACTOR", "actor", "testuser", "testuser", func(k string) interface{} { return GetString(k) }},
-		{"BD_DB", "db", "/tmp/test.db", "/tmp/test.db", func(k string) interface{} { return GetString(k) }},
+		{"BEADS_JSON", "json", "true", true, func(k string) interface{} { return GetBool(k) }},
+		{"BEADS_NO_DAEMON", "no-daemon", "true", true, func(k string) interface{} { return GetBool(k) }},
+		{"BEADS_ACTOR", "actor", "testuser", "testuser", func(k string) interface{} { return GetString(k) }},
+		{"BEADS_DB", "db", "/tmp/test.db", "/tmp/test.db", func(k string) interface{} { return GetString(k) }},
 		{"BEADS_FLUSH_DEBOUNCE", "flush-debounce", "10s", 10 * time.Second, func(k string) interface{} { return GetDuration(k) }},
 		{"BEADS_AUTO_START_DAEMON", "auto-start-daemon", "false", false, func(k string) interface{} { return GetBool(k) }},
 	}
@@ -190,8 +190,8 @@ func TestConfigPrecedence(t *testing.T) {
 	}
 
 	// Test 2: Environment variable overrides config file
-	_ = os.Setenv("BD_JSON", "true")
-	defer func() { _ = os.Unsetenv("BD_JSON") }()
+	_ = os.Setenv("BEADS_JSON", "true")
+	defer func() { _ = os.Unsetenv("BEADS_JSON") }()
 
 	err = Initialize()
 	if err != nil {

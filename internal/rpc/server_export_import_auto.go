@@ -186,7 +186,7 @@ func (s *Server) checkAndAutoImportIfStale(req *Request) error {
 	// Single-flight guard: Only allow one import at a time
 	// If import is already running, skip and let the request proceed
 	if !s.importInProgress.CompareAndSwap(false, true) {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: auto-import already in progress, skipping\n")
 		}
 		return nil
@@ -199,12 +199,12 @@ func (s *Server) checkAndAutoImportIfStale(req *Request) error {
 		return err
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: daemon detected stale JSONL, auto-importing...\n")
 	}
 
 	// Perform actual import
-	notify := autoimport.NewStderrNotifier(os.Getenv("BD_DEBUG") != "")
+	notify := autoimport.NewStderrNotifier(os.Getenv("BEADS_DEBUG") != "")
 
 	importFunc := func(ctx context.Context, issues []*types.Issue) (created, updated int, idMapping map[string]string, err error) {
 		// Use the importer package to perform the actual import

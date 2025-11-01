@@ -409,36 +409,36 @@ func TestOutputMermaidTree(t *testing.T) {
 func TestOutputMermaidTree_Siblings(t *testing.T) {
 	// Test case: Siblings with children (reproduces issue with wrong parent inference)
 	// Structure:
-	//   BEADS-1 (root)
-	//   ├── BEADS-2 (sibling 1)
-	//   │   └── BEADS-4 (child of BEADS-2)
-	//   └── BEADS-3 (sibling 2)
-	//       └── BEADS-5 (child of BEADS-3)
+	//   beads-1 (root)
+	//   ├── beads-2 (sibling 1)
+	//   │   └── beads-4 (child of beads-2)
+	//   └── beads-3 (sibling 2)
+	//       └── beads-5 (child of beads-3)
 	tree := []*types.TreeNode{
 		{
-			Issue:    types.Issue{ID: "BD-1", Title: "Parent", Status: types.StatusOpen},
+			Issue:    types.Issue{ID: "beads-1", Title: "Parent", Status: types.StatusOpen},
 			Depth:    0,
 			ParentID: "",
 		},
 		{
-			Issue:    types.Issue{ID: "BD-2", Title: "Sibling 1", Status: types.StatusOpen},
+			Issue:    types.Issue{ID: "beads-2", Title: "Sibling 1", Status: types.StatusOpen},
 			Depth:    1,
-			ParentID: "BD-1",
+			ParentID: "beads-1",
 		},
 		{
-			Issue:    types.Issue{ID: "BD-3", Title: "Sibling 2", Status: types.StatusOpen},
+			Issue:    types.Issue{ID: "beads-3", Title: "Sibling 2", Status: types.StatusOpen},
 			Depth:    1,
-			ParentID: "BD-1",
+			ParentID: "beads-1",
 		},
 		{
-			Issue:    types.Issue{ID: "BD-4", Title: "Child of Sibling 1", Status: types.StatusOpen},
+			Issue:    types.Issue{ID: "beads-4", Title: "Child of Sibling 1", Status: types.StatusOpen},
 			Depth:    2,
-			ParentID: "BD-2",
+			ParentID: "beads-2",
 		},
 		{
-			Issue:    types.Issue{ID: "BD-5", Title: "Child of Sibling 2", Status: types.StatusOpen},
+			Issue:    types.Issue{ID: "beads-5", Title: "Child of Sibling 2", Status: types.StatusOpen},
 			Depth:    2,
-			ParentID: "BD-3",
+			ParentID: "beads-3",
 		},
 	}
 
@@ -447,7 +447,7 @@ func TestOutputMermaidTree_Siblings(t *testing.T) {
 	r, w, _ := os.Pipe()
 	os.Stdout = w
 
-	outputMermaidTree(tree, "BD-1")
+	outputMermaidTree(tree, "beads-1")
 
 	w.Close()
 	os.Stdout = old
@@ -458,10 +458,10 @@ func TestOutputMermaidTree_Siblings(t *testing.T) {
 
 	// Verify correct edges exist
 	correctEdges := []string{
-		"BD-1 --> BEADS-2",
-		"BD-1 --> BEADS-3",
-		"BD-2 --> BEADS-4",
-		"BD-3 --> BEADS-5",
+		"beads-1 --> beads-2",
+		"beads-1 --> beads-3",
+		"beads-2 --> beads-4",
+		"beads-3 --> beads-5",
 	}
 
 	for _, edge := range correctEdges {
@@ -472,10 +472,10 @@ func TestOutputMermaidTree_Siblings(t *testing.T) {
 
 	// Verify incorrect edges do NOT exist (siblings shouldn't be connected)
 	incorrectEdges := []string{
-		"BD-2 --> BEADS-3", // Siblings shouldn't be connected
-		"BD-3 --> BEADS-4", // BEADS-4's parent is BEADS-2, not BEADS-3
-		"BD-4 --> BEADS-3", // Wrong direction
-		"BD-4 --> BEADS-5", // These are cousins, not parent-child
+		"beads-2 --> beads-3", // Siblings shouldn't be connected
+		"beads-3 --> beads-4", // beads-4's parent is beads-2, not beads-3
+		"beads-4 --> beads-3", // Wrong direction
+		"beads-4 --> beads-5", // These are cousins, not parent-child
 	}
 
 	for _, edge := range incorrectEdges {

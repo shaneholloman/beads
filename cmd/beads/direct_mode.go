@@ -43,7 +43,7 @@ func disableDaemonForFallback(reason string) {
 		daemonStatus.FallbackReason = FallbackDaemonUnsupported
 	}
 
-	if reason != "" && os.Getenv("BD_DEBUG") != "" {
+	if reason != "" && os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: %s\n", reason)
 	}
 }

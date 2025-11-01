@@ -32,7 +32,7 @@ func TryConnect(socketPath string) (*Client, error) {
 // Returns nil if no daemon is running or unhealthy.
 func TryConnectWithTimeout(socketPath string, dialTimeout time.Duration) (*Client, error) {
 	if !endpointExists(socketPath) {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: RPC endpoint does not exist: %s\n", socketPath)
 		}
 		return nil, nil
@@ -44,7 +44,7 @@ func TryConnectWithTimeout(socketPath string, dialTimeout time.Duration) (*Clien
 
 	conn, err := dialRPC(socketPath, dialTimeout)
 	if err != nil {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: failed to connect to RPC endpoint: %v\n", err)
 		}
 		return nil, nil
@@ -58,7 +58,7 @@ func TryConnectWithTimeout(socketPath string, dialTimeout time.Duration) (*Clien
 
 	health, err := client.Health()
 	if err != nil {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: health check failed: %v\n", err)
 		}
 		_ = conn.Close()
@@ -66,14 +66,14 @@ func TryConnectWithTimeout(socketPath string, dialTimeout time.Duration) (*Clien
 	}
 
 	if health.Status == "unhealthy" {
-		if os.Getenv("BD_DEBUG") != "" {
+		if os.Getenv("BEADS_DEBUG") != "" {
 			fmt.Fprintf(os.Stderr, "Debug: daemon unhealthy: %s\n", health.Error)
 		}
 		_ = conn.Close()
 		return nil, nil
 	}
 
-	if os.Getenv("BD_DEBUG") != "" {
+	if os.Getenv("BEADS_DEBUG") != "" {
 		fmt.Fprintf(os.Stderr, "Debug: connected to daemon (status: %s, uptime: %.1fs)\n",
 			health.Status, health.Uptime)
 	}

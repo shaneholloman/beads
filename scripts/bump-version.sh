@@ -122,7 +122,13 @@ main() {
         '__version__ = "[0-9]+\.[0-9]+\.[0-9]+"' \
         "__version__ = \"$NEW_VERSION\""
 
-    # 6. Update docs/plugin.md version requirements - use regex
+    # 6. Update .beads/config.json - use regex
+    echo "  • .beads/config.json"
+    update_file ".beads/config.json" \
+        '"version": "[0-9]+\.[0-9]+\.[0-9]+"' \
+        "\"version\": \"$NEW_VERSION\""
+
+    # 7. Update docs/plugin.md version requirements - use regex
     echo "  • docs/plugin.md"
     update_file "docs/plugin.md" \
         'Plugin [0-9]+\.[0-9]+\.[0-9]+ requires beads CLI [0-9]+\.[0-9]+\.[0-9]+\+' \
@@ -145,6 +151,7 @@ main() {
         "$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)"
         "$(grep 'version = ' integrations/beads-mcp/pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')"
         "$(grep '__version__ = ' integrations/beads-mcp/src/beads_mcp/__init__.py | sed 's/.*"\(.*\)".*/\1/')"
+        "$(jq -r '.version' .beads/config.json)"
     )
 
     ALL_MATCH=true
@@ -173,6 +180,7 @@ main() {
                 .claude-plugin/marketplace.json \
                 integrations/beads-mcp/pyproject.toml \
                 integrations/beads-mcp/src/beads_mcp/__init__.py \
+                .beads/config.json \
                 docs/plugin.md
 
         git commit -m "chore: Bump version to $NEW_VERSION
