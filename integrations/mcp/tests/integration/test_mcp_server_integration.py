@@ -1,5 +1,7 @@
 """Real integration tests for MCP server using fastmcp.Client."""
 
+import asyncio
+from asyncio import subprocess as asyncio_subprocess
 import os
 import shutil
 import tempfile
@@ -30,8 +32,6 @@ async def temp_db(beads_executable):
     db_path = os.path.join(temp_dir, "test.db")
 
     # Initialize database with explicit BEADS_DB - no chdir needed!
-    import asyncio
-
     env = os.environ.copy()
     # Clear any existing BEADS_DB to ensure we use only temp db
     env.pop("BEADS_DB", None)
@@ -46,8 +46,8 @@ async def temp_db(beads_executable):
             "init",
             "--prefix",
             "test",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+            stdout=asyncio_subprocess.PIPE,
+            stderr=asyncio_subprocess.PIPE,
             env=env,
             cwd=temp_workspace,  # Run in temp workspace, not project dir
         )
@@ -66,18 +66,15 @@ async def temp_db(beads_executable):
 async def mcp_client(beads_executable, temp_db, monkeypatch):
     """Create MCP client with temporary database."""
     from mcp_beads import tools
-    from mcp_beads.client import BeadsClient
 
-    # Reset client before test
-    tools._client = None
-    
-    # Reset context environment variables
-    os.environ.pop("BEADS_CONTEXT_SET", None)
-    os.environ.pop("BEADS_WORKING_DIR", None)
-    os.environ.pop("BEADS_DB", None)
+    # Reset connection pool before test
+    tools._connection_pool.clear()
+    tools._version_checked.clear()
 
-    # Create a pre-configured client with explicit paths (bypasses config loading)
+    # Set database environment variable for MCP server
     temp_dir = os.path.dirname(temp_db)
+    os.environ["BEADS_DB"] = temp_db
+    os.environ["BEADS_WORKING_DIR"] = temp_dir
     tools._client = BeadsClient(beads_path=beads_executable, beads_db=temp_db, working_dir=temp_dir)
 
     # Create test client

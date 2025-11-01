@@ -19,12 +19,12 @@ from mcp_beads.tools import _get_client, _health_check_client, _reconnect_client
 async def test_daemon_client_ping_success():
     """Test successful ping to daemon."""
     client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
-    
+
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.return_value = {"message": "pong", "version": "0.9.10"}
-        
+
         result = await client.ping()
-        
+
         assert result["message"] == "pong"
         assert result["version"] == "0.9.10"
         mock_send.assert_called_once_with("ping", {})
@@ -34,10 +34,10 @@ async def test_daemon_client_ping_success():
 async def test_daemon_client_ping_connection_error():
     """Test ping when daemon connection fails."""
     client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
-    
+
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.side_effect = DaemonConnectionError("Connection failed")
-        
+
         with pytest.raises(DaemonConnectionError):
             await client.ping()
 

@@ -129,16 +129,6 @@ class BeadsClientBase(ABC):
         """Initialize a new beads database."""
         pass
 
-    @abstractmethod
-    async def ping(self) -> bool:
-        """Ping the client to check if it's healthy."""
-        pass
-
-    @abstractmethod
-    async def quickstart(self) -> str:
-        """Get quickstart guide."""
-        pass
-
 
 class BeadsCliClient(BeadsClientBase):
     """Client for calling beads CLI commands and parsing JSON output."""
@@ -227,7 +217,7 @@ class BeadsCliClient(BeadsClientBase):
 
         working_dir = self._get_working_dir()
         db_info = self.beads_db if self.beads_db else "auto-discover"
-        print(f"[beads-mcp] Running beads command: {' '.join(args)}", file=sys.stderr)
+        print(f"[beads-mcp] Running beads command: {' '.join(str(a) for a in args)}", file=sys.stderr)
         print(f"[beads-mcp]   Database: {db_info}", file=sys.stderr)
         print(f"[beads-mcp]   Working dir: {working_dir}", file=sys.stderr)
 

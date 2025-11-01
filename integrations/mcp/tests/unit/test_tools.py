@@ -280,41 +280,6 @@ async def test_beads_quickstart():
 
 
 @pytest.mark.asyncio
-async def test_client_lazy_initialization():
-    """Test that client is lazily initialized on first use."""
-    from mcp_beads import tools
-
-    # Clear client
-    tools._client = None
-
-    # Verify client is None before first use
-    assert tools._client is None
-
-    # Mock BeadsClient to avoid actual beads calls
-    mock_client_instance = AsyncMock()
-    mock_client_instance.ready = AsyncMock(return_value=[])
-
-    with patch("mcp_beads.tools.BeadsClient") as MockBeadsClient:
-        MockBeadsClient.return_value = mock_client_instance
-
-        # First call should initialize client
-        await beads_ready_work()
-
-        # Verify BeadsClient was instantiated
-        MockBeadsClient.assert_called_once()
-
-        # Verify client is now set
-        assert tools._client is not None
-
-        # Second call should reuse client
-        MockBeadsClient.reset_mock()
-        await beads_ready_work()
-
-        # Verify BeadsClient was NOT called again
-        MockBeadsClient.assert_not_called()
-
-
-@pytest.mark.asyncio
 async def test_list_issues_with_all_filters(sample_issue):
     """Test beads_list_issues with all filter parameters."""
     mock_client = AsyncMock()

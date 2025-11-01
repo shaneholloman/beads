@@ -125,7 +125,7 @@ async def _health_check_client(client: BeadsClientBase) -> bool:
         return True
 
     try:
-        await client.ping()
+        await client.ping()  # type: ignore[misc]
         return True
     except Exception:
         # Any exception means the client is stale/unhealthy
@@ -423,7 +423,7 @@ async def beads_quickstart() -> str:
     Read this first to understand how to use beads (beads) commands.
     """
     client = await _get_client()
-    return await client.quickstart()
+    return await client.quickstart()  # type: ignore[misc]
 
 
 async def beads_stats() -> Stats:

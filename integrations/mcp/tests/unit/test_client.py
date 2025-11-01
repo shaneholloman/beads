@@ -5,7 +5,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from mcp_beads.client import BeadsClient, BeadsCommandError, BeadsNotFoundError
+from mcp_beads.client import BeadsCliClient, BeadsCommandError, BeadsNotFoundError
+
+# Alias for test compatibility
+BeadsClient = BeadsCliClient
 from mcp_beads.models import (
     AddDependencyParams,
     CloseIssueParams,

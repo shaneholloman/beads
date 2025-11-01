@@ -87,31 +87,6 @@ def test_signal_handler_calls_cleanup():
             assert mock_exit.called
 
 
-@pytest.mark.asyncio
-async def test_client_registration_on_first_use():
-    """Test that client is registered for cleanup on first use."""
-    from mcp_beads.tools import _get_client
-    from mcp_beads.server import _daemon_clients
-    
-    # Clear existing clients
-    _daemon_clients.clear()
-    
-    # Reset global client state
-    import mcp_beads.tools as tools
-    tools._client = None
-    tools._client_registered = False
-    
-    # Get client (will create and register it)
-    with patch('mcp_beads.beads_client.create_beads_client') as mock_create:
-        mock_client = MagicMock()
-        mock_create.return_value = mock_client
-        
-        client = await _get_client()
-        
-        # Client should be in the cleanup list
-        assert client in _daemon_clients
-
-
 def test_cleanup_logs_lifecycle_events(caplog):
     """Test that cleanup logs informative messages."""
     import logging

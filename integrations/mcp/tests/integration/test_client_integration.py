@@ -281,8 +281,8 @@ async def test_ready_work(beads_client):
     # Add blocking dependency
     await beads_client.add_dependency(
         AddDependencyParams(
-            from_id=blocked_issue.id,
-            to_id=blocking_issue.id,
+            issue_id=blocked_issue.id,
+            depends_on_id=blocking_issue.id,
             dep_type="blocks",
         )
     )
@@ -430,12 +430,9 @@ async def test_init_creates_beads_directory(beads_executable):
         assert beads_dir.exists(), f".beads directory not created in {temp_dir}"
         assert beads_dir.is_dir(), ".beads exists but is not a directory"
 
-        # Verify database file was created with correct prefix
-        db_files = list(beads_dir.glob("*.db"))
-        assert len(db_files) > 0, "No database file created in .beads/"
-        assert any("test" in str(db.name) for db in db_files), (
-            f"Database file doesn't contain prefix 'test': {[db.name for db in db_files]}"
-        )
+        # Verify database file was created (always named beads.db now)
+        db_file = beads_dir / "beads.db"
+        assert db_file.exists(), f"Database file not created: {db_file}"
 
         # Verify success message
         assert "initialized" in result.lower() or "created" in result.lower()
