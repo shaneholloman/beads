@@ -80,7 +80,7 @@ cp -r beads/examples/claude-code-skill/* ~/.claude/skills/beads-issue-tracking/
 
 Restart Claude Code, then in a new session, ask:
 
-```
+```txt
 Do you have the beads skill installed?
 ```
 
@@ -106,15 +106,15 @@ Once installed, Claude will automatically:
 
 You can also explicitly ask Claude to use beads:
 
-```
+```txt
 Let's track this work in beads since it spans multiple sessions
 ```
 
-```
+```txt
 Create a beads issue for this bug we discovered
 ```
 
-```
+```txt
 Show me what's ready to work on in beads
 ```
 

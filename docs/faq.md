@@ -58,7 +58,7 @@ Absolutely! beads is a great CLI issue tracker for humans too. The `beads ready`
 
 ### Is this production-ready?
 
-**Current status: Alpha (v0.9.11)**
+**Current status: Alpha (v0.9.11):**
 
 beads is in active development and being dogfooded on real projects. The core functionality (create, update, dependencies, ready work, collision resolution) is stable and well-tested. However:
 
@@ -462,7 +462,7 @@ The hash/fingerprint/collision architecture prevents:
 
 **Solution**: `beads import --resolve-collisions` automatically remaps colliding IDs and updates all references.
 
-**2. Physical SQLite Corruption**
+**2. Physical SQLite Corruption:**
 
 SQLite database file corruption can occur from:
 

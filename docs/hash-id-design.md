@@ -1,7 +1,7 @@
 # Hash-Based ID Generation Design
 
-**Status:** Implemented (beads-166)  
-**Version:** 2.0  
+**Status:** Implemented (beads-166)
+**Version:** 2.0
 **Last Updated:** 2025-10-30
 
 ## Overview
@@ -14,9 +14,9 @@ This eliminates ID collisions in distributed workflows while maintaining human-f
 
 ### Top-Level IDs (Hash-Based)
 
-```
+```txt
 Format: {prefix}-{6-8-char-hex} (progressive on collision)
-Examples: 
+Examples:
   beads-a3f2dd   (6 chars, common case ~97%)
   beads-a3f2dda  (7 chars, rare collision ~3%)
   beads-a3f2dda8 (8 chars, very rare double collision)
@@ -236,8 +236,8 @@ beads migrate --hash-ids
 ```go
 func (s *SQLiteStorage) getWorkspaceID(ctx context.Context) (string, error) {
     var id string
-    err := s.db.QueryRowContext(ctx, 
-        `SELECT value FROM config WHERE key = ?`, 
+    err := s.db.QueryRowContext(ctx,
+        `SELECT value FROM config WHERE key = ?`,
         "workspace_id").Scan(&id)
     if err == sql.ErrNoRows {
         // Generate new UUID

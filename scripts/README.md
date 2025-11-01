@@ -73,7 +73,7 @@ After the script finishes:
 
 Bumps the version number across all beads components in a single command.
 
-### Usage
+### bump-version.sh Usage
 
 ```sh
 # Show usage
@@ -86,7 +86,7 @@ Bumps the version number across all beads components in a single command.
 ./scripts/bump-version.sh 0.0.0 --commit
 ```
 
-### What It Does
+### Files Updated
 
 Updates version in all these files:
 
@@ -105,7 +105,7 @@ Updates version in all these files:
 - **Auto-commits** with standardized message (optional)
 - **Cross-platform** compatible (macOS and Linux)
 
-### Examples
+### bump-version.sh Examples
 
 ```sh
 # Bump to 0.0.0 and review changes

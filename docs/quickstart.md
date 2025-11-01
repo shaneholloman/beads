@@ -44,7 +44,7 @@ For large features, use hierarchical IDs to organize work:
 
 Output:
 
-```
+```txt
 Dependency tree for beads-a3f8e9:
 
 → beads-a3f8e9: Auth System [epic] [P1] (open)
@@ -68,7 +68,7 @@ Dependency tree for beads-a3f8e9:
 
 Output:
 
-```
+```txt
 Dependency tree for beads-3:
 
 → beads-3: Add authentication [P2] (open)
@@ -84,7 +84,7 @@ Dependency tree for beads-3:
 
 Output:
 
-```
+```txt
 Ready work (1 issues with no blockers):
 
 1. [P1] beads-1: Set up database

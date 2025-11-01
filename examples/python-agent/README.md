@@ -38,7 +38,7 @@ chmod +x agent.py
 
 ## Example Output
 
-```
+```txt
 Beads Agent starting...
 
 ============================================================

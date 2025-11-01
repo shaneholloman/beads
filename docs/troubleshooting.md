@@ -120,18 +120,18 @@ See [FAQ](faq.md#whats-the-difference-between-sqlite-corruption-and-id-collision
 
 If you see a warning about multiple `.beads` databases in the directory hierarchy:
 
-```
+```txt
 ╔══════════════════════════════════════════════════════════════════════════╗
-║ WARNING: 2 beads databases detected in directory hierarchy             ║
+║ WARNING: 2 beads databases detected in directory hierarchy               ║
 ╠══════════════════════════════════════════════════════════════════════════╣
-║ Multiple databases can cause confusion and database pollution.          ║
+║ Multiple databases can cause confusion and database pollution.           ║
 ║                                                                          ║
-║ ▶ /path/to/project/.beads (15 issues)                                   ║
-║   /path/to/parent/.beads (32 issues)                                    ║
+║ ▶ /path/to/project/.beads (15 issues)                                    ║
+║   /path/to/parent/.beads (32 issues)                                     ║
 ║                                                                          ║
-║ Currently using the closest database (▶). This is usually correct.      ║
+║ Currently using the closest database (▶). This is usually correct.       ║
 ║                                                                          ║
-║ RECOMMENDED: Consolidate or remove unused databases to avoid confusion. ║
+║ RECOMMENDED: Consolidate or remove unused databases to avoid confusion.  ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -146,25 +146,25 @@ This means beads found multiple `.beads` directories in your directory hierarchy
 **Solutions:**
 
 1. **If you have nested projects** (intentional):
-   - This is fine! beads is designed to support this
-   - Just be aware which database you're using
-   - Set `BEADS_DB` environment variable if you want to override the default selection
+    - This is fine! beads is designed to support this
+    - Just be aware which database you're using
+    - Set `BEADS_DB` environment variable if you want to override the default selection
 
 2. **If you have accidental duplicates** (unintentional):
-   - Decide which database to keep
-   - Export issues from the unwanted database: `cd <unwanted-dir> && beads export -o backup.jsonl`
-   - Remove the unwanted `.beads` directory: `rm -rf <unwanted-dir>/.beads`
-   - Optionally import issues into the main database if needed
+    - Decide which database to keep
+    - Export issues from the unwanted database: `cd <unwanted-dir> && beads export -o backup.jsonl`
+    - Remove the unwanted `.beads` directory: `rm -rf <unwanted-dir>/.beads`
+    - Optionally import issues into the main database if needed
 
 3. **Override database selection**:
 
-   ```sh
-   # Temporarily use specific database
-   BEADS_DB=/path/to/.beads/issues.db beads list
+    ```sh
+    # Temporarily use specific database
+    BEADS_DB=/path/to/.beads/issues.db beads list
 
-   # Or add to shell config for permanent override
-   export BEADS_DB=/path/to/.beads/issues.db
-   ```
+    # Or add to shell config for permanent override
+    export BEADS_DB=/path/to/.beads/issues.db
+    ```
 
 **Note**: The warning only appears when beads detects multiple databases. If you see this consistently and want to suppress it, you're using the correct database (marked with `▶`).
 

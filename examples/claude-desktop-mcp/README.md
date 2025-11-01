@@ -110,7 +110,7 @@ See the [beads-mcp README](../../adapters/mcp/README.md) for:
 
 ## Example Conversation
 
-```
+```txt
 User: What's ready to work on?
 
 Claude: Let me check the ready work queue...

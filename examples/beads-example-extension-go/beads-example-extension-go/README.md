@@ -87,7 +87,7 @@ beads-example-extension-go -db .beads/demo.db
 
 **Output:**
 
-```
+```txt
 Claiming: demo-5
   ✔ assess
   ✔ implement

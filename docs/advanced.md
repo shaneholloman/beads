@@ -7,7 +7,6 @@ This guide covers advanced features for power users and specific use cases.
 - [Renaming Prefix](#renaming-prefix)
 - [Merging Duplicate Issues](#merging-duplicate-issues)
 - [Git Worktrees](#git-worktrees)
-- [Handling Import Collisions](#handling-import-collisions)
 - [Custom Git Hooks](#custom-git-hooks)
 - [Extensible Database](#extensible-database)
 - [Architecture: Daemon vs MCP vs Beads](#architecture-daemon-vs-mcp-vs-beads)

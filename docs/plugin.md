@@ -17,16 +17,16 @@ Beads (`beads`) is an issue tracker designed specifically for AI-supervised codi
 
 1. Install beads CLI:
 
-```sh
-curl -sSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
-```
+    ```sh
+    curl -sSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
+    ```
 
 2. Install Python and uv (for MCP server):
 
-```sh
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+    ```sh
+    # Install uv (if not already installed)
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
 
 ### Install Plugin
 

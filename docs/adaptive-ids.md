@@ -21,7 +21,7 @@ Users who actively archive old issues can keep their IDs shorter over time.
 
 The collision probability is calculated using:
 
-```
+```txt
 P(collision) ≈ 1 - e^(-n²/2N)
 ```
 

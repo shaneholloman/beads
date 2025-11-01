@@ -6,7 +6,7 @@ This document explains the collision probability calculations for beads' adaptiv
 
 The collision probability for hash IDs is calculated using the birthday paradox:
 
-```
+```txt
 P(collision) ≈ 1 - e^(-n²/2N)
 ```
 
@@ -18,7 +18,7 @@ Where:
 ## Collision Probability Table
 
 | DB Size | 4-char | 5-char | 6-char | 7-char | 8-char |
-|---------|--------|--------|--------|--------|--------|
+| ------- | ------ | ------ | ------ | ------ | ------ |
 | 50      | 0.07%  | 0.00%  | 0.00%  | 0.00%  | 0.00%  |
 | 100     | 0.30%  | 0.01%  | 0.00%  | 0.00%  | 0.00%  |
 | 200     | 1.18%  | 0.03%  | 0.00%  | 0.00%  | 0.00%  |
@@ -41,7 +41,7 @@ Where:
 This shows the average number of actual hash collisions you'll encounter:
 
 | DB Size | 4-char | 5-char | 6-char | 7-char | 8-char |
-|---------|--------|--------|--------|--------|--------|
+| ------- | ------ | ------ | ------ | ------ | ------ |
 | 100     | 0.00   | 0.00   | 0.00   | 0.00   | 0.00   |
 | 500     | 0.07   | 0.00   | 0.00   | 0.00   | 0.00   |
 | 1,000   | 0.30   | 0.01   | 0.00   | 0.00   | 0.00   |
@@ -57,13 +57,13 @@ Beads automatically increases ID length when the collision probability exceeds *
 
 ### Default Thresholds (25% max collision)
 
-| Database Size | ID Length | Collision Probability at Max |
-|---------------|-----------|------------------------------|
-| 0-500         | 4 chars   | 7.17% at 500 issues          |
-| 501-1,500     | 5 chars   | 1.84% at 1,500 issues        |
-| 1,501-5,000   | 5 chars   | 18.68% at 5,000 issues       |
-| 5,001-15,000  | 6 chars   | 5.04% at 15,000 issues       |
-| 15,001+       | continues scaling as needed   |
+| Database Size | ID Length                   | Collision Probability at Max |
+| ------------- | --------------------------- | ---------------------------- |
+| 0-500         | 4 chars                     | 7.17% at 500 issues          |
+| 501-1,500     | 5 chars                     | 1.84% at 1,500 issues        |
+| 1,501-5,000   | 5 chars                     | 18.68% at 5,000 issues       |
+| 5,001-15,000  | 6 chars                     | 5.04% at 15,000 issues       |
+| 15,001+       | continues scaling as needed |                              |
 
 ### Why 25%?
 
@@ -81,21 +81,21 @@ You can customize the threshold with `beads config set max_collision_prob <value
 
 ### Conservative (10% threshold)
 
-| DB Size | ID Length |
-|---------|-----------|
-| 0-200   | 4 chars   |
-| 201-1,000 | 5 chars |
-| 1,001-5,000 | 6 chars |
-| 5,001+ | continues scaling |
+| DB Size     | ID Length         |
+| ----------- | ----------------- |
+| 0-200       | 4 chars           |
+| 201-1,000   | 5 chars           |
+| 1,001-5,000 | 6 chars           |
+| 5,001+      | continues scaling |
 
 ### Aggressive (50% threshold)
 
-| DB Size | ID Length |
-|---------|-----------|
-| 0-500   | 4 chars   |
-| 501-2,000 | 5 chars |
-| 2,001-10,000 | 6 chars |
-| 10,001+ | continues scaling |
+| DB Size      | ID Length         |
+| ------------ | ----------------- |
+| 0-500        | 4 chars           |
+| 501-2,000    | 5 chars           |
+| 2,001-10,000 | 6 chars           |
+| 10,001+      | continues scaling |
 
 ## Collision Resolution
 
@@ -117,13 +117,13 @@ Example with 4-char base:
 
 ### ID Space Size
 
-| Length | Possible IDs | Notation |
-|--------|--------------|----------|
-| 3 chars | 46,656      | 36³      |
-| 4 chars | 1,679,616   | 36⁴ ≈ 1.7M |
-| 5 chars | 60,466,176  | 36⁵ ≈ 60M  |
-| 6 chars | 2,176,782,336 | 36⁶ ≈ 2.2B |
-| 7 chars | 78,364,164,096 | 36⁷ ≈ 78B |
+| Length  | Possible IDs      | Notation   |
+| ------- | ----------------- | ---------- |
+| 3 chars | 46,656            | 36³        |
+| 4 chars | 1,679,616         | 36⁴ ≈ 1.7M |
+| 5 chars | 60,466,176        | 36⁵ ≈ 60M  |
+| 6 chars | 2,176,782,336     | 36⁶ ≈ 2.2B |
+| 7 chars | 78,364,164,096    | 36⁷ ≈ 78B  |
 | 8 chars | 2,821,109,907,456 | 36⁸ ≈ 2.8T |
 
 ### Why Alphanumeric?

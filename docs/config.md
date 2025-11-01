@@ -138,7 +138,7 @@ beads config list --json  # JSON output
 
 Example output:
 
-```
+```txt
 Configuration:
   compact_tier1_days = 90
   compact_tier1_dep_levels = 2

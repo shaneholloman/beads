@@ -172,7 +172,7 @@ If the lock file becomes corrupted (invalid JSON), the daemon **fails safe** and
 
 The daemon logs lock-related events:
 
-```
+```txt
 Skipping database (locked by vc-executor)
 Removed stale lock (vc-executor), proceeding with sync
 Skipping database (lock check failed: malformed lock file: unexpected EOF)

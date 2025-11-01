@@ -45,7 +45,7 @@ The agent runs in a loop:
 
 ## Example Output
 
-```
+```txt
 Beads Agent starting...
    Max iterations: 10
 
@@ -71,21 +71,21 @@ Open: 5  In Progress: 0  Closed: 2
 
 ## Use Cases
 
-**Continuous Integration**
+**Continuous Integration:**
 
 ```sh
 # Run agent in CI to process testing tasks
 ./agent.sh 5
 ```
 
-**Cron Jobs**
+**Cron Jobs:**
 
 ```sh
 # Run agent every hour
 0 * * * * cd /path/to/project && /path/to/agent.sh 3
 ```
 
-**One-off Task Processing**
+**One-off Task Processing:**
 
 ```sh
 # Process exactly one task and exit
