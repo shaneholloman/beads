@@ -217,9 +217,9 @@ class BeadsCliClient(BeadsClientBase):
 
         working_dir = self._get_working_dir()
         db_info = self.beads_db if self.beads_db else "auto-discover"
-        print(f"[beads-mcp] Running beads command: {' '.join(str(a) for a in args)}", file=sys.stderr)
-        print(f"[beads-mcp]   Database: {db_info}", file=sys.stderr)
-        print(f"[beads-mcp]   Working dir: {working_dir}", file=sys.stderr)
+        print(f"[mcp-beads] Running beads command: {' '.join(str(a) for a in args)}", file=sys.stderr)
+        print(f"[mcp-beads]   Database: {db_info}", file=sys.stderr)
+        print(f"[mcp-beads]   Working dir: {working_dir}", file=sys.stderr)
 
         try:
             process = await asyncio.create_subprocess_exec(

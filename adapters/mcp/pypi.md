@@ -1,6 +1,6 @@
-# Publishing beads-mcp to PyPI
+# Publishing mcp-beads to PyPI
 
-This guide covers how to build and publish the beads-mcp package to the Python Package Index (PyPI).
+This guide covers how to build and publish the mcp-beads package to the Python Package Index (PyPI).
 
 ## Prerequisites
 
@@ -62,10 +62,10 @@ This guide covers how to build and publish the beads-mcp package to the Python P
 
    ```sh
    # Test installation
-   uv tool install --index-url https://test.pypi.org/simple/ beads-mcp
+   uv tool install --index-url https://test.pypi.org/simple/ mcp-beads
 
    # Test it works
-   beads-mcp --help
+   mcp-beads --help
    ```
 
 3. **Verify the installation**:
@@ -97,7 +97,7 @@ Once you've verified the package works on Test PyPI:
 
    ```sh
    uv tool install mcp-beads
-   beads-mcp --help
+   mcp-beads --help
    ```
 
 ## Updating the README Installation Instructions

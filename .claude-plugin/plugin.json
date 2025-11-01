@@ -23,7 +23,7 @@
         "--directory",
         "${CLAUDE_PLUGIN_ROOT}/adapters/mcp",
         "run",
-        "beads-mcp"
+        "mcp-beads"
       ],
       "env": {}
     }

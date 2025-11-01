@@ -12,7 +12,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_USE_DAEMON": "1"
       }
@@ -78,7 +78,7 @@ Claude/Amp → Single MCP Server → Daemon Client → Daemon → Correct Databa
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_USE_DAEMON": "1",
         "BEADS_REQUIRE_CONTEXT": "1",
@@ -167,13 +167,13 @@ Ensure:
 {
   "mcpServers": {
     "beads-adar": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_DB": "/path/to/adar/.beads/beads.db"
       }
     },
     "beads-wyvern": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_DB": "/path/to/wyvern/.beads/wy.db"
       }
@@ -188,7 +188,7 @@ Ensure:
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_USE_DAEMON": "1"
       }

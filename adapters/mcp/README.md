@@ -1,4 +1,4 @@
-# beads-mcp
+# mcp-beads
 
 MCP server for [beads](https://github.com/shaneholloman/beads) issue tracker and agentic memory system.
 Enables AI agents to manage tasks using beads CLI through Model Context Protocol.
@@ -9,10 +9,10 @@ Install from PyPI:
 
 ```sh
 # Using uv (recommended)
-uv tool install beads-mcp
+uv tool install mcp-beads
 
 # Or using pip
-uv tool install beads-mcp
+uv tool install mcp-beads
 ```
 
 Add to your Claude Desktop config:
@@ -21,7 +21,7 @@ Add to your Claude Desktop config:
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp"
+      "command": "mcp-beads"
     }
   }
 }
@@ -46,9 +46,9 @@ Then use in Claude Desktop config:
       "command": "uv",
       "args": [
         "--directory",
-        "/path/to/beads-mcp",
+        "/path/to/mcp-beads",
         "run",
-        "beads-mcp"
+        "mcp-beads"
       ]
     }
   }
@@ -77,7 +77,7 @@ Then use in Claude Desktop config:
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp"
+      "command": "mcp-beads"
     }
   }
 }
@@ -118,13 +118,13 @@ Configure separate MCP servers for specific projects using `BEADS_WORKING_DIR`:
 {
   "mcpServers": {
     "beads-webapp": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_WORKING_DIR": "/Users/yourname/projects/webapp"
       }
     },
     "beads-api": {
-      "command": "beads-mcp",
+      "command": "mcp-beads",
       "env": {
         "BEADS_WORKING_DIR": "/Users/yourname/projects/api"
       }
@@ -237,7 +237,7 @@ await beads_ready_work(workspace_root="/Users/you/project-a")
 Run MCP inspector:
 
 ```sh
-# inside beads-mcp dir
+# inside mcp-beads dir
 uv run fastmcp dev src/beads_mcp/server.py
 ```
 

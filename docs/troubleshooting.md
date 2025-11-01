@@ -390,7 +390,7 @@ Check installation and configuration:
 
 ```sh
 # Verify MCP server is installed
-pip list | grep beads-mcp
+pip list | grep mcp-beads
 
 # Check MCP configuration
 cat ~/Library/Application\ Support/Claude/claude_desktop_config.json

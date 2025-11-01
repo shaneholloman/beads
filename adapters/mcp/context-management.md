@@ -69,14 +69,14 @@ No changes needed. The MCP server works as before with auto-discovery.
   "mcpServers": {
     "beads-repo1": {
       "command": "uvx",
-      "args": ["beads-mcp"],
+      "args": ["mcp-beads"],
       "env": {
         "BEADS_DB": "/path/to/repo1/.beads/prefix.db"
       }
     },
     "beads-repo2": {
       "command": "uvx",
-      "args": ["beads-mcp"],
+      "args": ["mcp-beads"],
       "env": {
         "BEADS_DB": "/path/to/repo2/.beads/prefix.db"
       }

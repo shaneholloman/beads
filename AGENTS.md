@@ -61,12 +61,12 @@ If it goes into git history, it must be a beads issue first.
 
 ```sh
 # Install the MCP server
-uv tool install beads-mcp
+uv tool install mcp-beads
 
 # Add to your MCP settings (e.g., Claude Desktop config)
 {
   "beads": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "args": []
   }
 }
@@ -98,7 +98,7 @@ See `adapters/mcp/README.md` for complete documentation.
 # MCP config in ~/.config/amp/settings.json or Claude Desktop config:
 {
   "beads": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "args": []
   }
 }
@@ -146,13 +146,13 @@ If you must use separate MCP servers:
 ```json
 {
   "beads-webapp": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "env": {
       "BEADS_WORKING_DIR": "/Users/you/projects/webapp"
     }
   },
   "beads-api": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "env": {
       "BEADS_WORKING_DIR": "/Users/you/projects/api"
     }
@@ -596,7 +596,7 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 **What you lose without daemon mode:**
 
 - **Auto-sync** - No automatic commit/push of changes (use `beads sync` manually)
-- **MCP server** - The beads-mcp server requires daemon mode for multi-repo support
+- **MCP server** - The mcp-beads server requires daemon mode for multi-repo support
 - **Background watching** - No automatic detection of remote changes
 
 **Solutions for Worktree Users:**
@@ -941,7 +941,7 @@ beads automatically syncs with git:
 If using Claude or MCP-compatible clients, install the beads MCP server:
 
 ```sh
-uv tool install beads-mcp
+uv tool install mcp-beads
 ```
 
 Add to MCP config (e.g., `~/.config/claude/config.json`):
@@ -949,7 +949,7 @@ Add to MCP config (e.g., `~/.config/claude/config.json`):
 ```json
 {
   "beads": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "args": []
   }
 }

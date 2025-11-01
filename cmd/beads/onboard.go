@@ -80,14 +80,14 @@ beads automatically syncs with git:
 If using Claude or MCP-compatible clients, install the beads MCP server:
 
 ` + "```sh" + `
-pip install beads-mcp
+pip install mcp-beads
 ` + "```" + `
 
 Add to MCP config (e.g., ` + "`~/.config/claude/config.json`" + `):
 ` + "```json" + `
 {
   "beads": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "args": []
   }
 }

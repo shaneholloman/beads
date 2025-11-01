@@ -36,7 +36,7 @@ Documentation = "https://github.com/shaneholloman/beads/blob/main/integrations/m
 Issues = "https://github.com/shaneholloman/beads/issues"
 
 [project.scripts]
-beads-mcp = "mcp_beads.server:main"
+mcp-beads = "mcp_beads.server:main"
 
 
 [tool.ruff]

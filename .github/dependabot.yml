@@ -20,9 +20,9 @@ updates:
       - "dependencies"
       - "ci"
 
-  # Python (beads-mcp)
+  # Python (mcp-beads)
   - package-ecosystem: "pip"
-    directory: "/integrations/beads-mcp"
+    directory: "/integrations/mcp-beads"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5

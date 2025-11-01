@@ -166,10 +166,10 @@ If you're using an MCP-compatible tool other than Claude Code:
 
 ```sh
 # Using uv (recommended)
-uv tool install beads-mcp
+uv tool install mcp-beads
 
 # Or using pip
-uv tool install beads-mcp
+uv tool install mcp-beads
 ```
 
 **Configuration for Claude Desktop** (macOS):
@@ -180,7 +180,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp"
+      "command": "mcp-beads"
     }
   }
 }
@@ -193,7 +193,7 @@ Add to your MCP settings:
 ```json
 {
   "beads": {
-    "command": "beads-mcp",
+    "command": "mcp-beads",
     "args": []
   }
 }

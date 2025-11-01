@@ -16,7 +16,7 @@ An MCP server that exposes beads functionality to Claude Desktop and other MCP c
 Install the beads MCP server:
 
 ```sh
-uv tool install beads-mcp
+uv tool install mcp-beads
 ```
 
 Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
@@ -25,7 +25,7 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp"
+      "command": "mcp-beads"
     }
   }
 }
@@ -35,7 +35,7 @@ Restart Claude Desktop and you're done! Claude can now manage your beads issues.
 
 ## Full Documentation
 
-See the [beads-mcp README](../../adapters/mcp/README.md) for:
+See the [mcp-beads README](../../adapters/mcp/README.md) for:
 
 - Installation instructions
 - Configuration options
@@ -192,14 +192,14 @@ server.start();
 
 ```sh
 # Install the MCP server
-npm install -g beads-mcp-server
+npm install -g mcp-beads-server
 
 # Configure Claude Desktop
 # Add to ~/Library/Application Support/Claude/claude_desktop_config.json
 {
   "mcpServers": {
     "beads": {
-      "command": "beads-mcp-server",
+      "command": "mcp-beads-server",
       "args": []
     }
   }

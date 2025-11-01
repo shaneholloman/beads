@@ -231,7 +231,7 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
    
    # PyPI
    uv tool install --upgrade mcp-beads
-   beads-mcp --help
+   mcp-beads --help
    
    # Check daemon version matches client
    beads version --daemon  # Should match client version after first command

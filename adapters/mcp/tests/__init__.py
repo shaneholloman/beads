@@ -1,1 +1,1 @@
-"""Tests for beads-mcp."""
+"""Tests for mcp-beads."""

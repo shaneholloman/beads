@@ -67,7 +67,7 @@ def cleanup() -> None:
         return
 
     _cleanup_done = True
-    logger.info("Cleaning up beads-mcp resources...")
+    logger.info("Cleaning up mcp-beads resources...")
 
     # Close all daemon client connections
     for client in _daemon_clients:
@@ -95,7 +95,7 @@ atexit.register(cleanup)
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 
-logger.info("beads-mcp server initialized with lifecycle management")
+logger.info("mcp-beads server initialized with lifecycle management")
 
 
 def with_workspace(func: Callable[..., T]) -> Callable[..., T]:
