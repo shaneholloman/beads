@@ -39,7 +39,7 @@ async def main():
         print("Initializing beads in both repos...")
         subprocess.run(["beads", "init", "--prefix", "r1"], cwd=repo1, check=True, capture_output=True)
         subprocess.run(["beads", "init", "--prefix", "r2"], cwd=repo2, check=True, capture_output=True)
-        print("✅ Initialized\n")
+        print("✔ Initialized\n")
         
         # Find or start daemon in beads project
         beads_project = Path(__file__).parent.parent.parent
@@ -50,15 +50,15 @@ async def main():
             print("Starting daemon in beads project...")
             subprocess.run(["beads", "daemon", "start"], cwd=beads_project, check=True, capture_output=True)
             await asyncio.sleep(1)  # Give daemon time to start
-            print("✅ Daemon started\n")
+            print("✔ Daemon started\n")
         else:
-            print(f"✅ Daemon socket found at {beads_socket}\n")
+            print(f"✔ Daemon socket found at {beads_socket}\n")
         
         # Create daemon clients for each repo, pointing to beads project socket
         print("Creating daemon clients...")
         client1 = BeadsDaemonClient(socket_path=str(beads_socket), working_dir=str(repo1))
         client2 = BeadsDaemonClient(socket_path=str(beads_socket), working_dir=str(repo2))
-        print("✅ Clients created\n")
+        print("✔ Clients created\n")
         
         # Test 1: Create issues in both repos concurrently
         print("Test 1: Creating issues concurrently in both repos...")
@@ -80,8 +80,8 @@ async def main():
             client2.create(params2)
         )
         
-        print(f"  ✅ Created {issue1.id} in repo1")
-        print(f"  ✅ Created {issue2.id} in repo2")
+        print(f"  ✔ Created {issue1.id} in repo1")
+        print(f"  ✔ Created {issue2.id} in repo2")
         assert issue1.id.startswith("r1-"), f"Expected r1- prefix, got {issue1.id}"
         assert issue2.id.startswith("r2-"), f"Expected r2- prefix, got {issue2.id}"
         print()
@@ -100,7 +100,7 @@ async def main():
         assert len(issues2) == 1, f"Expected 1 issue in repo2, got {len(issues2)}"
         assert issues1[0].id == issue1.id, "repo1 issue mismatch"
         assert issues2[0].id == issue2.id, "repo2 issue mismatch"
-        print("  ✅ Issues are properly isolated\n")
+        print("  ✔ Issues are properly isolated\n")
         
         # Test 3: Rapid concurrent operations
         print("Test 3: Rapid concurrent operations across repos...")
@@ -120,7 +120,7 @@ async def main():
             tasks.append(client2.create(p2))
         
         created = await asyncio.gather(*tasks)
-        print(f"  ✅ Created {len(created)} issues concurrently")
+        print(f"  ✔ Created {len(created)} issues concurrently")
         
         # Verify counts
         issues1 = await client1.list_issues(list_params)
@@ -130,7 +130,7 @@ async def main():
         print(f"  repo2 total: {len(issues2)} issues")
         assert len(issues1) == 6, f"Expected 6 issues in repo1, got {len(issues1)}"
         assert len(issues2) == 6, f"Expected 6 issues in repo2, got {len(issues2)}"
-        print("  ✅ All concurrent operations succeeded\n")
+        print("  ✔ All concurrent operations succeeded\n")
         
         # Test 4: Verify prefixes are correct
         print("Test 4: Verifying all prefixes are correct...")
@@ -138,21 +138,21 @@ async def main():
             assert issue.id.startswith("r1-"), f"repo1 issue has wrong prefix: {issue.id}"
         for issue in issues2:
             assert issue.id.startswith("r2-"), f"repo2 issue has wrong prefix: {issue.id}"
-        print("  ✅ All prefixes correct\n")
+        print("  ✔ All prefixes correct\n")
         
         print("=== All Tests Passed! ===")
         print("\nSummary:")
-        print("  ✅ Per-request context routing works")
-        print("  ✅ Multiple repos are properly isolated")
-        print("  ✅ Concurrent operations succeed")
-        print("  ✅ Daemon handles rapid context switching")
+        print("  ✔ Per-request context routing works")
+        print("  ✔ Multiple repos are properly isolated")
+        print("  ✔ Concurrent operations succeed")
+        print("  ✔ Daemon handles rapid context switching")
 
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        print(f"\n❌ Test failed: {e}", file=sys.stderr)
+        print(f"\n✘ Test failed: {e}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         sys.exit(1)

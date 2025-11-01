@@ -37,7 +37,7 @@ jobs:
             echo "✘ Coverage is below 50% threshold"
             exit 1
           elif (( $(echo "$COVERAGE < 55" | bc -l) )); then
-            echo "⚠️  Coverage is below 55% (warning threshold)"
+            echo "!!  Coverage is below 55% (warning threshold)"
           else
             echo "✔ Coverage meets threshold"
           fi

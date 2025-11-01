@@ -55,7 +55,7 @@ class BeadsAgent:
 
     def link_discovery(self, discovered_id: str, parent_id: str):
         """Link a discovered issue back to its parent."""
-        print(f"🔗 Linking {discovered_id} ← discovered-from ← {parent_id}")
+        print(f"Linking {discovered_id} ← discovered-from ← {parent_id}")
         subprocess.run(
             ["beads", "dep", "add", discovered_id, parent_id, "--type", "discovered-from"],
             check=True
@@ -63,7 +63,7 @@ class BeadsAgent:
 
     def complete_task(self, issue_id: str, reason: str = "Completed"):
         """Mark task as complete."""
-        print(f"✅ Completing task: {issue_id} - {reason}")
+        print(f"✔ Completing task: {issue_id} - {reason}")
         return self.run_beads("close", issue_id, "--reason", reason)
 
     def simulate_work(self, issue: dict) -> bool:

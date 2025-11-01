@@ -71,9 +71,13 @@ claim_task() {
 # Simulate doing work (in real agent, this would call LLM/execute code)
 do_work() {
     local issue="$1"
-    local issue_id=$(get_field "$issue" "id")
-    local title=$(get_field "$issue" "title")
-    local priority=$(get_field "$issue" "priority")
+    local issue_id
+    local title
+    local priority
+
+    issue_id=$(get_field "$issue" "id")
+    title=$(get_field "$issue" "title")
+    priority=$(get_field "$issue" "priority")
 
     echo ""
     log_info "Working on: $title ($issue_id)"
@@ -87,13 +91,16 @@ do_work() {
         log_warning "Discovered issue while working!"
 
         # Create new issue
-        local new_issue=$(beads create "Follow-up: $title" \
+        local new_issue
+        local new_id
+
+        new_issue=$(beads create "Follow-up: $title" \
             -d "Discovered while working on $issue_id" \
             -p 2 \
             -t task \
             --json)
 
-        local new_id=$(echo "$new_issue" | jq -r '.id')
+        new_id=$(echo "$new_issue" | jq -r '.id')
         log_success "Created issue: $new_id"
 
         # Link it back to parent

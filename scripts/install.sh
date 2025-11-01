@@ -3,10 +3,10 @@
 # Beads (beads) installation script
 # Usage: curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
 #
-# ⚠️ IMPORTANT: This script must be EXECUTED, never SOURCED
-# ❌ WRONG: source install.sh (will exit your shell on errors)
-# ✅ CORRECT: bash install.sh
-# ✅ CORRECT: curl -fsSL ... | bash
+# ⚠ IMPORTANT: This script must be EXECUTED, never SOURCED
+# ✘ WRONG: source install.sh (will exit your shell on errors)
+# ✔ CORRECT: bash install.sh
+# ✔ CORRECT: curl -fsSL ... | bash
 #
 
 set -e
@@ -79,7 +79,7 @@ install_from_release() {
     log_info "Fetching latest release..."
     local latest_url="https://api.github.com/repos/shaneholloman/beads/releases/latest"
     local version
-    
+
     if command -v curl &> /dev/null; then
         version=$(curl -fsSL "$latest_url" | grep '"tag_name"' | sed -E 's/.*"tag_name": "([^"]+)".*/\1/')
     elif command -v wget &> /dev/null; then
@@ -99,9 +99,9 @@ install_from_release() {
     # Download URL
     local archive_name="beads_${version#v}_${platform}.tar.gz"
     local download_url="https://github.com/shaneholloman/beads/releases/download/${version}/${archive_name}"
-    
+
     log_info "Downloading $archive_name..."
-    
+
     cd "$tmp_dir"
     if command -v curl &> /dev/null; then
         if ! curl -fsSL -o "$archive_name" "$download_url"; then
@@ -165,12 +165,16 @@ install_from_release() {
 # Check if Go is installed and meets minimum version
 check_go() {
     if command -v go &> /dev/null; then
-        local go_version=$(go version | awk '{print $3}' | sed 's/go//')
+        local go_version
+        local major
+        local minor
+
+        go_version=$(go version | awk '{print $3}' | sed 's/go//')
         log_info "Go detected: $(go version)"
 
         # Extract major and minor version numbers
-    local major=$(echo "$go_version" | cut -d. -f1)
-    local minor=$(echo "$go_version" | cut -d. -f2)
+        major=$(echo "$go_version" | cut -d. -f1)
+        minor=$(echo "$go_version" | cut -d. -f2)
 
     # Check if Go version is 1.24 or later
     if [ "$major" -eq 1 ] && [ "$minor" -lt 24 ]; then
@@ -381,7 +385,7 @@ warn_if_multiple_beads() {
 # Main installation flow
 main() {
     echo ""
-    echo "🔗 Beads (beads) Installer"
+    echo "Beads (beads) Installer"
     echo ""
 
     log_info "Detecting platform..."

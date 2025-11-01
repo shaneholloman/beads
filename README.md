@@ -56,7 +56,7 @@ beads init
 **Tell your AI agent:**
 
 ```bash
-echo "Use 'beads' for issue tracking. Run 'beads onboard' for instructions." >> AGENTS.md
+echo "Use 'beads' for issue tracking. Run 'beads onboard' for instructions." AGENTS.md
 ```
 
 Your agent handles the rest - creating issues, tracking dependencies, finding ready work.

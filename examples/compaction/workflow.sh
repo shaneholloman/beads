@@ -10,7 +10,7 @@ echo
 
 # Check API key
 if [ -z "$ANTHROPIC_API_KEY" ]; then
-  echo "❌ Error: ANTHROPIC_API_KEY not set"
+  echo "✘ Error: ANTHROPIC_API_KEY not set"
   echo
   echo "Set your API key:"
   echo "  export ANTHROPIC_API_KEY='sk-ant-...'"
@@ -20,7 +20,7 @@ fi
 
 # Check beads is installed
 if ! command -v beads &> /dev/null; then
-  echo "❌ Error: beads command not found"
+  echo "✘ Error: beads command not found"
   echo
   echo "Install beads:"
   echo "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash"
@@ -38,9 +38,9 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "--- Running Tier 1 Compaction ---"
   beads compact --all
-  echo "✅ Tier 1 compaction complete"
+  echo "✔ Tier 1 compaction complete"
 else
-  echo "⏭️  Skipping Tier 1"
+  echo "⟶ Skipping Tier 1"
 fi
 
 # Preview Tier 2
@@ -54,9 +54,9 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "--- Running Tier 2 Compaction ---"
   beads compact --all --tier 2
-  echo "✅ Tier 2 compaction complete"
+  echo "✔ Tier 2 compaction complete"
 else
-  echo "⏭️  Skipping Tier 2"
+  echo "⟶ Skipping Tier 2"
 fi
 
 # Show stats

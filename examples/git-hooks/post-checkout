@@ -28,7 +28,7 @@ if [[ ! -f .beads/issues.jsonl ]]; then
 fi
 
 # Import issues from JSONL
-echo "🔗 Importing beads issues from JSONL..."
+echo "Importing beads issues from JSONL..."
 
 if beads import -i .beads/issues.jsonl 2>/dev/null; then
     echo "✓ Beads issues imported successfully"
