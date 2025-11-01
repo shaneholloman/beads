@@ -11,7 +11,7 @@ import (
 
 var (
 	// Version is the current version of beads (overridden by ldflags at build time)
-	Version = "0.24.0"
+	Version = "0.30.0"
 	// Build can be set via ldflags at compile time
 	Build = "dev"
 )
