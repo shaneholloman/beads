@@ -10,20 +10,20 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def _default_beads_path() -> str:
-    """Get default bd executable path.
+    """Get default beads executable path.
 
-    First tries to find bd in PATH, falls back to ~/.local/bin/bd.
+    First tries to find beads in PATH, falls back to ~/.local/bin/beads.
 
     Returns:
-        Default path to bd executable
+        Default path to beads executable
     """
-    # Try to find bd in PATH first
-    bd_in_path = shutil.which("bd")
-    if bd_in_path:
-        return bd_in_path
+    # Try to find beads in PATH first
+    beads_in_path = shutil.which("beads")
+    if beads_in_path:
+        return beads_in_path
 
     # Fall back to common install location
-    return str(Path.home() / ".local" / "bin" / "bd")
+    return str(Path.home() / ".local" / "bin" / "beads")
 
 
 class Config(BaseSettings):
@@ -41,10 +41,10 @@ class Config(BaseSettings):
     @field_validator("beads_path")
     @classmethod
     def validate_beads_path(cls, v: str) -> str:
-        """Validate BEADS_PATH points to an executable bd binary.
+        """Validate BEADS_PATH points to an executable beads binary.
 
         Args:
-            v: Path to bd executable (can be command name or absolute path)
+            v: Path to beads executable (can be command name or absolute path)
 
         Returns:
             Validated absolute path
@@ -62,16 +62,16 @@ class Config(BaseSettings):
                 path = Path(v)
             else:
                 raise ValueError(
-                    f"bd executable not found at: {v}\n\n"
-                    + "The beads Claude Code plugin requires the bd CLI to be installed.\n\n"
-                    + "Install bd CLI:\n"
+                    f"beads executable not found at: {v}\n\n"
+                    + "The beads Claude Code plugin requires the beads CLI to be installed.\n\n"
+                    + "Install beads CLI:\n"
                     + "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash\n\n"
                     + "Or visit: https://github.com/shaneholloman/beads#installation\n\n"
                     + "After installation, restart Claude Code to reload the MCP server."
                 )
 
         if not os.access(v, os.X_OK):
-            raise ValueError(f"bd executable at {v} is not executable.\nPlease check file permissions.")
+            raise ValueError(f"beads executable at {v} is not executable.\nPlease check file permissions.")
 
         return v
 
@@ -123,14 +123,14 @@ def load_config() -> Config:
         error_msg = (
             "Beads MCP Server Configuration Error\n\n"
             + f"{e}\n\n"
-            + "Common fix: Install the bd CLI first:\n"
+            + "Common fix: Install the beads CLI first:\n"
             + "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash\n\n"
             + "Or visit: https://github.com/shaneholloman/beads#installation\n\n"
             + "After installation, restart Claude Code.\n\n"
             + "Advanced configuration (optional):\n"
-            + f"  BEADS_PATH            - Path to bd executable (default: {default_path})\n"
+            + f"  BEADS_PATH            - Path to beads executable (default: {default_path})\n"
             + "  BEADS_DB              - Path to beads database file (default: auto-discover)\n"
-            + "  BEADS_WORKING_DIR     - Working directory for bd commands (default: $PWD or cwd)\n"
+            + "  BEADS_WORKING_DIR     - Working directory for beads commands (default: $PWD or cwd)\n"
             + "  BEADS_ACTOR           - Actor name for audit trail (default: $USER)\n"
             + "  BEADS_NO_AUTO_FLUSH   - Disable automatic JSONL sync (default: false)\n"
             + "  BEADS_NO_AUTO_IMPORT  - Disable automatic JSONL import (default: false)"

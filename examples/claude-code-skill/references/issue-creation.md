@@ -1,6 +1,6 @@
 # Issue Creation Guidelines
 
-Guidance on when and how to create bd issues for maximum effectiveness.
+Guidance on when and how to create beads issues for maximum effectiveness.
 
 ## Contents
 
@@ -59,7 +59,7 @@ For complex technical features spanning multiple sessions, enhance notes field w
 ### Example pattern
 
 ```markdown
-bd update issue-9 --notes "IMPLEMENTATION GUIDE:
+beads update issue-9 --notes "IMPLEMENTATION GUIDE:
 WORKING CODE: service.about().get(fields='importFormats')
 Returns: dict with 49 entries like {'text/markdown': [...]}
 OUTPUT FORMAT: # Drive Import Formats (markdown with categorized list)

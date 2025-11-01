@@ -1,12 +1,12 @@
 # Hash-Based ID Generation Design
 
-**Status:** Implemented (bd-166)  
+**Status:** Implemented (beads-166)  
 **Version:** 2.0  
 **Last Updated:** 2025-10-30
 
 ## Overview
 
-bd v2.0 replaces sequential auto-increment IDs (bd-1, bd-2) with content-hash based IDs (bd-af78e9a2) and hierarchical sequential children (bd-af78e9a2.1, .2, .3).
+beads v2.0 replaces sequential auto-increment IDs (beads-1, beads-2) with content-hash based IDs (beads-af78e9a2) and hierarchical sequential children (beads-af78e9a2.1, .2, .3).
 
 This eliminates ID collisions in distributed workflows while maintaining human-friendly IDs for related work.
 
@@ -17,23 +17,23 @@ This eliminates ID collisions in distributed workflows while maintaining human-f
 ```
 Format: {prefix}-{6-8-char-hex} (progressive on collision)
 Examples: 
-  bd-a3f2dd   (6 chars, common case ~97%)
-  bd-a3f2dda  (7 chars, rare collision ~3%)
-  bd-a3f2dda8 (8 chars, very rare double collision)
+  beads-a3f2dd   (6 chars, common case ~97%)
+  beads-a3f2dda  (7 chars, rare collision ~3%)
+  beads-a3f2dda8 (8 chars, very rare double collision)
 ```
 
-- **Prefix:** Configurable (bd, ticket, bug, etc.)
+- **Prefix:** Configurable (beads, ticket, bug, etc.)
 - **Hash:** First 6 characters of SHA256 hash (extends to 7-8 on collision)
-- **Total length:** 9-11 chars for "bd-" prefix
+- **Total length:** 9-11 chars for "beads-" prefix
 
 ### Hierarchical Child IDs (Sequential)
 
 ```
 Format: {parent-id}.{child-number}
 Examples:
-  bd-a3f2dd.1       (depth 1, 6-char parent)
-  bd-a3f2dda.1.2    (depth 2, 7-char parent on collision)
-  bd-a3f2dd.1.2.3   (depth 3, max depth)
+  beads-a3f2dd.1       (depth 1, 6-char parent)
+  beads-a3f2dda.1.2    (depth 2, 7-char parent on collision)
+  beads-a3f2dd.1.2.3   (depth 3, max depth)
 ```
 
 - **Max depth:** 3 levels (prevents over-decomposition)
@@ -108,7 +108,7 @@ For 6-character hex IDs (24-bit space = 2^24 = 16,777,216):
 
 - Single team projects: ~1% chance over lifetime
 - Mitigation: Workspace ID prevents cross-team collisions
-- Fallback: If collision detected, append counter (bd-af78e9a2-2)
+- Fallback: If collision detected, append counter (beads-af78e9a2-2)
 
 **Medium Risk (10,000-50,000 issues):**
 
@@ -152,7 +152,7 @@ BenchmarkGenerateChildID-10   19689157     60.96 ns/op
 |--------|----------------|-----------------|
 | Collision risk | HIGH (offline work) | NONE (top-level) |
 | ID length | 5-8 chars | 9-11 chars (avg ~9) |
-| Predictability | Predictable (bd-1, bd-2) | Unpredictable |
+| Predictability | Predictable (beads-1, beads-2) | Unpredictable |
 | Offline-first | ✘ Requires coordination | ✔ Fully offline |
 | Merge conflicts | ✘ Same ID, different content | ✔ Different IDs |
 | Human-friendly | ✔ Easy to remember | WARNING: Harder to remember |
@@ -162,31 +162,31 @@ BenchmarkGenerateChildID-10   19689157     60.96 ns/op
 
 ### Prefix Handling
 
-**Storage:** Always includes prefix (bd-a3f2dd)
-**CLI Input:** Prefix optional (both bd-a3f2dd AND a3f2dd accepted)
+**Storage:** Always includes prefix (beads-a3f2dd)
+**CLI Input:** Prefix optional (both beads-a3f2dd AND a3f2dd accepted)
 **CLI Output:** Always shows prefix (copy-paste clarity)
 **External refs:** Always use prefix (git commits, docs, Slack)
 
 ```bash
 # All of these work (prefix optional in input):
-bd show a3f2dd
-bd show bd-a3f2dd
-bd show a3f2dd.1
-bd show bd-a3f2dd.1.2
+beads show a3f2dd
+beads show beads-a3f2dd
+beads show a3f2dd.1
+beads show beads-a3f2dd.1.2
 
 # Output always shows prefix:
-bd-a3f2dd [epic] Auth System
+beads-a3f2dd [epic] Auth System
   Status: open
   ...
 ```
 
 ### Git-Style Prefix Matching
 
-Like Git commit SHAs, bd accepts abbreviated IDs:
+Like Git commit SHAs, beads accepts abbreviated IDs:
 
 ```bash
-bd show af78      # Matches bd-af78e9a2 if unique
-bd show af7       # ERROR: ambiguous (matches bd-af78e9a2 and bd-af78e9a2.1)
+beads show af78      # Matches beads-af78e9a2 if unique
+beads show af7       # ERROR: ambiguous (matches beads-af78e9a2 and beads-af78e9a2.1)
 ```
 
 ## Migration Strategy
@@ -195,10 +195,10 @@ bd show af7       # ERROR: ambiguous (matches bd-af78e9a2 and bd-af78e9a2.1)
 
 ```bash
 # Preview migration
-bd migrate --hash-ids --dry-run
+beads migrate --hash-ids --dry-run
 
 # Execute migration
-bd migrate --hash-ids
+beads migrate --hash-ids
 
 # What it does:
 # 1. Create child_counters table
@@ -263,7 +263,7 @@ return fmt.Sprintf("%s-%s", prefix, hash[:8])
 // To:
 return fmt.Sprintf("%s-%s", prefix, hash[:16])
 
-// Example: bd-af78e9a2c4d5e6f7
+// Example: beads-af78e9a2c4d5e6f7
 ```
 
 **Tradeoffs:**
@@ -282,10 +282,10 @@ For specialized use cases:
 
 ## References
 
-- **Epic:** bd-165 (Hash-based IDs with hierarchical children)
+- **Epic:** beads-165 (Hash-based IDs with hierarchical children)
 - **Implementation:** internal/types/id_generator.go
 - **Tests:** internal/types/id_generator_test.go
-- **Related:** bd-168 (CreateIssue integration), bd-169 (JSONL format)
+- **Related:** beads-168 (CreateIssue integration), beads-169 (JSONL format)
 
 ## Summary
 

@@ -27,9 +27,9 @@ func setupTestDB(t *testing.T) (*SQLiteStorage, func()) {
 		t.Fatalf("failed to create storage: %v", err)
 	}
 
-	// CRITICAL (bd-166): Set issue_prefix to prevent "database not initialized" errors
+	// CRITICAL (beads-166): Set issue_prefix to prevent "database not initialized" errors
 	ctx := context.Background()
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		store.Close()
 		os.RemoveAll(tmpDir)
 		t.Fatalf("failed to set issue_prefix: %v", err)
@@ -190,7 +190,7 @@ func TestGetIssueNotFound(t *testing.T) {
 	defer cleanup()
 
 	ctx := context.Background()
-	issue, err := store.GetIssue(ctx, "bd-999")
+	issue, err := store.GetIssue(ctx, "beads-999")
 	if err != nil {
 		t.Fatalf("GetIssue failed: %v", err)
 	}
@@ -286,8 +286,8 @@ func (h *createIssuesTestHelper) assertNoAutoGenID(issues []*types.Issue, wantEr
 		if issue == nil {
 			continue
 		}
-		hasCustomID := issue.ID != "" && (issue.ID == "bd-100" || issue.ID == "bd-200" ||
-			issue.ID == "bd-999" || issue.ID == "bd-existing")
+		hasCustomID := issue.ID != "" && (issue.ID == "beads-100" || issue.ID == "beads-200" ||
+			issue.ID == "beads-999" || issue.ID == "beads-existing")
 		if !hasCustomID && issue.ID != "" {
 			h.t.Errorf("issue %d: ID should not be auto-generated on error, got %s", i, issue.ID)
 		}
@@ -348,18 +348,18 @@ func TestCreateIssues(t *testing.T) {
 		{
 			name: "mixed ID assignment - explicit and auto-generated",
 			issues: []*types.Issue{
-				h.newIssue("bd-100", "Custom ID 1", types.StatusOpen, 1, types.TypeTask, nil),
+				h.newIssue("beads-100", "Custom ID 1", types.StatusOpen, 1, types.TypeTask, nil),
 				h.newIssue("", "Auto ID", types.StatusOpen, 1, types.TypeTask, nil),
-				h.newIssue("bd-200", "Custom ID 2", types.StatusOpen, 1, types.TypeTask, nil),
+				h.newIssue("beads-200", "Custom ID 2", types.StatusOpen, 1, types.TypeTask, nil),
 			},
 			wantErr: false,
 			checkFunc: func(t *testing.T, h *createIssuesTestHelper, issues []*types.Issue) {
 				h.assertCount(issues, 3)
-				h.assertEqual("bd-100", issues[0].ID, "ID")
-				if issues[1].ID == "" || issues[1].ID == "bd-100" || issues[1].ID == "bd-200" {
+				h.assertEqual("beads-100", issues[0].ID, "ID")
+				if issues[1].ID == "" || issues[1].ID == "beads-100" || issues[1].ID == "beads-200" {
 					t.Errorf("expected auto-generated ID, got %s", issues[1].ID)
 				}
-				h.assertEqual("bd-200", issues[2].ID, "ID")
+				h.assertEqual("beads-200", issues[2].ID, "ID")
 			},
 		},
 		{
@@ -386,8 +386,8 @@ func TestCreateIssues(t *testing.T) {
 		{
 			name: "duplicate ID error",
 			issues: []*types.Issue{
-				h.newIssue("bd-999", "First issue", types.StatusOpen, 1, types.TypeTask, nil),
-				h.newIssue("bd-999", "Second issue", types.StatusOpen, 1, types.TypeTask, nil),
+				h.newIssue("beads-999", "First issue", types.StatusOpen, 1, types.TypeTask, nil),
+				h.newIssue("beads-999", "Second issue", types.StatusOpen, 1, types.TypeTask, nil),
 			},
 			wantErr:   true,
 			checkFunc: func(t *testing.T, h *createIssuesTestHelper, issues []*types.Issue) {},
@@ -506,7 +506,7 @@ func TestCreateIssuesRollback(t *testing.T) {
 	t.Run("rollback on conflict with existing ID", func(t *testing.T) {
 		// Create an issue with explicit ID
 		existingIssue := &types.Issue{
-			ID:        "bd-existing",
+			ID:        "beads-existing",
 			Title:     "Existing issue",
 			Status:    types.StatusOpen,
 			Priority:  1,
@@ -526,7 +526,7 @@ func TestCreateIssuesRollback(t *testing.T) {
 				IssueType: types.TypeTask,
 			},
 			{
-				ID:        "bd-existing",
+				ID:        "beads-existing",
 				Title:     "Conflict",
 				Status:    types.StatusOpen,
 				Priority:  1,
@@ -1046,7 +1046,7 @@ func TestGetStatistics(t *testing.T) {
 // For very high concurrency needs, consider using CGO-enabled sqlite3 driver or PostgreSQL.
 
 // TestParallelIssueCreation verifies that parallel issue creation works correctly with hash IDs
-// This is a regression test for bd-89 (GH-6). With hash-based IDs, parallel creation works
+// This is a regression test for beads-89 (GH-6). With hash-based IDs, parallel creation works
 // naturally since each issue gets a unique random hash - no coordination needed.
 func TestParallelIssueCreation(t *testing.T) {
 	store, cleanup := setupTestDB(t)
@@ -1301,8 +1301,8 @@ func TestInMemoryDatabase(t *testing.T) {
 	}
 	defer store.Close()
 
-	// Set issue_prefix (bd-166)
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	// Set issue_prefix (beads-166)
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("failed to set issue_prefix: %v", err)
 	}
 
@@ -1349,8 +1349,8 @@ func TestInMemorySharedCache(t *testing.T) {
 	}
 	defer store1.Close()
 
-	// Set issue_prefix (bd-166)
-	if err := store1.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	// Set issue_prefix (beads-166)
+	if err := store1.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("failed to set issue_prefix: %v", err)
 	}
 

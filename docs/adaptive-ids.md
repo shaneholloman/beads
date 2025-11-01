@@ -1,6 +1,6 @@
 # Adaptive ID Length
 
-**Feature:** bd-ea2a13
+**Feature:** beads-ea2a13
 **Status:** Implemented (v0.21+)
 
 ## Overview
@@ -9,9 +9,9 @@ Beads uses adaptive hash ID lengths that automatically scale based on database s
 
 ## Motivation
 
-- **Small databases** (0-500 issues): Very short, readable IDs like `bd-a3f2` (4 chars)
-- **Medium databases** (500-1500 issues): Slightly longer IDs like `bd-7f3a8` (5 chars)
-- **Large databases** (1500+ issues): Standard IDs like `bd-7f3a86` (6 chars)
+- **Small databases** (0-500 issues): Very short, readable IDs like `beads-a3f2` (4 chars)
+- **Medium databases** (500-1500 issues): Slightly longer IDs like `beads-7f3a8` (5 chars)
+- **Large databases** (1500+ issues): Standard IDs like `beads-7f3a86` (6 chars)
 
 Users who actively archive old issues can keep their IDs shorter over time.
 
@@ -58,10 +58,10 @@ Default: 25% (0.25)
 
 ```bash
 # More lenient (allow up to 50% collision probability)
-bd config set max_collision_prob "0.50"
+beads config set max_collision_prob "0.50"
 
 # Stricter (only allow 1% collision probability)
-bd config set max_collision_prob "0.01"
+beads config set max_collision_prob "0.01"
 ```
 
 ### Minimum Hash Length
@@ -70,10 +70,10 @@ Default: 4 chars
 
 ```bash
 # Start with 5-char IDs minimum
-bd config set min_hash_length "5"
+beads config set min_hash_length "5"
 
 # Very short IDs (use with caution)
-bd config set min_hash_length "3"
+beads config set min_hash_length "3"
 ```
 
 ### Maximum Hash Length
@@ -82,7 +82,7 @@ Default: 8 chars
 
 ```bash
 # Allow even longer IDs for huge databases
-bd config set max_hash_length "10"
+beads config set max_hash_length "10"
 ```
 
 ## Examples
@@ -91,18 +91,18 @@ bd config set max_hash_length "10"
 
 ```bash
 # Initialize with hash IDs
-bd init --id-mode hash --prefix myproject
+beads init --id-mode hash --prefix myproject
 
 # First 500 issues get 4-char IDs
-bd create "Fix bug" -p 1
+beads create "Fix bug" -p 1
 # → myproject-a3f2
 
 # After 1000 issues, switches to 5-char IDs
-bd create "Add feature" -p 1
+beads create "Add feature" -p 1
 # → myproject-7f3a8c
 
 # At 10,000 issues, uses 6-char IDs
-bd create "Refactor" -p 1
+beads create "Refactor" -p 1
 # → myproject-b9d1e4
 ```
 
@@ -110,16 +110,16 @@ bd create "Refactor" -p 1
 
 ```bash
 # Very strict collision tolerance
-bd config set max_collision_prob "0.01"
+beads config set max_collision_prob "0.01"
 
 # With 1% threshold and 100 issues, uses 4-char IDs
 # (collision probability is ~0.3% with 4 chars)
 
 # Force minimum 5-char IDs for consistency
-bd config set min_hash_length "5"
+beads config set min_hash_length "5"
 
 # All IDs will be at least 5 chars now
-bd create "Task" -p 1
+beads create "Task" -p 1
 # → myproject-7f3a8
 ```
 
@@ -175,7 +175,7 @@ Existing databases with 6-char IDs will:
 
 ### Sequential to Hash Migration
 
-When migrating from sequential IDs to hash IDs with `bd migrate --to-hash-ids`:
+When migrating from sequential IDs to hash IDs with `beads migrate --to-hash-ids`:
 
 - Uses adaptive length algorithm for new IDs
 - Preserves existing sequential IDs

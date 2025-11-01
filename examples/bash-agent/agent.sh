@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Simple AI agent workflow using bd (Beads issue tracker).
+# Simple AI agent workflow using beads (Beads issue tracker).
 #
 # This demonstrates the full lifecycle of an agent managing tasks:
 # - Find ready work
@@ -34,23 +34,23 @@ log_error() {
     echo -e "${RED}✗${NC} $1"
 }
 
-# Check if bd is installed
-if ! command -v bd &> /dev/null; then
-    log_error "bd is not installed"
-    echo "Install with: go install github.com/shaneholloman/beads/cmd/bd@latest"
+# Check if beads is installed
+if ! command -v beads &> /dev/null; then
+    log_error "beads is not installed"
+    echo "Install with: go install github.com/shaneholloman/beads/cmd/beads@latest"
     exit 1
 fi
 
 # Check if we're in a beads-initialized directory
-if ! bd list &> /dev/null; then
+if ! beads list &> /dev/null; then
     log_error "Not in a beads-initialized directory"
-    echo "Run: bd init"
+    echo "Run: beads init"
     exit 1
 fi
 
 # Find ready work
 find_ready_work() {
-    bd ready --json --limit 1 2>/dev/null | jq -r '.[0] // empty'
+    beads ready --json --limit 1 2>/dev/null | jq -r '.[0] // empty'
 }
 
 # Extract field from JSON
@@ -64,7 +64,7 @@ get_field() {
 claim_task() {
     local issue_id="$1"
     log_info "Claiming task: $issue_id"
-    bd update "$issue_id" --status in_progress --json > /dev/null
+    beads update "$issue_id" --status in_progress --json > /dev/null
     log_success "Task claimed"
 }
 
@@ -87,7 +87,7 @@ do_work() {
         log_warning "Discovered issue while working!"
 
         # Create new issue
-        local new_issue=$(bd create "Follow-up: $title" \
+        local new_issue=$(beads create "Follow-up: $title" \
             -d "Discovered while working on $issue_id" \
             -p 2 \
             -t task \
@@ -97,7 +97,7 @@ do_work() {
         log_success "Created issue: $new_id"
 
         # Link it back to parent
-        bd dep add "$new_id" "$issue_id" --type discovered-from
+        beads dep add "$new_id" "$issue_id" --type discovered-from
         log_success "Linked $new_id ← discovered-from ← $issue_id"
 
         return 0 # Discovered new work
@@ -112,7 +112,7 @@ complete_task() {
     local reason="${2:-Completed successfully}"
 
     log_info "Completing task: $issue_id"
-    bd close "$issue_id" --reason "$reason" --json > /dev/null
+    beads close "$issue_id" --reason "$reason" --json > /dev/null
     log_success "Task completed: $issue_id"
 }
 
@@ -122,7 +122,7 @@ show_stats() {
     echo "═══════════════════════════════════════════════════"
     echo "  Beads Statistics"
     echo "═══════════════════════════════════════════════════"
-    bd stats
+    beads stats
     echo ""
 }
 

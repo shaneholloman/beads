@@ -1,4 +1,4 @@
-# bd - Beads Issue Tracker
+# beads - Beads Issue Tracker
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/shaneholloman/beads)](https://go.dev/)
 [![Release](https://img.shields.io/github/v/release/shaneholloman/beads)](https://github.com/shaneholloman/beads/releases)
@@ -35,7 +35,7 @@ curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/in
 
 ```bash
 brew tap shaneholloman/beads
-brew install bd
+brew install beads
 ```
 
 **From source:**
@@ -43,8 +43,8 @@ brew install bd
 ```bash
 git clone https://github.com/shaneholloman/beads.git
 cd beads
-go build -o bd ./cmd/bd
-sudo cp bd /usr/local/bin/bd  # Or: cp bd ~/bin/bd
+go build -o beads ./cmd/beads
+sudo cp beads /usr/local/bin/beads  # Or: cp beads ~/bin/beads
 ```
 
 **Other platforms:** See [installing.md](docs/installing.md) for Windows, Arch Linux, IDE integration.
@@ -55,13 +55,13 @@ sudo cp bd /usr/local/bin/bd  # Or: cp bd ~/bin/bd
 
 ```bash
 cd your-project
-bd init
+beads init
 ```
 
 **Tell your AI agent:**
 
 ```bash
-echo "Use 'bd' for issue tracking. Run 'bd onboard' for instructions." >> AGENTS.md
+echo "Use 'beads' for issue tracking. Run 'beads onboard' for instructions." >> AGENTS.md
 ```
 
 Your agent handles the rest - creating issues, tracking dependencies, finding ready work.
@@ -69,11 +69,11 @@ Your agent handles the rest - creating issues, tracking dependencies, finding re
 **Manual usage:**
 
 ```bash
-bd ready                           # Show unblocked work
-bd create "Fix bug" -p 1 -t bug    # Create issue
-bd show bd-a1b2                    # View details
-bd dep tree bd-a1b2                # Visualize dependencies
-bd close bd-a1b2 --reason "Done"   # Mark complete
+beads ready                           # Show unblocked work
+beads create "Fix bug" -p 1 -t bug    # Create issue
+beads show beads-a1b2                    # View details
+beads dep tree beads-a1b2                # Visualize dependencies
+beads close beads-a1b2 --reason "Done"   # Mark complete
 ```
 
 ## Core Concepts
@@ -89,14 +89,14 @@ bd close bd-a1b2 --reason "Done"   # Mark complete
 
 **Types:** bug, feature, task, epic, chore
 
-**Hash IDs:** Collision-resistant identifiers (bd-a1b2, bd-f14c) instead of sequential numbers. See [hash-id-design.md](docs/hash-id-design.md) for details.
+**Hash IDs:** Collision-resistant identifiers (beads-a1b2, beads-f14c) instead of sequential numbers. See [hash-id-design.md](docs/hash-id-design.md) for details.
 
 ## Git Workflow
 
-bd auto-syncs with git:
+beads auto-syncs with git:
 
 ```bash
-bd create "Fix bug" -p 1
+beads create "Fix bug" -p 1
 # After 5 seconds: exports to .beads/issues.jsonl
 
 git add .beads/issues.jsonl
@@ -105,7 +105,7 @@ git push
 
 # On other machine:
 git pull
-bd ready  # Auto-imports updated JSONL
+beads ready  # Auto-imports updated JSONL
 ```
 
 Install git hooks for instant sync:
@@ -122,19 +122,19 @@ See [advanced.md](docs/advanced.md) for merge conflict handling and daemon confi
 
 ```bash
 # Build local binary
-go build -o bd ./cmd/bd
+go build -o beads ./cmd/beads
 
 # Test locally
-./bd version
-./bd ready
+./beads version
+./beads ready
 
 # Run tests
 go test ./...
 
 # Install system-wide
-cp ./bd ~/bin/bd
+cp ./beads ~/bin/beads
 # or
-sudo cp ./bd /usr/local/bin/bd
+sudo cp ./beads /usr/local/bin/beads
 ```
 
 **Version management:**

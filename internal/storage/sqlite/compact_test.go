@@ -9,7 +9,7 @@ import (
 	"github.com/shaneholloman/beads/internal/types"
 )
 
-const testIssueBD1 = "bd-1"
+const testIssueBD1 = "beads-1"
 
 func TestGetTier1Candidates(t *testing.T) {
 	store, cleanup := setupTestDB(t)
@@ -33,7 +33,7 @@ func TestGetTier1Candidates(t *testing.T) {
 
 	// Recently closed issue (not eligible - too recent)
 	issue2 := &types.Issue{
-		ID:          "bd-2",
+		ID:          "beads-2",
 		Title:       "Recent closed issue",
 		Description: "Recent",
 		Status:      "closed",
@@ -47,7 +47,7 @@ func TestGetTier1Candidates(t *testing.T) {
 
 	// Open issue (not eligible)
 	issue3 := &types.Issue{
-		ID:          "bd-3",
+		ID:          "beads-3",
 		Title:       "Open issue",
 		Description: "Open",
 		Status:      "open",
@@ -60,7 +60,7 @@ func TestGetTier1Candidates(t *testing.T) {
 
 	// Old closed issue with open dependent (not eligible)
 	issue4 := &types.Issue{
-		ID:          "bd-4",
+		ID:          "beads-4",
 		Title:       "Has open dependent",
 		Description: "Blocked by open issue",
 		Status:      "closed",
@@ -74,8 +74,8 @@ func TestGetTier1Candidates(t *testing.T) {
 
 	// Create blocking dependency
 	dep := &types.Dependency{
-		IssueID:     "bd-3",
-		DependsOnID: "bd-4",
+		IssueID:     "beads-3",
+		DependsOnID: "beads-4",
 		Type:        "blocks",
 	}
 	if err := store.AddDependency(ctx, dep, "test"); err != nil {
@@ -88,13 +88,13 @@ func TestGetTier1Candidates(t *testing.T) {
 		t.Fatalf("GetTier1Candidates failed: %v", err)
 	}
 
-	// Should only return bd-1 (old and no open dependents)
+	// Should only return beads-1 (old and no open dependents)
 	if len(candidates) != 1 {
 		t.Errorf("Expected 1 candidate, got %d", len(candidates))
 	}
 
 	if len(candidates) > 0 && candidates[0].IssueID != testIssueBD1 {
-		t.Errorf("Expected candidate bd-1, got %s", candidates[0].IssueID)
+		t.Errorf("Expected candidate beads-1, got %s", candidates[0].IssueID)
 	}
 }
 
@@ -105,7 +105,7 @@ func TestGetTier2Candidates(t *testing.T) {
 
 	// Create old tier1 compacted issue with many events
 	issue1 := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Tier1 compacted with events",
 		Description: "Summary",
 		Status:      "closed",
@@ -124,14 +124,14 @@ func TestGetTier2Candidates(t *testing.T) {
 		    compacted_at = datetime('now', '-95 days'),
 		    original_size = 1000
 		WHERE id = ?
-	`, "bd-1")
+	`, "beads-1")
 	if err != nil {
 		t.Fatalf("Failed to set compaction level: %v", err)
 	}
 
 	// Add many events (simulate high activity)
 	for i := 0; i < 120; i++ {
-		if err := store.AddComment(ctx, "bd-1", "test", "comment"); err != nil {
+		if err := store.AddComment(ctx, "beads-1", "test", "comment"); err != nil {
 			t.Fatalf("Failed to add event: %v", err)
 		}
 	}
@@ -142,13 +142,13 @@ func TestGetTier2Candidates(t *testing.T) {
 		t.Fatalf("GetTier2Candidates failed: %v", err)
 	}
 
-	// Should return bd-1
+	// Should return beads-1
 	if len(candidates) != 1 {
 		t.Errorf("Expected 1 candidate, got %d", len(candidates))
 	}
 
 	if len(candidates) > 0 && candidates[0].IssueID != testIssueBD1 {
-		t.Errorf("Expected candidate bd-1, got %s", candidates[0].IssueID)
+		t.Errorf("Expected candidate beads-1, got %s", candidates[0].IssueID)
 	}
 }
 
@@ -159,7 +159,7 @@ func TestCheckEligibilityTier1(t *testing.T) {
 
 	// Create eligible issue
 	issue1 := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Eligible",
 		Description: "Test",
 		Status:      "closed",
@@ -171,7 +171,7 @@ func TestCheckEligibilityTier1(t *testing.T) {
 		t.Fatalf("Failed to create issue: %v", err)
 	}
 
-	eligible, reason, err := store.CheckEligibility(ctx, "bd-1", 1)
+	eligible, reason, err := store.CheckEligibility(ctx, "beads-1", 1)
 	if err != nil {
 		t.Fatalf("CheckEligibility failed: %v", err)
 	}
@@ -187,7 +187,7 @@ func TestCheckEligibilityOpenIssue(t *testing.T) {
 	ctx := context.Background()
 
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Open",
 		Description: "Test",
 		Status:      "open",
@@ -198,7 +198,7 @@ func TestCheckEligibilityOpenIssue(t *testing.T) {
 		t.Fatalf("Failed to create issue: %v", err)
 	}
 
-	eligible, reason, err := store.CheckEligibility(ctx, "bd-1", 1)
+	eligible, reason, err := store.CheckEligibility(ctx, "beads-1", 1)
 	if err != nil {
 		t.Fatalf("CheckEligibility failed: %v", err)
 	}
@@ -218,7 +218,7 @@ func TestCheckEligibilityAlreadyCompacted(t *testing.T) {
 	ctx := context.Background()
 
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Already compacted",
 		Description: "Test",
 		Status:      "closed",
@@ -233,12 +233,12 @@ func TestCheckEligibilityAlreadyCompacted(t *testing.T) {
 	// Mark as compacted
 	_, err := store.db.ExecContext(ctx, `
 		UPDATE issues SET compaction_level = 1 WHERE id = ?
-	`, "bd-1")
+	`, "beads-1")
 	if err != nil {
 		t.Fatalf("Failed to set compaction level: %v", err)
 	}
 
-	eligible, reason, err := store.CheckEligibility(ctx, "bd-1", 1)
+	eligible, reason, err := store.CheckEligibility(ctx, "beads-1", 1)
 	if err != nil {
 		t.Fatalf("CheckEligibility failed: %v", err)
 	}
@@ -259,7 +259,7 @@ func TestTier1NoCircularDeps(t *testing.T) {
 
 	// Create three closed issues with circular dependency
 	issue1 := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Issue 1",
 		Description: "Test",
 		Status:      "closed",
@@ -268,7 +268,7 @@ func TestTier1NoCircularDeps(t *testing.T) {
 		ClosedAt:    timePtr(time.Now().Add(-40 * 24 * time.Hour)),
 	}
 	issue2 := &types.Issue{
-		ID:          "bd-2",
+		ID:          "beads-2",
 		Title:       "Issue 2",
 		Description: "Test",
 		Status:      "closed",
@@ -277,7 +277,7 @@ func TestTier1NoCircularDeps(t *testing.T) {
 		ClosedAt:    timePtr(time.Now().Add(-40 * 24 * time.Hour)),
 	}
 	issue3 := &types.Issue{
-		ID:          "bd-3",
+		ID:          "beads-3",
 		Title:       "Issue 3",
 		Description: "Test",
 		Status:      "closed",
@@ -296,9 +296,9 @@ func TestTier1NoCircularDeps(t *testing.T) {
 	// Note: the AddDependency validation should prevent this, but let's test the query handles it
 	_, err := store.db.ExecContext(ctx, `
 		INSERT INTO dependencies (issue_id, depends_on_id, type, created_by) VALUES
-			('bd-1', 'bd-2', 'blocks', 'test'),
-			('bd-2', 'bd-3', 'blocks', 'test'),
-			('bd-3', 'bd-1', 'blocks', 'test')
+			('beads-1', 'beads-2', 'blocks', 'test'),
+			('beads-2', 'beads-3', 'blocks', 'test'),
+			('beads-3', 'beads-1', 'blocks', 'test')
 	`)
 	if err != nil {
 		t.Fatalf("Failed to create dependencies: %v", err)
@@ -322,7 +322,7 @@ func TestApplyCompaction(t *testing.T) {
 	ctx := context.Background()
 
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Test",
 		Description: "Original description that is quite long",
 		Status:      "closed",

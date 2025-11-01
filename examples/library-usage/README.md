@@ -4,7 +4,7 @@ This example demonstrates using Beads as a Go library in external projects (like
 
 ## Why Use Beads as a Library?
 
-Instead of spawning `bd` CLI processes:
+Instead of spawning `beads` CLI processes:
 
 - ✔ **Direct API access** - Call functions directly instead of parsing JSON output
 - ✔ **Type safety** - Compile-time checking of types and interfaces
@@ -64,7 +64,7 @@ func main() {
 cd examples/library-usage
 
 # Make sure there's a Beads database
-bd init --prefix demo
+beads init --prefix demo
 
 # Run the example
 go run main.go

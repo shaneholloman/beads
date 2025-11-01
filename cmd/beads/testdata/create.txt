@@ -1,0 +1,5 @@
+# Test beads create command
+beads init --prefix test
+beads create 'Test issue'
+stdout 'Created issue:'
+stdout 'test-'

@@ -32,7 +32,7 @@ func TestGetNextChildNumber(t *testing.T) {
 	defer cleanup()
 
 	ctx := context.Background()
-	parentID := "bd-af78e9a2"
+	parentID := "beads-af78e9a2"
 
 	// Create parent issue first (required by foreign key)
 	parent := &types.Issue{
@@ -80,8 +80,8 @@ func TestGetNextChildNumber_DifferentParents(t *testing.T) {
 	defer cleanup()
 
 	ctx := context.Background()
-	parent1 := "bd-af78e9a2"
-	parent2 := "bd-af78e9a2.1"
+	parent1 := "beads-af78e9a2"
+	parent2 := "beads-af78e9a2.1"
 
 	// Create parent issues first
 	for _, id := range []string{parent1, parent2} {
@@ -129,7 +129,7 @@ func TestGetNextChildNumber_Concurrent(t *testing.T) {
 	defer cleanup()
 
 	ctx := context.Background()
-	parentID := "bd-af78e9a2"
+	parentID := "beads-af78e9a2"
 	numWorkers := 10
 
 	// Create parent issue first
@@ -190,7 +190,7 @@ func TestGetNextChildNumber_NestedHierarchy(t *testing.T) {
 	ctx := context.Background()
 
 	// Create parent issues for nested hierarchy
-	parents := []string{"bd-af78e9a2", "bd-af78e9a2.1", "bd-af78e9a2.1.2"}
+	parents := []string{"beads-af78e9a2", "beads-af78e9a2.1", "beads-af78e9a2.1.2"}
 	for _, id := range parents {
 		parent := &types.Issue{
 			ID:          id,
@@ -206,17 +206,17 @@ func TestGetNextChildNumber_NestedHierarchy(t *testing.T) {
 	}
 
 	// Create nested hierarchy counters
-	// bd-af78e9a2 → .1, .2
-	// bd-af78e9a2.1 → .1.1, .1.2
-	// bd-af78e9a2.1.2 → .1.2.1, .1.2.2
+	// beads-af78e9a2 → .1, .2
+	// beads-af78e9a2.1 → .1.1, .1.2
+	// beads-af78e9a2.1.2 → .1.2.1, .1.2.2
 
 	tests := []struct {
 		parent   string
 		expected []int
 	}{
-		{"bd-af78e9a2", []int{1, 2}},
-		{"bd-af78e9a2.1", []int{1, 2}},
-		{"bd-af78e9a2.1.2", []int{1, 2}},
+		{"beads-af78e9a2", []int{1, 2}},
+		{"beads-af78e9a2.1", []int{1, 2}},
+		{"beads-af78e9a2.1.2", []int{1, 2}},
 	}
 
 	for _, tt := range tests {

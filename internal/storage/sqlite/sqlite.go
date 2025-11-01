@@ -113,12 +113,12 @@ func New(path string) (*SQLiteStorage, error) {
 		return nil, fmt.Errorf("failed to migrate compacted_at_commit column: %w", err)
 	}
 
-	// Migrate existing databases to add export_hashes table (bd-164)
+	// Migrate existing databases to add export_hashes table (beads-164)
 	if err := migrateExportHashesTable(db); err != nil {
 		return nil, fmt.Errorf("failed to migrate export_hashes table: %w", err)
 	}
 
-	// Migrate existing databases to add content_hash column (bd-95)
+	// Migrate existing databases to add content_hash column (beads-95)
 	if err := migrateContentHashColumn(db); err != nil {
 		return nil, fmt.Errorf("failed to migrate content_hash column: %w", err)
 	}
@@ -166,7 +166,7 @@ func migrateDirtyIssuesTable(db *sql.DB) error {
 		return fmt.Errorf("failed to check for dirty_issues table: %w", err)
 	}
 
-	// Table exists, check if content_hash column exists (migration for bd-164)
+	// Table exists, check if content_hash column exists (migration for beads-164)
 	var hasContentHash bool
 	err = db.QueryRow(`
 		SELECT COUNT(*) > 0 FROM pragma_table_info('dirty_issues')
@@ -427,7 +427,7 @@ func migrateCompactedAtCommitColumn(db *sql.DB) error {
 	return nil
 }
 
-// migrateExportHashesTable ensures the export_hashes table exists for timestamp-only dedup (bd-164)
+// migrateExportHashesTable ensures the export_hashes table exists for timestamp-only dedup (beads-164)
 func migrateExportHashesTable(db *sql.DB) error {
 	// Check if export_hashes table exists
 	var tableName string
@@ -460,7 +460,7 @@ func migrateExportHashesTable(db *sql.DB) error {
 	return nil
 }
 
-// migrateContentHashColumn adds the content_hash column to the issues table if missing (bd-95).
+// migrateContentHashColumn adds the content_hash column to the issues table if missing (beads-95).
 // This enables global N-way collision resolution by providing content-addressable identity.
 func migrateContentHashColumn(db *sql.DB) error {
 	// Check if content_hash column exists
@@ -556,7 +556,7 @@ func migrateContentHashColumn(db *sql.DB) error {
 	return nil
 }
 
-// REMOVED (bd-8e05): getNextIDForPrefix and AllocateNextID - sequential ID generation
+// REMOVED (beads-8e05): getNextIDForPrefix and AllocateNextID - sequential ID generation
 // no longer needed with hash-based IDs
 
 // getNextChildNumber atomically generates the next child number for a parent ID
@@ -577,7 +577,7 @@ func (s *SQLiteStorage) getNextChildNumber(ctx context.Context, parentID string)
 }
 
 // GetNextChildID generates the next hierarchical child ID for a given parent
-// Returns formatted ID as parentID.{counter} (e.g., bd-a3f8e9.1 or bd-a3f8e9.1.5)
+// Returns formatted ID as parentID.{counter} (e.g., beads-a3f8e9.1 or beads-a3f8e9.1.5)
 // Works at any depth (max 3 levels)
 func (s *SQLiteStorage) GetNextChildID(ctx context.Context, parentID string) (string, error) {
 	// Validate parent exists
@@ -607,15 +607,15 @@ func (s *SQLiteStorage) GetNextChildID(ctx context.Context, parentID string) (st
 	return childID, nil
 }
 
-// REMOVED (bd-c7af): SyncAllCounters - no longer needed with hash IDs
+// REMOVED (beads-c7af): SyncAllCounters - no longer needed with hash IDs
 
-// REMOVED (bd-166): derivePrefixFromPath was causing duplicate issues with wrong prefix
-// The database should ALWAYS have issue_prefix config set explicitly (by 'bd init' or auto-import)
+// REMOVED (beads-166): derivePrefixFromPath was causing duplicate issues with wrong prefix
+// The database should ALWAYS have issue_prefix config set explicitly (by 'beads init' or auto-import)
 // Never derive prefix from filename - it leads to silent data corruption
 
 // generateHashID creates a hash-based ID for a top-level issue.
-// For child issues, use the parent ID with a numeric suffix (e.g., "bd-a3f8e9.1").
-// Supports adaptive length from 4-8 chars based on database size (bd-ea2a13).
+// For child issues, use the parent ID with a numeric suffix (e.g., "beads-a3f8e9.1").
+// Supports adaptive length from 4-8 chars based on database size (beads-ea2a13).
 // Includes a nonce parameter to handle same-length collisions.
 func generateHashID(prefix, title, description, creator string, timestamp time.Time, length, nonce int) string {
 	// Combine inputs into a stable content string
@@ -660,7 +660,7 @@ func (s *SQLiteStorage) CreateIssue(ctx context.Context, issue *types.Issue, act
 	issue.CreatedAt = now
 	issue.UpdatedAt = now
 
-	// Compute content hash (bd-95)
+	// Compute content hash (beads-95)
 	if issue.ContentHash == "" {
 		issue.ContentHash = issue.ComputeContentHash()
 	}
@@ -698,16 +698,16 @@ func (s *SQLiteStorage) CreateIssue(ctx context.Context, issue *types.Issue, act
 	var prefix string
 	err = conn.QueryRowContext(ctx, `SELECT value FROM config WHERE key = ?`, "issue_prefix").Scan(&prefix)
 	if err == sql.ErrNoRows || prefix == "" {
-		// CRITICAL: Reject operation if issue_prefix config is missing (bd-166)
+		// CRITICAL: Reject operation if issue_prefix config is missing (beads-166)
 		// This prevents duplicate issues with wrong prefix
-		return fmt.Errorf("database not initialized: issue_prefix config is missing (run 'bd init --prefix <prefix>' first)")
+		return fmt.Errorf("database not initialized: issue_prefix config is missing (run 'beads init --prefix <prefix>' first)")
 	} else if err != nil {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
 
 	// Generate ID if not set (inside transaction to prevent race conditions)
 	if issue.ID == "" {
-		// Generate hash-based ID with adaptive length based on database size (bd-ea2a13)
+		// Generate hash-based ID with adaptive length based on database size (beads-ea2a13)
 		// Start with length determined by database size, expand on collision
 		var err error
 
@@ -752,15 +752,15 @@ func (s *SQLiteStorage) CreateIssue(ctx context.Context, issue *types.Issue, act
 			return fmt.Errorf("failed to generate unique ID after trying lengths %d-%d with 10 nonces each", baseLength, maxLength)
 		}
 	} else {
-		// Validate that explicitly provided ID matches the configured prefix (bd-177)
+		// Validate that explicitly provided ID matches the configured prefix (beads-177)
 		// This prevents wrong-prefix bugs when IDs are manually specified
-		// Support both top-level (bd-a3f8e9) and hierarchical (bd-a3f8e9.1) IDs
+		// Support both top-level (beads-a3f8e9) and hierarchical (beads-a3f8e9.1) IDs
 		expectedPrefix := prefix + "-"
 		if !strings.HasPrefix(issue.ID, expectedPrefix) {
 			return fmt.Errorf("issue ID '%s' does not match configured prefix '%s'", issue.ID, prefix)
 		}
 
-		// For hierarchical IDs (bd-a3f8e9.1), validate parent exists
+		// For hierarchical IDs (beads-a3f8e9.1), validate parent exists
 		if strings.Contains(issue.ID, ".") {
 			// Extract parent ID (everything before the last dot)
 			lastDot := strings.LastIndex(issue.ID, ".")
@@ -857,8 +857,8 @@ func generateBatchIDs(ctx context.Context, conn *sql.Conn, issues []*types.Issue
 	var prefix string
 	err := conn.QueryRowContext(ctx, `SELECT value FROM config WHERE key = ?`, "issue_prefix").Scan(&prefix)
 	if err == sql.ErrNoRows || prefix == "" {
-		// CRITICAL: Reject operation if issue_prefix config is missing (bd-166)
-		return fmt.Errorf("database not initialized: issue_prefix config is missing (run 'bd init --prefix <prefix>' first)")
+		// CRITICAL: Reject operation if issue_prefix config is missing (beads-166)
+		return fmt.Errorf("database not initialized: issue_prefix config is missing (run 'beads init --prefix <prefix>' first)")
 	} else if err != nil {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
@@ -870,7 +870,7 @@ func generateBatchIDs(ctx context.Context, conn *sql.Conn, issues []*types.Issue
 	// First pass: record explicitly provided IDs
 	for i := range issues {
 		if issues[i].ID != "" {
-			// Validate that explicitly provided ID matches the configured prefix (bd-177)
+			// Validate that explicitly provided ID matches the configured prefix (beads-177)
 			if !strings.HasPrefix(issues[i].ID, expectedPrefix) {
 				return fmt.Errorf("issue ID '%s' does not match configured prefix '%s'", issues[i].ID, prefix)
 			}
@@ -879,7 +879,7 @@ func generateBatchIDs(ctx context.Context, conn *sql.Conn, issues []*types.Issue
 	}
 
 	// Second pass: generate IDs for issues that need them
-	// Hash mode: generate with adaptive length based on database size (bd-ea2a13)
+	// Hash mode: generate with adaptive length based on database size (beads-ea2a13)
 	// Get adaptive base length based on current database size
 	baseLength, err := GetAdaptiveIDLength(ctx, conn, prefix)
 	if err != nil {
@@ -1052,7 +1052,7 @@ func bulkMarkDirty(ctx context.Context, conn *sql.Conn, issues []*types.Issue) e
 //
 //	// After importing with explicit IDs, sync counters to prevent collisions
 //
-// REMOVED (bd-c7af): SyncAllCounters example - no longer needed with hash IDs
+// REMOVED (beads-c7af): SyncAllCounters example - no longer needed with hash IDs
 //
 // Performance:
 //   - 100 issues: ~30ms (vs ~900ms with CreateIssue loop)
@@ -1361,7 +1361,7 @@ func (s *SQLiteStorage) UpdateIssue(ctx context.Context, id string, updates map[
 	// Auto-manage closed_at when status changes (enforce invariant)
 	setClauses, args = manageClosedAt(oldIssue, updates, setClauses, args)
 
-	// Recompute content_hash if any content fields changed (bd-95)
+	// Recompute content_hash if any content fields changed (beads-95)
 	contentChanged := false
 	contentFields := []string{"title", "description", "design", "acceptance_criteria", "notes", "status", "priority", "issue_type", "assignee", "external_ref"}
 	for _, field := range contentFields {
@@ -1571,14 +1571,14 @@ func (s *SQLiteStorage) RenameDependencyPrefix(ctx context.Context, oldPrefix, n
 	return nil
 }
 
-// RenameCounterPrefix is a no-op with hash-based IDs (bd-8e05)
+// RenameCounterPrefix is a no-op with hash-based IDs (beads-8e05)
 // Kept for backward compatibility with rename-prefix command
 func (s *SQLiteStorage) RenameCounterPrefix(ctx context.Context, oldPrefix, newPrefix string) error {
 	// Hash-based IDs don't use counters, so nothing to update
 	return nil
 }
 
-// ResetCounter is a no-op with hash-based IDs (bd-8e05)
+// ResetCounter is a no-op with hash-based IDs (beads-8e05)
 // Kept for backward compatibility
 func (s *SQLiteStorage) ResetCounter(ctx context.Context, prefix string) error {
 	// Hash-based IDs don't use counters, so nothing to reset
@@ -1669,7 +1669,7 @@ func (s *SQLiteStorage) DeleteIssue(ctx context.Context, id string) error {
 		return err
 	}
 
-	// REMOVED (bd-c7af): Counter sync after deletion - no longer needed with hash IDs
+	// REMOVED (beads-c7af): Counter sync after deletion - no longer needed with hash IDs
 	return nil
 }
 
@@ -1723,7 +1723,7 @@ func (s *SQLiteStorage) DeleteIssues(ctx context.Context, ids []string, cascade 
 		return nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	// REMOVED (bd-c7af): Counter sync after deletion - no longer needed with hash IDs
+	// REMOVED (beads-c7af): Counter sync after deletion - no longer needed with hash IDs
 
 	return result, nil
 }

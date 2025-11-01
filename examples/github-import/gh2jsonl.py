@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Convert GitHub Issues to bd JSONL format.
+Convert GitHub Issues to beads JSONL format.
 
 Supports two input modes:
 1. GitHub API - Fetch issues directly from a repository
@@ -9,10 +9,10 @@ Supports two input modes:
 Usage:
     # From GitHub API
     export GITHUB_TOKEN=ghp_your_token_here
-    python gh2jsonl.py --repo owner/repo | bd import
+    python gh2jsonl.py --repo owner/repo | beads import
     
     # From exported JSON file
-    python gh2jsonl.py --file issues.json | bd import
+    python gh2jsonl.py --file issues.json | beads import
     
     # Save to file first
     python gh2jsonl.py --repo owner/repo > issues.jsonl
@@ -30,13 +30,13 @@ from urllib.error import HTTPError, URLError
 
 
 class GitHubToBeads:
-    """Convert GitHub Issues to bd JSONL format."""
+    """Convert GitHub Issues to beads JSONL format."""
 
-    def __init__(self, prefix: str = "bd", start_id: int = 1):
+    def __init__(self, prefix: str = "beads", start_id: int = 1):
         self.prefix = prefix
         self.issue_counter = start_id
         self.issues: List[Dict[str, Any]] = []
-        self.gh_id_to_bd_id: Dict[int, str] = {}
+        self.gh_id_to_beads_id: Dict[int, str] = {}
 
     def fetch_from_api(self, repo: str, token: Optional[str] = None, state: str = "all"):
         """Fetch issues from GitHub API."""
@@ -61,7 +61,7 @@ class GitHubToBeads:
             headers = {
                 "Authorization": f"token {token}",
                 "Accept": "application/vnd.github.v3+json",
-                "User-Agent": "bd-gh-import/1.0",
+                "User-Agent": "beads-gh-import/1.0",
             }
 
             try:
@@ -116,7 +116,7 @@ class GitHubToBeads:
             raise ValueError("JSON must be a single issue object or array of issues")
 
     def map_priority(self, labels: List[str]) -> int:
-        """Map GitHub labels to bd priority."""
+        """Map GitHub labels to beads priority."""
         label_names = [label.get("name", "").lower() if isinstance(label, dict) else label.lower() for label in labels]
 
         # Priority labels (customize for your repo)
@@ -132,7 +132,7 @@ class GitHubToBeads:
             return 2  # Default medium
 
     def map_issue_type(self, labels: List[str]) -> str:
-        """Map GitHub labels to bd issue type."""
+        """Map GitHub labels to beads issue type."""
         label_names = [label.get("name", "").lower() if isinstance(label, dict) else label.lower() for label in labels]
 
         # Type labels (customize for your repo)
@@ -148,7 +148,7 @@ class GitHubToBeads:
             return "task"
 
     def map_status(self, state: str, labels: List[str]) -> str:
-        """Map GitHub state to bd status."""
+        """Map GitHub state to beads status."""
         label_names = [label.get("name", "").lower() if isinstance(label, dict) else label.lower() for label in labels]
 
         if state == "closed":
@@ -200,19 +200,19 @@ class GitHubToBeads:
         return list(set(refs))  # Deduplicate
 
     def convert_issue(self, gh_issue: Dict[str, Any]) -> Dict[str, Any]:
-        """Convert a single GitHub issue to bd format."""
+        """Convert a single GitHub issue to beads format."""
         gh_id = gh_issue["number"]
-        bd_id = f"{self.prefix}-{self.issue_counter}"
+        beads_id = f"{self.prefix}-{self.issue_counter}"
         self.issue_counter += 1
 
         # Store mapping
-        self.gh_id_to_bd_id[gh_id] = bd_id
+        self.gh_id_to_beads_id[gh_id] = beads_id
 
         labels = gh_issue.get("labels", [])
 
-        # Build bd issue
+        # Build beads issue
         issue = {
-            "id": bd_id,
+            "id": beads_id,
             "title": gh_issue["title"],
             "description": gh_issue.get("body") or "",
             "status": self.map_status(gh_issue["state"], labels),
@@ -230,9 +230,9 @@ class GitHubToBeads:
             issue["assignee"] = gh_issue["assignee"]["login"]
 
         # Add labels (filtered)
-        bd_labels = self.extract_labels(labels)
-        if bd_labels:
-            issue["labels"] = bd_labels
+        beads_labels = self.extract_labels(labels)
+        if beads_labels:
+            issue["labels"] = beads_labels
 
         # Add closed timestamp if closed
         if gh_issue.get("closed_at"):
@@ -244,9 +244,9 @@ class GitHubToBeads:
         """Add dependencies based on issue references in body text."""
         for gh_issue_data in getattr(self, '_gh_issues', []):
             gh_id = gh_issue_data["number"]
-            bd_id = self.gh_id_to_bd_id.get(gh_id)
+            beads_id = self.gh_id_to_beads_id.get(gh_id)
 
-            if not bd_id:
+            if not beads_id:
                 continue
 
             body = gh_issue_data.get("body") or ""
@@ -254,39 +254,39 @@ class GitHubToBeads:
 
             dependencies = []
             for ref_gh_id in referenced_gh_ids:
-                ref_bd_id = self.gh_id_to_bd_id.get(ref_gh_id)
-                if ref_bd_id:
+                ref_beads_id = self.gh_id_to_beads_id.get(ref_gh_id)
+                if ref_beads_id:
                     dependencies.append({
                         "issue_id": "",
-                        "depends_on_id": ref_bd_id,
+                        "depends_on_id": ref_beads_id,
                         "type": "related"
                     })
 
-            # Find the bd issue and add dependencies
+            # Find the beads issue and add dependencies
             if dependencies:
                 for issue in self.issues:
-                    if issue["id"] == bd_id:
+                    if issue["id"] == beads_id:
                         issue["dependencies"] = dependencies
                         break
 
     def convert(self, gh_issues: List[Dict[str, Any]]):
-        """Convert all GitHub issues to bd format."""
+        """Convert all GitHub issues to beads format."""
         # Store for dependency processing
         self._gh_issues = gh_issues
 
         # Sort by issue number for consistent ID assignment
-        sorted_issues = sorted(gh_issues, key=lambda x: x["number"])
+        sorted_issues = sorted(gh_issues, key=lambeadsa x: x["number"])
 
         # Convert each issue
         for gh_issue in sorted_issues:
-            bd_issue = self.convert_issue(gh_issue)
-            self.issues.append(bd_issue)
+            beads_issue = self.convert_issue(gh_issue)
+            self.issues.append(beads_issue)
 
         # Add cross-references
         self.add_dependencies()
 
         print(
-            f"Converted {len(self.issues)} issues. Mapping: GH #{min(self.gh_id_to_bd_id.keys())} -> {self.gh_id_to_bd_id[min(self.gh_id_to_bd_id.keys())]}",
+            f"Converted {len(self.issues)} issues. Mapping: GH #{min(self.gh_id_to_beads_id.keys())} -> {self.gh_id_to_beads_id[min(self.gh_id_to_beads_id.keys())]}",
             file=sys.stderr
         )
 
@@ -303,13 +303,13 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Convert GitHub Issues to bd JSONL format",
+        description="Convert GitHub Issues to beads JSONL format",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # From GitHub API
   export GITHUB_TOKEN=ghp_...
-  python gh2jsonl.py --repo owner/repo | bd import
+  python gh2jsonl.py --repo owner/repo | beads import
   
   # From JSON file
   python gh2jsonl.py --file issues.json > issues.jsonl
@@ -343,8 +343,8 @@ Examples:
     )
     parser.add_argument(
         "--prefix",
-        default="bd",
-        help="Issue ID prefix (default: bd)"
+        default="beads",
+        help="Issue ID prefix (default: beads)"
     )
     parser.add_argument(
         "--start-id",

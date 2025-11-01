@@ -1,10 +1,10 @@
 # Python Agent Example
 
-A simple Python script demonstrating how an AI agent can use bd to manage tasks.
+A simple Python script demonstrating how an AI agent can use beads to manage tasks.
 
 ## Features
 
-- Finds ready work using `bd ready --json`
+- Finds ready work using `beads ready --json`
 - Claims tasks by updating status
 - Simulates discovering new issues during work
 - Links discovered issues with `discovered-from` dependency
@@ -13,8 +13,8 @@ A simple Python script demonstrating how an AI agent can use bd to manage tasks.
 ## Prerequisites
 
 - Python 3.7+
-- bd installed: `go install github.com/shaneholloman/beads/cmd/bd@latest`
-- A beads database initialized: `bd init`
+- beads installed: `go install github.com/shaneholloman/beads/cmd/beads@latest`
+- A beads database initialized: `beads init`
 
 ## Usage
 
@@ -45,14 +45,14 @@ Beads Agent starting...
 Iteration 1/10
 ============================================================
 
-Claiming task: bd-1
-Working on: Implement user authentication (bd-1)
+Claiming task: beads-1
+Working on: Implement user authentication (beads-1)
    Priority: 1, Type: feature
 
 Discovered: Missing test coverage for this feature
 Creating issue: Add tests for Implement user authentication
-Linking bd-2 ← discovered-from ← bd-1
-✔ Completing task: bd-1 - Implemented successfully
+Linking beads-2 ← discovered-from ← beads-1
+✔ Completing task: beads-1 - Implemented successfully
 
 New work discovered and linked. Running another cycle...
 ```
@@ -73,13 +73,13 @@ To integrate with a real LLM-based agent:
 agent = BeadsAgent()
 
 # Find specific types of work
-ready = agent.run_bd("ready", "--priority", "1", "--assignee", "bot")
+ready = agent.run_beads("ready", "--priority", "1", "--assignee", "bot")
 
 # Create issues with labels
-agent.run_bd("create", "New task", "-l", "urgent,backend")
+agent.run_beads("create", "New task", "-l", "urgent,backend")
 
 # Query dependency tree
-tree = agent.run_bd("dep", "tree", "bd-1")
+tree = agent.run_beads("dep", "tree", "beads-1")
 ```
 
 ## See Also

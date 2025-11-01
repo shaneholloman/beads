@@ -77,7 +77,7 @@ Even at 25% collision *probability*, the *expected number* of actual collisions 
 
 ## Alternative Thresholds
 
-You can customize the threshold with `bd config set max_collision_prob <value>`:
+You can customize the threshold with `beads config set max_collision_prob <value>`:
 
 ### Conservative (10% threshold)
 
@@ -109,9 +109,9 @@ When a hash collision occurs (same ID generated twice), beads automatically:
 
 Example with 4-char base:
 
-- `bd-a3f2` (nonce 0) - collision!
-- `bd-a3f2` (nonce 1) - collision again!
-- `bd-b7d4` (nonce 2) - success! ✔
+- `beads-a3f2` (nonce 0) - collision!
+- `beads-a3f2` (nonce 1) - collision again!
+- `beads-b7d4` (nonce 2) - success! ✔
 
 ## Mathematical Properties
 
@@ -131,7 +131,7 @@ Example with 4-char base:
 Using `[a-z0-9]` (36 characters) instead of hex (16 characters):
 
 - **4-char alphanumeric** ≈ **6-char hex** in capacity
-- More readable: `bd-a3f2` vs `bd-a3f2e1`
+- More readable: `beads-a3f2` vs `beads-a3f2e1`
 - Easier to type and communicate
 
 ## Verification

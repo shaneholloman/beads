@@ -11,7 +11,7 @@ import (
 	"github.com/shaneholloman/beads/internal/types"
 )
 
-// TestImportTimestampPrecedence verifies that imports respect updated_at timestamps (bd-e55c)
+// TestImportTimestampPrecedence verifies that imports respect updated_at timestamps (beads-e55c)
 // When importing an issue with the same ID but different content, the newer version should win.
 func TestImportTimestampPrecedence(t *testing.T) {
 	tmpDir := t.TempDir()
@@ -27,7 +27,7 @@ func TestImportTimestampPrecedence(t *testing.T) {
 	ctx := context.Background()
 
 	// Set up database with prefix
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("Failed to set prefix: %v", err)
 	}
 
@@ -35,7 +35,7 @@ func TestImportTimestampPrecedence(t *testing.T) {
 	now := time.Now()
 	closedAt := now
 	localIssue := &types.Issue{
-		ID:          "bd-test123",
+		ID:          "beads-test123",
 		Title:       "Test Issue",
 		Description: "Local version",
 		Status:      types.StatusClosed,
@@ -52,9 +52,9 @@ func TestImportTimestampPrecedence(t *testing.T) {
 	}
 
 	// Simulate importing an older version from remote (e.g., from git pull)
-	// This represents the scenario in bd-e55c where remote has status=open from yesterday
+	// This represents the scenario in beads-e55c where remote has status=open from yesterday
 	olderRemoteIssue := &types.Issue{
-		ID:          "bd-test123", // Same ID
+		ID:          "beads-test123", // Same ID
 		Title:       "Test Issue",
 		Description: "Remote version",
 		Status:      types.StatusOpen, // Different status
@@ -83,7 +83,7 @@ func TestImportTimestampPrecedence(t *testing.T) {
 	}
 
 	// Verify the database still has the local (newer) version
-	dbIssue, err := store.GetIssue(ctx, "bd-test123")
+	dbIssue, err := store.GetIssue(ctx, "beads-test123")
 	if err != nil {
 		t.Fatalf("Failed to get issue: %v", err)
 	}
@@ -97,7 +97,7 @@ func TestImportTimestampPrecedence(t *testing.T) {
 
 	// Now test the reverse: importing a NEWER version should update
 	newerRemoteIssue := &types.Issue{
-		ID:          "bd-test123",
+		ID:          "beads-test123",
 		Title:       "Test Issue",
 		Description: "Even newer remote version",
 		Status:      types.StatusOpen,
@@ -120,7 +120,7 @@ func TestImportTimestampPrecedence(t *testing.T) {
 	}
 
 	// Verify the database now has the newer remote version
-	dbIssue2, err := store.GetIssue(ctx, "bd-test123")
+	dbIssue2, err := store.GetIssue(ctx, "beads-test123")
 	if err != nil {
 		t.Fatalf("Failed to get issue after second import: %v", err)
 	}
@@ -146,7 +146,7 @@ func TestImportSameTimestamp(t *testing.T) {
 
 	ctx := context.Background()
 
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("Failed to set prefix: %v", err)
 	}
 
@@ -154,7 +154,7 @@ func TestImportSameTimestamp(t *testing.T) {
 
 	// Create local issue
 	localIssue := &types.Issue{
-		ID:          "bd-test456",
+		ID:          "beads-test456",
 		Title:       "Test Issue",
 		Description: "Local version",
 		Status:      types.StatusOpen,
@@ -171,7 +171,7 @@ func TestImportSameTimestamp(t *testing.T) {
 
 	// Import with SAME timestamp but different content
 	remoteIssue := &types.Issue{
-		ID:          "bd-test456",
+		ID:          "beads-test456",
 		Title:       "Test Issue",
 		Description: "Remote version",
 		Status:      types.StatusInProgress,
@@ -195,7 +195,7 @@ func TestImportSameTimestamp(t *testing.T) {
 	}
 
 	// Verify local version is preserved
-	dbIssue, err := store.GetIssue(ctx, "bd-test456")
+	dbIssue, err := store.GetIssue(ctx, "beads-test456")
 	if err != nil {
 		t.Fatalf("Failed to get issue: %v", err)
 	}

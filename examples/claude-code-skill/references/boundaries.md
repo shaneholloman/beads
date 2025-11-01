@@ -1,22 +1,22 @@
-# Boundaries: When to Use bd vs TodoWrite
+# Boundaries: When to Use beads vs TodoWrite
 
-This reference provides detailed decision criteria for choosing between bd issue tracking and TodoWrite for task management.
+This reference provides detailed decision criteria for choosing between beads issue tracking and TodoWrite for task management.
 
 ## Contents
 
 - [The Core Question](#the-core-question)
 - [Decision Matrix](#decision-matrix)
-  - [Use bd for](#use-bd-for): Multi-Session Work, Complex Dependencies, Knowledge Work, Side Quests, Project Memory
+  - [Use beads for](#use-beads-for): Multi-Session Work, Complex Dependencies, Knowledge Work, Side Quests, Project Memory
   - [Use TodoWrite for](#use-todowrite-for): Single-Session Tasks, Linear Execution, Immediate Context, Simple Tracking
 - [Detailed Comparison](#detailed-comparison)
 - [Integration Patterns](#integration-patterns)
-  - Pattern 1: bd as Strategic, TodoWrite as Tactical
-  - Pattern 2: TodoWrite as Working Copy of bd
+  - Pattern 1: beads as Strategic, TodoWrite as Tactical
+  - Pattern 2: TodoWrite as Working Copy of beads
   - Pattern 3: Transition Mid-Session
 - [Real-World Examples](#real-world-examples)
   - Strategic Document Development, Simple Feature Implementation, Bug Investigation, Refactoring with Dependencies
 - [Common Mistakes](#common-mistakes)
-  - Using TodoWrite for multi-session work, using bd for simple tasks, not transitioning when complexity emerges, creating too many bd issues, never using bd
+  - Using TodoWrite for multi-session work, using beads for simple tasks, not transitioning when complexity emerges, creating too many beads issues, never using beads
 - [The Transition Point](#the-transition-point)
 - [Summary Heuristics](#summary-heuristics)
 
@@ -24,14 +24,14 @@ This reference provides detailed decision criteria for choosing between bd issue
 
 **"Could I resume this work after 2 weeks away?"**
 
-- If bd would help you resume → **use bd**
+- If beads would help you resume → **use beads**
 - If markdown skim would suffice → **TodoWrite is fine**
 
-This heuristic captures the essential difference: bd provides structured context that persists across long gaps, while TodoWrite excels at immediate session tracking.
+This heuristic captures the essential difference: beads provides structured context that persists across long gaps, while TodoWrite excels at immediate session tracking.
 
 ## Decision Matrix
 
-### Use bd for
+### Use beads for
 
 #### Multi-Session Work
 
@@ -44,7 +44,7 @@ Work spanning multiple compaction cycles or days where context needs to persist.
 - Bug investigation requiring experimentation over time
 - Architecture design evolving through multiple iterations
 
-**Why bd wins**: Issues capture context that survives compaction. Return weeks later and see full history, design decisions, and current status.
+**Why beads wins**: Issues capture context that survives compaction. Return weeks later and see full history, design decisions, and current status.
 
 #### Complex Dependencies
 
@@ -57,7 +57,7 @@ Work with blockers, prerequisites, or hierarchical structure.
 - Refactoring with dependencies between different code areas
 - Migration requiring sequential steps in specific order
 
-**Why bd wins**: Dependency graph shows what's blocking what. `bd ready` automatically surfaces unblocked work. No manual tracking required.
+**Why beads wins**: Dependency graph shows what's blocking what. `beads ready` automatically surfaces unblocked work. No manual tracking required.
 
 #### Knowledge Work
 
@@ -70,7 +70,7 @@ Tasks with fuzzy boundaries, exploration, or strategic thinking.
 - Performance optimization requiring measurement and experimentation
 - Documentation requiring understanding system architecture
 
-**Why bd wins**: `design` and `acceptance_criteria` fields capture evolving understanding. Issues can be refined as exploration reveals more information.
+**Why beads wins**: `design` and `acceptance_criteria` fields capture evolving understanding. Issues can be refined as exploration reveals more information.
 
 #### Side Quests
 
@@ -83,7 +83,7 @@ Exploratory work that might pause the main task.
 - During code review, identify potential improvement
 - While writing tests, find edge case requiring research
 
-**Why bd wins**: Create issue with `discovered-from` dependency, pause main work safely. Context preserved for both tracks. Resume either one later.
+**Why beads wins**: Create issue with `discovered-from` dependency, pause main work safely. Context preserved for both tracks. Resume either one later.
 
 #### Project Memory
 
@@ -96,7 +96,7 @@ Need to resume work after significant time with full context.
 - Complex features split across sprints
 - Research projects with long investigation periods
 
-**Why bd wins**: Git-backed database persists indefinitely. All context, decisions, and history available on resume. No relying on conversation scrollback or markdown files.
+**Why beads wins**: Git-backed database persists indefinitely. All context, decisions, and history available on resume. No relying on conversation scrollback or markdown files.
 
 ---
 
@@ -152,17 +152,17 @@ Just need a checklist to show progress to user.
 - Demonstrating systematic approach
 - Providing reassurance work is proceeding
 
-**Why TodoWrite wins**: User wants to see thinking and progress. TodoWrite is visible in conversation. bd is invisible background structure.
+**Why TodoWrite wins**: User wants to see thinking and progress. TodoWrite is visible in conversation. beads is invisible background structure.
 
 ---
 
 ## Detailed Comparison
 
-| Aspect | bd | TodoWrite |
+| Aspect | beads | TodoWrite |
 |--------|-----|-----------|
 | **Persistence** | Git-backed, survives compaction | Session-only, lost after conversation |
 | **Dependencies** | Graph-based, automatic ready detection | Manual, no automatic tracking |
-| **Discoverability** | `bd ready` surfaces work | Scroll conversation for todos |
+| **Discoverability** | `beads ready` surfaces work | Scroll conversation for todos |
 | **Complexity** | Handles nested epics, blockers | Flat list only |
 | **Visibility** | Background structure, not in conversation | Visible to user in chat |
 | **Setup** | Requires `.beads/` directory in project | Always available |
@@ -173,19 +173,19 @@ Just need a checklist to show progress to user.
 
 ## Integration Patterns
 
-bd and TodoWrite can coexist effectively in a session. Use both strategically.
+beads and TodoWrite can coexist effectively in a session. Use both strategically.
 
-### Pattern 1: bd as Strategic, TodoWrite as Tactical
+### Pattern 1: beads as Strategic, TodoWrite as Tactical
 
 **Setup:**
 
-- bd tracks high-level issues and dependencies
+- beads tracks high-level issues and dependencies
 - TodoWrite tracks current session's execution steps
 
 **Example:**
 
 ```
-bd issue: "Implement user authentication" (epic)
+beads issue: "Implement user authentication" (epic)
   ├─ Child issue: "Create login endpoint"
   ├─ Child issue: "Add JWT token validation"  ← Currently working on this
   └─ Child issue: "Implement logout"
@@ -203,35 +203,35 @@ TodoWrite (for JWT validation):
 - User wants to see current progress but larger context exists
 - Multi-session work currently in single-session execution phase
 
-### Pattern 2: TodoWrite as Working Copy of bd
+### Pattern 2: TodoWrite as Working Copy of beads
 
 **Setup:**
 
-- Start with bd issue containing full context
-- Create TodoWrite checklist from bd issue's acceptance criteria
-- Update bd as TodoWrite items complete
+- Start with beads issue containing full context
+- Create TodoWrite checklist from beads issue's acceptance criteria
+- Update beads as TodoWrite items complete
 
 **Example:**
 
 ```
 Session start:
-- Check bd: "issue-auth-42: Add JWT token validation" is ready
+- Check beads: "issue-auth-42: Add JWT token validation" is ready
 - Extract acceptance criteria into TodoWrite
-- Mark bd issue as in_progress
+- Mark beads issue as in_progress
 - Work through TodoWrite items
-- Update bd design notes as you learn
-- When TodoWrite completes, close bd issue
+- Update beads design notes as you learn
+- When TodoWrite completes, close beads issue
 ```
 
 **When to use:**
 
-- bd issue is ready but execution is straightforward
+- beads issue is ready but execution is straightforward
 - User wants visible progress tracking
 - Need structured approach to larger issue
 
 ### Pattern 3: Transition Mid-Session
 
-**From TodoWrite to bd:**
+**From TodoWrite to beads:**
 
 Recognize mid-execution that work is more complex than anticipated.
 
@@ -245,17 +245,17 @@ Recognize mid-execution that work is more complex than anticipated.
 **How to transition:**
 
 ```
-1. Create bd issue with current TodoWrite content
+1. Create beads issue with current TodoWrite content
 2. Note: "Discovered this is multi-session work during implementation"
 3. Add dependencies as discovered
 4. Keep TodoWrite for current session
-5. Update bd issue before session ends
-6. Next session: resume from bd, create new TodoWrite if needed
+5. Update beads issue before session ends
+6. Next session: resume from beads, create new TodoWrite if needed
 ```
 
-**From bd to TodoWrite:**
+**From beads to TodoWrite:**
 
-Rare, but happens when bd issue turns out simpler than expected.
+Rare, but happens when beads issue turns out simpler than expected.
 
 **Trigger signals:**
 
@@ -267,10 +267,10 @@ Rare, but happens when bd issue turns out simpler than expected.
 **How to transition:**
 
 ```
-1. Keep bd issue for historical record
+1. Keep beads issue for historical record
 2. Create TodoWrite from issue description
 3. Execute via TodoWrite
-4. Close bd issue when done
+4. Close beads issue when done
 5. Note: "Completed in single session, simpler than expected"
 ```
 
@@ -280,7 +280,7 @@ Rare, but happens when bd issue turns out simpler than expected.
 
 **Scenario**: Planning migration from MySQL to PostgreSQL for production application.
 
-**Why bd**:
+**Why beads**:
 
 - Multi-session work across days/weeks
 - Fuzzy boundaries - scope emerges through investigation
@@ -288,7 +288,7 @@ Rare, but happens when bd issue turns out simpler than expected.
 - Dependencies - can't migrate data until schema validated
 - Project memory - need to resume after interruptions
 
-**bd structure**:
+**beads structure**:
 
 ```
 db-epic: "Migrate production database to PostgreSQL"
@@ -320,7 +320,7 @@ db-epic: "Migrate production database to PostgreSQL"
 - [ ] Run tests
 ```
 
-**bd role**: None. Overkill for straightforward task.
+**beads role**: None. Overkill for straightforward task.
 
 ### Example 3: Bug Investigation
 
@@ -337,29 +337,29 @@ db-epic: "Migrate production database to PostgreSQL"
 
 **What actually happens**: Reproducing bug reveals it's intermittent. Root cause investigation shows multiple potential issues. Needs time to investigate.
 
-**Transition to bd**:
+**Transition to beads**:
 
 ```
-Create bd issue: "Fix intermittent auth failure in production"
+Create beads issue: "Fix intermittent auth failure in production"
   - Description: Initially seemed simple but reproduction shows complex race condition
   - Design: Three potential causes identified, need to test each
   - Created issues for each hypothesis with discovered-from dependency
 
-Pause for day, resume next session from bd context
+Pause for day, resume next session from beads context
 ```
 
 ### Example 4: Refactoring with Dependencies
 
 **Scenario**: Extract common validation logic from three controllers.
 
-**Why bd**:
+**Why beads**:
 
 - Dependencies - must extract before modifying callers
 - Multi-file changes need coordination
 - Potential side quest - might discover better pattern during extraction
 - Need to track which controllers updated
 
-**bd structure**:
+**beads structure**:
 
 ```
 refactor-1: "Create shared validation module"
@@ -372,7 +372,7 @@ refactor-4: "Update payment controller to use shared validation"
 
 **TodoWrite role**: Could use TodoWrite for individual controller updates as implementing.
 
-**Why this works**: bd ensures you don't forget to update a controller. `bd ready` shows next available work. Dependencies prevent starting controller update before extraction complete.
+**Why this works**: beads ensures you don't forget to update a controller. `beads ready` shows next available work. Dependencies prevent starting controller update before extraction complete.
 
 ## Common Mistakes
 
@@ -385,9 +385,9 @@ refactor-4: "Update payment controller to use shared validation"
 - Lose design decisions made during implementation
 - Start over or duplicate work
 
-**Solution**: Create bd issue instead. Persist context across sessions.
+**Solution**: Create beads issue instead. Persist context across sessions.
 
-### Mistake 2: Using bd for Simple Linear Tasks
+### Mistake 2: Using beads for Simple Linear Tasks
 
 **What happens**:
 
@@ -406,19 +406,19 @@ refactor-4: "Update payment controller to use shared validation"
 - Keep using TodoWrite despite poor fit
 - Lose context when conversation ends
 
-**Solution**: Transition to bd when complexity signal appears. Not too late mid-session.
+**Solution**: Transition to beads when complexity signal appears. Not too late mid-session.
 
-### Mistake 4: Creating Too Many bd Issues
+### Mistake 4: Creating Too Many beads Issues
 
 **What happens**:
 
 - Every tiny task gets an issue
 - Database cluttered with trivial items
-- Hard to find meaningful work in `bd ready`
+- Hard to find meaningful work in `beads ready`
 
-**Solution**: Reserve bd for work that actually benefits from persistence. Use "2 week test" - would bd help resume after 2 weeks? If no, skip it.
+**Solution**: Reserve beads for work that actually benefits from persistence. Use "2 week test" - would beads help resume after 2 weeks? If no, skip it.
 
-### Mistake 5: Never Using bd Because TodoWrite is Familiar
+### Mistake 5: Never Using beads Because TodoWrite is Familiar
 
 **What happens**:
 
@@ -427,7 +427,7 @@ refactor-4: "Update payment controller to use shared validation"
 - Can't resume work effectively
 - Rotten half-implemented plans
 
-**Solution**: Force yourself to use bd for next multi-session project. Experience the difference in organization and resumability.
+**Solution**: Force yourself to use beads for next multi-session project. Experience the difference in organization and resumability.
 
 ### Mistake 6: Always Asking Before Creating Issues (or Never Asking)
 
@@ -468,7 +468,7 @@ Most work starts with an implicit mental model:
 
 ✔ **Stays straightforward** → Continue with TodoWrite, complete in session
 
-**WARNING: Complexity emerges** → Transition to bd, preserve context
+**WARNING: Complexity emerges** → Transition to beads, preserve context
 
 The skill is recognizing the transition point:
 
@@ -481,7 +481,7 @@ The skill is recognizing the transition point:
 - "The user might not be available to continue today"
 - "I found three related issues while working on this"
 
-**When you notice these signals**: Create bd issue, preserve context, work from structured foundation.
+**When you notice these signals**: Create beads issue, preserve context, work from structured foundation.
 
 ## Summary Heuristics
 
@@ -490,31 +490,31 @@ Quick decision guides:
 **Time horizon:**
 
 - Same session → TodoWrite
-- Multiple sessions → bd
+- Multiple sessions → beads
 
 **Dependency structure:**
 
 - Linear steps → TodoWrite
-- Blockers/prerequisites → bd
+- Blockers/prerequisites → beads
 
 **Scope clarity:**
 
 - Well-defined → TodoWrite
-- Exploratory → bd
+- Exploratory → beads
 
 **Context complexity:**
 
 - Conversation has everything → TodoWrite
-- External context needed → bd
+- External context needed → beads
 
 **User interaction:**
 
 - User watching progress → TodoWrite visible in chat
-- Background work → bd invisible structure
+- Background work → beads invisible structure
 
 **Resume difficulty:**
 
 - Easy from markdown → TodoWrite
-- Need structured history → bd
+- Need structured history → beads
 
-When in doubt: **Use the 2-week test**. If you'd struggle to resume this work after 2 weeks without bd, use bd.
+When in doubt: **Use the 2-week test**. If you'd struggle to resume this work after 2 weeks without beads, use beads.

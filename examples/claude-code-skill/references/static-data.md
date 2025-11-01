@@ -1,10 +1,10 @@
-# Using bd for Static Reference Data
+# Using beads for Static Reference Data
 
-bd is primarily designed for work tracking, but can also serve as a queryable database for static reference data with some adaptations.
+beads is primarily designed for work tracking, but can also serve as a queryable database for static reference data with some adaptations.
 
 ## Work Tracking (Primary Use Case)
 
-Standard bd workflow:
+Standard beads workflow:
 
 - Issues flow through states (open → in_progress → closed)
 - Priorities and dependencies matter
@@ -13,7 +13,7 @@ Standard bd workflow:
 
 ## Reference Databases / Glossaries (Alternative Use)
 
-When using bd for static data (terminology, glossaries, reference information):
+When using beads for static data (terminology, glossaries, reference information):
 
 **Characteristics:**
 
@@ -26,7 +26,7 @@ When using bd for static data (terminology, glossaries, reference information):
 
 - Use separate database (not mixed with work tracking) to avoid confusion
 - Consider dual format: maintain markdown version alongside database for name-based lookup
-- Example: A terminology database could use both `terms.db` (queryable via bd) and `glossary.md` (browsable by name)
+- Example: A terminology database could use both `terms.db` (queryable via beads) and `glossary.md` (browsable by name)
 
 **Key difference**: Work items have lifecycle; reference entities are stable knowledge.
 
@@ -47,15 +47,15 @@ When using bd for static data (terminology, glossaries, reference information):
 
 ## Limitations
 
-**bd show requires IDs, not names:**
+**beads show requires IDs, not names:**
 
-- `bd show term-42` works
-- `bd show "API endpoint"` doesn't work
-- Workaround: `bd list | grep -i "api endpoint"` to find ID first
-- This is why dual format (bd + markdown) is recommended for reference data
+- `beads show term-42` works
+- `beads show "API endpoint"` doesn't work
+- Workaround: `beads list | grep -i "api endpoint"` to find ID first
+- This is why dual format (beads + markdown) is recommended for reference data
 
 **No search by content:**
 
-- bd searches by ID, title filters, status, labels
+- beads searches by ID, title filters, status, labels
 - For full-text search across descriptions/notes, use grep on the JSONL file
 - Example: `grep -i "authentication" .beads/issues.jsonl`

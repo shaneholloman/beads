@@ -1,0 +1,22 @@
+# Test beads dep remove command
+beads init --prefix test
+
+# Create issues and capture their hash IDs
+beads create 'First issue'
+cp stdout first.txt
+exec sh -c 'grep -oE "test-[a-f0-9]+" first.txt > first_id.txt'
+
+beads create 'Second issue'
+cp stdout second.txt
+exec sh -c 'grep -oE "test-[a-f0-9]+" second.txt > second_id.txt'
+
+# Add dependency
+exec sh -c 'beads dep add $(cat second_id.txt) $(cat first_id.txt)'
+stdout 'Added dependency'
+
+# Remove dependency
+exec sh -c 'beads dep remove $(cat second_id.txt) $(cat first_id.txt)'
+stdout 'Removed dependency'
+
+# Verify dependency is gone
+exec sh -c 'beads show $(cat second_id.txt) | grep -v "Depends on"'

@@ -38,15 +38,15 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
   exit 1
 fi
 
-# Check bd is installed
-if ! command -v bd &> /dev/null; then
-  echo "❌ Error: bd command not found"
+# Check beads is installed
+if ! command -v beads &> /dev/null; then
+  echo "❌ Error: beads command not found"
   exit 1
 fi
 
 # Check eligible issues
 echo "Checking eligible issues (Tier $TIER)..."
-ELIGIBLE=$(bd compact --dry-run --all --tier "$TIER" --json 2>/dev/null | jq '. | length' || echo "0")
+ELIGIBLE=$(beads compact --dry-run --all --tier "$TIER" --json 2>/dev/null | jq '. | length' || echo "0")
 
 if [ -z "$ELIGIBLE" ] || [ "$ELIGIBLE" = "null" ]; then
   ELIGIBLE=0
@@ -61,18 +61,18 @@ fi
 
 if [ "$DRY_RUN" = true ]; then
   echo "🔍 Dry run mode - showing candidates:"
-  bd compact --dry-run --all --tier "$TIER"
+  beads compact --dry-run --all --tier "$TIER"
   exit 0
 fi
 
 # Run compaction
 echo "🗜️  Compacting $ELIGIBLE issues (Tier $TIER)..."
-bd compact --all --tier "$TIER"
+beads compact --all --tier "$TIER"
 
 # Show stats
 echo
 echo "📊 Statistics:"
-bd compact --stats
+beads compact --stats
 
 echo
 echo "✅ Auto-compaction complete"

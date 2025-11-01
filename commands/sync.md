@@ -17,12 +17,12 @@ Wraps the entire git-based sync workflow for multi-device use.
 
 ## Usage
 
-- **Basic sync**: `bd sync`
-- **Preview**: `bd sync --dry-run`
-- **Custom message**: `bd sync --message "Closed sprint issues"`
-- **Pull only**: `bd sync --no-push`
-- **Push only**: `bd sync --no-pull`
+- **Basic sync**: `beads sync`
+- **Preview**: `beads sync --dry-run`
+- **Custom message**: `beads sync --message "Closed sprint issues"`
+- **Pull only**: `beads sync --no-push`
+- **Push only**: `beads sync --no-pull`
 
 ## Note
 
-Most users should rely on the daemon's automatic sync (`bd daemon --auto-commit --auto-push`) instead of running manual sync. This command is useful for one-off syncs or when not using the daemon.
+Most users should rely on the daemon's automatic sync (`beads daemon --auto-commit --auto-push`) instead of running manual sync. This command is useful for one-off syncs or when not using the daemon.

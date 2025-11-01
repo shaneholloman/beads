@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Convert markdown files to bd JSONL format.
+Convert markdown files to beads JSONL format.
 
 This is a simple example converter that demonstrates the pattern.
 Users can customize this for their specific markdown conventions.
@@ -9,10 +9,10 @@ Supported markdown patterns:
 1. YAML frontmatter for metadata
 2. H1/H2 headings as issue titles
 3. Task lists as sub-issues
-4. Inline issue references (e.g., "blocks: bd-10")
+4. Inline issue references (e.g., "blocks: beads-10")
 
 Usage:
-    python md2jsonl.py feature.md | bd import
+    python md2jsonl.py feature.md | beads import
     python md2jsonl.py feature.md > issues.jsonl
 """
 
@@ -25,9 +25,9 @@ from typing import List, Dict, Any, Optional
 
 
 class MarkdownToIssues:
-    """Convert markdown to bd JSONL format."""
+    """Convert markdown to beads JSONL format."""
 
-    def __init__(self, prefix: str = "bd"):
+    def __init__(self, prefix: str = "beads"):
         self.prefix = prefix
         self.issue_counter = 1
         self.issues: List[Dict[str, Any]] = []
@@ -104,9 +104,9 @@ class MarkdownToIssues:
         """Extract dependency references from text."""
         dependencies = []
 
-        # Pattern: "blocks: bd-10" or "depends-on: bd-5, bd-6"
-        # Pattern: "discovered-from: bd-20"
-        dep_pattern = r'(blocks|related|parent-child|discovered-from):\s*((?:bd-\d+(?:\s*,\s*)?)+)'
+        # Pattern: "blocks: beads-10" or "depends-on: beads-5, beads-6"
+        # Pattern: "discovered-from: beads-20"
+        dep_pattern = r'(blocks|related|parent-child|discovered-from):\s*((?:beads-\d+(?:\s*,\s*)?)+)'
 
         for match in re.finditer(dep_pattern, text, re.IGNORECASE):
             dep_type = match.group(1).lower()
@@ -228,7 +228,7 @@ def main():
         print("Usage: python md2jsonl.py <markdown-file>", file=sys.stderr)
         print("", file=sys.stderr)
         print("Examples:", file=sys.stderr)
-        print("  python md2jsonl.py feature.md | bd import", file=sys.stderr)
+        print("  python md2jsonl.py feature.md | beads import", file=sys.stderr)
         print("  python md2jsonl.py feature.md > issues.jsonl", file=sys.stderr)
         sys.exit(1)
 
@@ -242,7 +242,7 @@ def main():
     content = markdown_file.read_text()
 
     # Convert to issues
-    converter = MarkdownToIssues(prefix="bd")
+    converter = MarkdownToIssues(prefix="beads")
     converter.parse_markdown(content)
 
     # Output JSONL

@@ -11,7 +11,7 @@ This is a [Claude Code](https://claude.com/claude-code) skill - a markdown-based
 **Main skill file:**
 
 - Core workflow patterns (discovery, execution, planning phases)
-- Decision criteria for when to use bd vs TodoWrite/markdown
+- Decision criteria for when to use beads vs TodoWrite/markdown
 - Session start protocols and ready work checks
 - Compaction survival patterns (critical for Claude Code context limits)
 - Issue lifecycle management with self-check checklists
@@ -19,25 +19,25 @@ This is a [Claude Code](https://claude.com/claude-code) skill - a markdown-based
 
 **Reference documentation:**
 
-- `references/boundaries.md` - Detailed decision criteria for bd vs TodoWrite with examples
+- `references/boundaries.md` - Detailed decision criteria for beads vs TodoWrite with examples
 - `references/cli-reference.md` - Complete command reference with all flags
 - `references/dependencies.md` - Deep dive into dependency types and relationship patterns
 - `references/workflows.md` - Step-by-step workflows with checklists
 - `references/issue-creation.md` - When to ask vs create issues, quality guidelines
 - `references/resumability.md` - Making issues resumable across sessions with working code examples
-- `references/static-data.md` - Using bd for reference databases and glossaries
+- `references/static-data.md` - Using beads for reference databases and glossaries
 
 ## Why is This Useful?
 
 The skill helps Claude understand:
 
-1. **When to use beads** - Not every task needs bd. The skill teaches when bd helps vs when markdown/TodoWrite is better (per Shane Holloman's insight about markdown "losing its way in the middle")
+1. **When to use beads** - Not every task needs beads. The skill teaches when beads helps vs when markdown/TodoWrite is better (per Shane Holloman's insight about markdown "losing its way in the middle")
 
 2. **How to structure issues** - Proper use of dependency types, issue metadata, and relationship patterns
 
 3. **Workflow patterns** - Proactive issue creation during discovery, status maintenance during execution, dependency graphs during planning
 
-4. **Integration with other tools** - How bd and TodoWrite can coexist, each serving its purpose
+4. **Integration with other tools** - How beads and TodoWrite can coexist, each serving its purpose
 
 ## Installation
 
@@ -63,17 +63,17 @@ git clone https://github.com/shaneholloman/beads.git
 cd beads/examples/claude-code-skill
 
 # Create a symlink in your Claude Code skills directory
-ln -s "$(pwd)" ~/.claude/skills/bd-issue-tracking
+ln -s "$(pwd)" ~/.claude/skills/beads-issue-tracking
 ```
 
 #### Option 2: Copy Files Directly
 
 ```bash
 # Create the skill directory
-mkdir -p ~/.claude/skills/bd-issue-tracking
+mkdir -p ~/.claude/skills/beads-issue-tracking
 
 # Copy the skill files
-cp -r beads/examples/claude-code-skill/* ~/.claude/skills/bd-issue-tracking/
+cp -r beads/examples/claude-code-skill/* ~/.claude/skills/beads-issue-tracking/
 ```
 
 ### Verify Installation
@@ -81,10 +81,10 @@ cp -r beads/examples/claude-code-skill/* ~/.claude/skills/bd-issue-tracking/
 Restart Claude Code, then in a new session, ask:
 
 ```
-Do you have the bd skill installed?
+Do you have the beads skill installed?
 ```
 
-Claude should confirm it has access to the bd skill and can help with beads issue tracking.
+Claude should confirm it has access to the beads skill and can help with beads issue tracking.
 
 ## How It Works
 
@@ -99,30 +99,30 @@ Claude Code automatically loads skills from `~/.claude/skills/`. When this skill
 Once installed, Claude will automatically:
 
 - Check for ready work at session start (if `.beads/` exists)
-- Suggest creating bd issues for multi-session work
+- Suggest creating beads issues for multi-session work
 - Use appropriate dependency types when linking issues
 - Maintain proper issue lifecycle (create → in_progress → close)
-- Know when to use bd vs TodoWrite
+- Know when to use beads vs TodoWrite
 
 You can also explicitly ask Claude to use beads:
 
 ```
-Let's track this work in bd since it spans multiple sessions
+Let's track this work in beads since it spans multiple sessions
 ```
 
 ```
-Create a bd issue for this bug we discovered
+Create a beads issue for this bug we discovered
 ```
 
 ```
-Show me what's ready to work on in bd
+Show me what's ready to work on in beads
 ```
 
 ## Relationship to Beads Plugin
 
 This skill complements the [beads plugin](../../.claude-plugin/):
 
-- **Plugin** (`.claude-plugin/`): Provides slash commands (`/bd-create`, `/bd-ready`) and MCP tools for basic operations
+- **Plugin** (`.claude-plugin/`): Provides slash commands (`/beads-create`, `/beads-ready`) and MCP tools for basic operations
 - **Skill** (this directory): Teaches Claude the patterns, philosophy, and decision-making for effective beads usage
 
 You can use both together for the best experience:
@@ -132,11 +132,11 @@ You can use both together for the best experience:
 
 ### Why CLI Instead of MCP?
 
-This skill teaches Claude to use the bd CLI directly (via Bash commands like `bd ready`, `bd create`, etc.) rather than relying on MCP tools. This approach has several benefits:
+This skill teaches Claude to use the beads CLI directly (via Bash commands like `beads ready`, `beads create`, etc.) rather than relying on MCP tools. This approach has several benefits:
 
 - **Lower context usage** - No MCP server prompt loaded into every session, saving tokens
-- **Works everywhere** - Only requires bd binary installed, no MCP server setup needed
-- **Explicit operations** - All bd commands visible in conversation history for transparency
+- **Works everywhere** - Only requires beads binary installed, no MCP server setup needed
+- **Explicit operations** - All beads commands visible in conversation history for transparency
 - **Full functionality** - CLI supports `--json` flag for programmatic parsing just like MCP
 
 The MCP server is excellent for interactive use, but for autonomous agent workflows where context efficiency matters, direct CLI usage is more practical. The skill provides the guidance Claude needs to use the CLI effectively.

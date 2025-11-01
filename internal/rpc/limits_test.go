@@ -199,7 +199,7 @@ func TestRequestTimeout(t *testing.T) {
 }
 
 func TestHealthResponseIncludesLimits(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-limits-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-limits-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}

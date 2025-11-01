@@ -1,0 +1,5 @@
+# Test beads ready command
+beads init --prefix test
+beads create 'Ready issue'
+beads ready
+stdout 'Ready'

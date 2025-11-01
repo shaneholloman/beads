@@ -99,7 +99,7 @@ func (s *SQLiteStorage) GetDirtyIssueHash(ctx context.Context, issueID string) (
 // ClearDirtyIssues removes all entries from the dirty_issues table
 // This should be called after a successful JSONL export
 //
-// WARNING: This has a race condition (bd-52). Use ClearDirtyIssuesByID instead
+// WARNING: This has a race condition (beads-52). Use ClearDirtyIssuesByID instead
 // to only clear specific issues that were actually exported.
 func (s *SQLiteStorage) ClearDirtyIssues(ctx context.Context) error {
 	_, err := s.db.ExecContext(ctx, `DELETE FROM dirty_issues`)

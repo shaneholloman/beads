@@ -2,31 +2,31 @@
 
 ## Project Overview
 
-This is **beads** (command: `bd`), an issue tracker designed for AI-supervised coding workflows. We dogfood our own tool!
+This is **beads** (command: `beads`), an issue tracker designed for AI-supervised coding workflows. We dogfood our own tool!
 
 ## Human Setup vs Agent Usage
 
-**IMPORTANT:** If you need to initialize bd, use the `--quiet` flag:
+**IMPORTANT:** If you need to initialize beads, use the `--quiet` flag:
 
 ```bash
-bd init --quiet  # Non-interactive, auto-installs git hooks, no prompts
+beads init --quiet  # Non-interactive, auto-installs git hooks, no prompts
 ```
 
-**Why `--quiet`?** Regular `bd init` has interactive prompts (git hooks) that confuse agents. The `--quiet` flag makes it fully non-interactive:
+**Why `--quiet`?** Regular `beads init` has interactive prompts (git hooks) that confuse agents. The `--quiet` flag makes it fully non-interactive:
 
 - Automatically installs git hooks
 - No prompts for user input
 - Safe for agent-driven repo setup
 
-**If the human already initialized:** Just use bd normally with `bd create`, `bd ready`, `bd update`, `bd close`, etc.
+**If the human already initialized:** Just use beads normally with `beads create`, `beads ready`, `beads update`, `beads close`, etc.
 
-**If you see "database not found":** Run `bd init --quiet` yourself, or ask the human to run `bd init`.
+**If you see "database not found":** Run `beads init --quiet` yourself, or ask the human to run `beads init`.
 
 ## Issue Tracking
 
-**CRITICAL: This repository uses bd (beads) for ALL project work tracking.**
+**CRITICAL: This repository uses beads (beads) for ALL project work tracking.**
 
-### What Must Be Tracked in bd
+### What Must Be Tracked in beads
 
 ANY work that affects the codebase, documentation, or project state:
 
@@ -38,20 +38,20 @@ ANY work that affects the codebase, documentation, or project state:
 - Configuration updates
 - Build/CI changes
 
-If it goes into git history, it must be a bd issue first.
+If it goes into git history, it must be a beads issue first.
 
 ### Ephemeral vs Project Work
 
-**Project work (use bd):** Anything that becomes part of the project
+**Project work (use beads):** Anything that becomes part of the project
 
-- Example: "Rename docs to lowercase-with-dashes" → Create `bd` issue
+- Example: "Rename docs to lowercase-with-dashes" → Create `beads` issue
 
 **Ephemeral session planning (use native agent tools):** Temporary task breakdown for complex work
 
 - Example: Breaking "Implement auth system" into 5 implementation steps
 - These are throwaway plans that help YOU work, not project history
 
-**When in doubt, use bd.** The escape hatch exists for genuinely ephemeral planning, not to avoid proper tracking.
+**When in doubt, use beads.** The escape hatch exists for genuinely ephemeral planning, not to avoid proper tracking.
 
 ### MCP Server (Recommended)
 
@@ -80,11 +80,11 @@ pip install beads-mcp
 - Structured JSON responses
 - No need for `--json` flags
 
-**All bd commands are available as MCP functions** with the prefix `mcp__beads-*__`. For example:
+**All beads commands are available as MCP functions** with the prefix `mcp__beads-*__`. For example:
 
-- `bd ready` → `mcp__beads__ready()`
-- `bd create` → `mcp__beads__create(title="...", priority=1)`
-- `bd update` → `mcp__beads__update(issue_id="bd-42", status="in_progress")`
+- `beads ready` → `mcp__beads__ready()`
+- `beads create` → `mcp__beads__create(title="...", priority=1)`
+- `beads update` → `mcp__beads__update(issue_id="beads-42", status="in_progress")`
 
 See `integrations/beads-mcp/README.md` for complete documentation.
 
@@ -107,7 +107,7 @@ See `integrations/beads-mcp/README.md` for complete documentation.
 **How it works (LSP model):**
 The single MCP server instance automatically:
 
-1. Checks for local daemon socket (`.beads/bd.sock`) in your current workspace
+1. Checks for local daemon socket (`.beads/beads.sock`) in your current workspace
 2. Routes requests to the correct **per-project daemon** based on working directory
 3. Auto-starts the local daemon if not running (with exponential backoff)
 4. **Each project gets its own isolated daemon** serving only its database
@@ -129,16 +129,16 @@ SQLite Databases (complete isolation)
 - ✔ Simpler mental model: one project = one database = one daemon
 - ✔ Follows LSP (Language Server Protocol) architecture
 
-**Note:** The daemon **auto-starts automatically** when you run any `bd` command (v0.9.11+). To disable auto-start, set `BEADS_AUTO_START_DAEMON=false`.
+**Note:** The daemon **auto-starts automatically** when you run any `beads` command (v0.9.11+). To disable auto-start, set `BEADS_AUTO_START_DAEMON=false`.
 
-**Version Management:** bd automatically handles daemon version mismatches (v0.16.0+):
+**Version Management:** beads automatically handles daemon version mismatches (v0.16.0+):
 
-- When you upgrade bd, old daemons are automatically detected and restarted
+- When you upgrade beads, old daemons are automatically detected and restarted
 - Version compatibility is checked on every connection
 - No manual intervention required after upgrades
 - Works transparently with MCP server and CLI
-- Use `bd daemons health` to check for version mismatches
-- Use `bd daemons killall` to force-restart all daemons if needed
+- Use `beads daemons health` to check for version mismatches
+- Use `beads daemons killall` to force-restart all daemons if needed
 
 **Alternative (not recommended): Multiple MCP Server Instances**
 If you must use separate MCP servers:
@@ -168,129 +168,129 @@ If you're not using the MCP server, here are the CLI commands:
 
 ```bash
 # Check database path and daemon status
-bd info --json
+beads info --json
 
 # Find ready work (no blockers)
-bd ready --json
+beads ready --json
 
 # Create new issue
-bd create "Issue title" -t bug|feature|task -p 0-4 -d "Description" --json
+beads create "Issue title" -t bug|feature|task -p 0-4 -d "Description" --json
 
 # Create with explicit ID (for parallel workers)
-bd create "Issue title" --id worker1-100 -p 1 --json
+beads create "Issue title" --id worker1-100 -p 1 --json
 
 # Create with labels
-bd create "Issue title" -t bug -p 1 -l bug,critical --json
+beads create "Issue title" -t bug -p 1 -l bug,critical --json
 
 # Create multiple issues from markdown file
-bd create -f feature-plan.md --json
+beads create -f feature-plan.md --json
 
 # Create epic with hierarchical child tasks
-bd create "Auth System" -t epic -p 1 --json         # Returns: bd-a3f8e9
-bd create "Login UI" -p 1 --json                     # Auto-assigned: bd-a3f8e9.1
-bd create "Backend validation" -p 1 --json           # Auto-assigned: bd-a3f8e9.2
-bd create "Tests" -p 1 --json                        # Auto-assigned: bd-a3f8e9.3
+beads create "Auth System" -t epic -p 1 --json         # Returns: beads-a3f8e9
+beads create "Login UI" -p 1 --json                     # Auto-assigned: beads-a3f8e9.1
+beads create "Backend validation" -p 1 --json           # Auto-assigned: beads-a3f8e9.2
+beads create "Tests" -p 1 --json                        # Auto-assigned: beads-a3f8e9.3
 
 # Update one or more issues
-bd update <id> [<id>...] --status in_progress --json
-bd update <id> [<id>...] --priority 1 --json
+beads update <id> [<id>...] --status in_progress --json
+beads update <id> [<id>...] --priority 1 --json
 
 # Edit issue fields in $EDITOR (HUMANS ONLY - not for agents)
-bd edit <id>                    # Edit description
-bd edit <id> --title            # Edit title
-bd edit <id> --design           # Edit design notes
-bd edit <id> --notes            # Edit notes
-bd edit <id> --acceptance       # Edit acceptance criteria
+beads edit <id>                    # Edit description
+beads edit <id> --title            # Edit title
+beads edit <id> --design           # Edit design notes
+beads edit <id> --notes            # Edit notes
+beads edit <id> --acceptance       # Edit acceptance criteria
 
 # Link discovered work (old way)
-bd dep add <discovered-id> <parent-id> --type discovered-from
+beads dep add <discovered-id> <parent-id> --type discovered-from
 
 # Create and link in one command (new way)
-bd create "Issue title" -t bug -p 1 --deps discovered-from:<parent-id> --json
+beads create "Issue title" -t bug -p 1 --deps discovered-from:<parent-id> --json
 
 # Label management (supports multiple IDs)
-bd label add <id> [<id>...] <label> --json
-bd label remove <id> [<id>...] <label> --json
-bd label list <id> --json
-bd label list-all --json
+beads label add <id> [<id>...] <label> --json
+beads label remove <id> [<id>...] <label> --json
+beads label list <id> --json
+beads label list-all --json
 
 # Filter issues by label
-bd list --label bug,critical --json
+beads list --label bug,critical --json
 
 # Complete work (supports multiple IDs)
-bd close <id> [<id>...] --reason "Done" --json
+beads close <id> [<id>...] --reason "Done" --json
 
 # Reopen closed issues (supports multiple IDs)
-bd reopen <id> [<id>...] --reason "Reopening" --json
+beads reopen <id> [<id>...] --reason "Reopening" --json
 
 # Show dependency tree
-bd dep tree <id>
+beads dep tree <id>
 
 # Get issue details (supports multiple IDs)
-bd show <id> [<id>...] --json
+beads show <id> [<id>...] --json
 
 # Rename issue prefix (e.g., from 'knowledge-work-' to 'kw-')
-bd rename-prefix kw- --dry-run  # Preview changes
-bd rename-prefix kw- --json     # Apply rename
+beads rename-prefix kw- --dry-run  # Preview changes
+beads rename-prefix kw- --json     # Apply rename
 
 # Restore compacted issue from git history
-bd restore <id>  # View full history at time of compaction
+beads restore <id>  # View full history at time of compaction
 
 # Import issues from JSONL
-bd import -i .beads/issues.jsonl --dry-run      # Preview changes
-bd import -i .beads/issues.jsonl                # Import and update issues
-bd import -i .beads/issues.jsonl --dedupe-after # Import + detect duplicates
+beads import -i .beads/issues.jsonl --dry-run      # Preview changes
+beads import -i .beads/issues.jsonl                # Import and update issues
+beads import -i .beads/issues.jsonl --dedupe-after # Import + detect duplicates
 
 # Find and merge duplicate issues
-bd duplicates                                          # Show all duplicates
-bd duplicates --auto-merge                             # Automatically merge all
-bd duplicates --dry-run                                # Preview merge operations
+beads duplicates                                          # Show all duplicates
+beads duplicates --auto-merge                             # Automatically merge all
+beads duplicates --dry-run                                # Preview merge operations
 
 # Merge specific duplicate issues
-bd merge <source-id...> --into <target-id> --json      # Consolidate duplicates
-bd merge bd-42 bd-43 --into bd-41 --dry-run            # Preview merge
+beads merge <source-id...> --into <target-id> --json      # Consolidate duplicates
+beads merge beads-42 beads-43 --into beads-41 --dry-run            # Preview merge
 
 # Migrate databases after version upgrade
-bd migrate                                             # Detect and migrate old databases
-bd migrate --dry-run                                   # Preview migration
-bd migrate --cleanup --yes                             # Migrate and remove old files
+beads migrate                                             # Detect and migrate old databases
+beads migrate --dry-run                                   # Preview migration
+beads migrate --cleanup --yes                             # Migrate and remove old files
 ```
 
 ### Managing Daemons
 
-bd runs a background daemon per workspace for auto-sync and RPC operations. Use `bd daemons` to manage multiple daemons:
+beads runs a background daemon per workspace for auto-sync and RPC operations. Use `beads daemons` to manage multiple daemons:
 
 ```bash
 # List all running daemons
-bd daemons list --json
+beads daemons list --json
 
 # Check health (version mismatches, stale sockets)
-bd daemons health --json
+beads daemons health --json
 
 # Stop a specific daemon
-bd daemons stop /path/to/workspace --json
-bd daemons stop 12345 --json  # By PID
+beads daemons stop /path/to/workspace --json
+beads daemons stop 12345 --json  # By PID
 
 # View daemon logs
-bd daemons logs /path/to/workspace -n 100
-bd daemons logs 12345 -f  # Follow mode
+beads daemons logs /path/to/workspace -n 100
+beads daemons logs 12345 -f  # Follow mode
 
 # Stop all daemons
-bd daemons killall --json
-bd daemons killall --force --json  # Force kill if graceful fails
+beads daemons killall --json
+beads daemons killall --force --json  # Force kill if graceful fails
 ```
 
 **When to use:**
 
-- **After upgrading bd**: Run `bd daemons health` to check for version mismatches, then `bd daemons killall` to restart all daemons with the new version
-- **Debugging**: Use `bd daemons logs <workspace>` to view daemon logs
-- **Cleanup**: `bd daemons list` auto-removes stale sockets
+- **After upgrading beads**: Run `beads daemons health` to check for version mismatches, then `beads daemons killall` to restart all daemons with the new version
+- **Debugging**: Use `beads daemons logs <workspace>` to view daemon logs
+- **Cleanup**: `beads daemons list` auto-removes stale sockets
 
 **Troubleshooting:**
 
-- **Stale sockets**: `bd daemons list` auto-cleans them
-- **Version mismatch**: `bd daemons killall` then let daemons auto-start on next command
-- **Daemon won't stop**: `bd daemons killall --force`
+- **Stale sockets**: `beads daemons list` auto-cleans them
+- **Version mismatch**: `beads daemons killall` then let daemons auto-start on next command
+- **Daemon won't stop**: `beads daemons killall --force`
 
 See [commands/daemons.md](commands/daemons.md) for detailed documentation.
 
@@ -321,14 +321,14 @@ Event-driven mode is opt-in during Phase 1. To enable:
 
 ```bash
 # Enable event-driven mode for a single daemon
-BEADS_DAEMON_MODE=events bd daemon start
+BEADS_DAEMON_MODE=events beads daemon start
 
 # Or set globally in your shell profile
 export BEADS_DAEMON_MODE=events
 
 # Restart all daemons to apply
-bd daemons killall
-# Next bd command will auto-start daemon with new mode
+beads daemons killall
+# Next beads command will auto-start daemon with new mode
 ```
 
 **Available modes:**
@@ -340,7 +340,7 @@ bd daemons killall
 
 If the watcher fails to start:
 
-- Check daemon logs: `bd daemons logs /path/to/workspace -n 100`
+- Check daemon logs: `beads daemons logs /path/to/workspace -n 100`
 - Look for "File watcher unavailable" warnings
 - Common causes:
   - Network filesystem (NFS, SMB) - fsnotify may not work
@@ -356,32 +356,32 @@ If the watcher fails to start:
 
 ```bash
 # Require fsnotify, fail if unavailable
-BEADS_WATCHER_FALLBACK=false BEADS_DAEMON_MODE=events bd daemon start
+BEADS_WATCHER_FALLBACK=false BEADS_DAEMON_MODE=events beads daemon start
 ```
 
 **Switch back to polling:**
 
 ```bash
 # Explicitly use polling mode
-BEADS_DAEMON_MODE=poll bd daemon start
+BEADS_DAEMON_MODE=poll beads daemon start
 
 # Or unset to use default
 unset BEADS_DAEMON_MODE
-bd daemons killall  # Restart with default (poll) mode
+beads daemons killall  # Restart with default (poll) mode
 ```
 
 **Future (Phase 2):** Event-driven mode will become the default once it's proven stable in production use.
 
 ### Workflow
 
-1. **Check for ready work**: Run `bd ready` to see what's unblocked
-2. **Claim your task**: `bd update <id> --status in_progress`
+1. **Check for ready work**: Run `beads ready` to see what's unblocked
+2. **Claim your task**: `beads update <id> --status in_progress`
 3. **Work on it**: Implement, test, document
 4. **Discover new work**: If you find bugs or TODOs, create issues:
-   - Old way (two commands): `bd create "Found bug in auth" -t bug -p 1 --json` then `bd dep add <new-id> <current-id> --type discovered-from`
-   - New way (one command): `bd create "Found bug in auth" -t bug -p 1 --deps discovered-from:<current-id> --json`
-5. **Complete**: `bd close <id> --reason "Implemented"`
-6. **Sync at end of session**: `bd sync` (see "Agent Session Workflow" below)
+   - Old way (two commands): `beads create "Found bug in auth" -t bug -p 1 --json` then `beads dep add <new-id> <current-id> --type discovered-from`
+   - New way (one command): `beads create "Found bug in auth" -t bug -p 1 --deps discovered-from:<current-id> --json`
+5. **Complete**: `beads close <id> --reason "Implemented"`
+6. **Sync at end of session**: `beads sync` (see "Agent Session Workflow" below)
 
 ### Issue Types
 
@@ -391,7 +391,7 @@ bd daemons killall  # Restart with default (poll) mode
 - `epic` - Large feature composed of multiple issues (supports hierarchical children)
 - `chore` - Maintenance work (dependencies, tooling)
 
-**Hierarchical children:** Epics can have child issues with dotted IDs (e.g., `bd-a3f8e9.1`, `bd-a3f8e9.2`). Children are auto-numbered sequentially. Up to 3 levels of nesting supported. The parent hash ensures unique namespace - no coordination needed between agents working on different epics.
+**Hierarchical children:** Epics can have child issues with dotted IDs (e.g., `beads-a3f8e9.1`, `beads-a3f8e9.2`). Children are auto-numbered sequentially. Up to 3 levels of nesting supported. The parent hash ensures unique namespace - no coordination needed between agents working on different epics.
 
 ### Priorities
 
@@ -418,16 +418,16 @@ AI agents should proactively detect and merge duplicate issues to keep the datab
 
 ```bash
 # Find all content duplicates in the database
-bd duplicates
+beads duplicates
 
 # Automatically merge all duplicates
-bd duplicates --auto-merge
+beads duplicates --auto-merge
 
 # Preview what would be merged
-bd duplicates --dry-run
+beads duplicates --dry-run
 
 # During import
-bd import -i issues.jsonl --dedupe-after
+beads import -i issues.jsonl --dedupe-after
 ```
 
 **Detection strategies:**
@@ -435,54 +435,54 @@ bd import -i issues.jsonl --dedupe-after
 1. **Before creating new issues**: Search for similar existing issues
 
    ```bash
-   bd list --json | grep -i "authentication"
-   bd show bd-41 bd-42 --json  # Compare candidates
+   beads list --json | grep -i "authentication"
+   beads show beads-41 beads-42 --json  # Compare candidates
    ```
 
 2. **Periodic duplicate scans**: Review issues by type or priority
 
    ```bash
-   bd list --status open --priority 1 --json  # High-priority issues
-   bd list --issue-type bug --json             # All bugs
+   beads list --status open --priority 1 --json  # High-priority issues
+   beads list --issue-type bug --json             # All bugs
    ```
 
 3. **During work discovery**: Check for duplicates when filing discovered-from issues
 
    ```bash
-   # Before: bd create "Fix auth bug" --deps discovered-from:bd-100
-   # First: bd list --json | grep -i "auth bug"
+   # Before: beads create "Fix auth bug" --deps discovered-from:beads-100
+   # First: beads list --json | grep -i "auth bug"
    # Then decide: create new or link to existing
    ```
 
 **Merge workflow:**
 
 ```bash
-# Step 1: Identify duplicates (bd-42 and bd-43 duplicate bd-41)
-bd show bd-41 bd-42 bd-43 --json
+# Step 1: Identify duplicates (beads-42 and beads-43 duplicate beads-41)
+beads show beads-41 beads-42 beads-43 --json
 
 # Step 2: Preview merge to verify
-bd merge bd-42 bd-43 --into bd-41 --dry-run
+beads merge beads-42 beads-43 --into beads-41 --dry-run
 
 # Step 3: Execute merge
-bd merge bd-42 bd-43 --into bd-41 --json
+beads merge beads-42 beads-43 --into beads-41 --json
 
 # Step 4: Verify result
-bd dep tree bd-41  # Check unified dependency tree
-bd show bd-41 --json  # Verify merged content
+beads dep tree beads-41  # Check unified dependency tree
+beads show beads-41 --json  # Verify merged content
 ```
 
 **What gets merged:**
 
 - ✔ All dependencies from source → target
 - ✔ Text references updated across ALL issues (descriptions, notes, design, acceptance criteria)
-- ✔ Source issues closed with "Merged into bd-X" reason
+- ✔ Source issues closed with "Merged into beads-X" reason
 - ✘ Source issue content NOT copied (target keeps its original content)
 
 **Important notes:**
 
 - Merge preserves target issue completely; only dependencies/references migrate
 - If source issues have valuable content, manually copy it to target BEFORE merging
-- Cannot merge in daemon mode yet (bd-190); use `--no-daemon` flag
+- Cannot merge in daemon mode yet (beads-190); use `--no-daemon` flag
 - Operation cannot be undone (but git history preserves the original)
 
 **Best practices:**
@@ -493,7 +493,7 @@ bd show bd-41 --json  # Verify merged content
 - File a discovered-from issue if you found duplicates during work:
 
   ```bash
-  bd create "Found duplicates during bd-X" -p 2 --deps discovered-from:bd-X --json
+  beads create "Found duplicates during beads-X" -p 2 --deps discovered-from:beads-X --json
   ```
 
 ## Development Guidelines
@@ -509,7 +509,7 @@ bd show bd-41 --json  # Verify merged content
 
 ```
 beads/
-├── cmd/bd/              # CLI commands
+├── cmd/beads/              # CLI commands
 ├── internal/
 │   ├── types/           # Core data types
 │   └── storage/         # Storage layer
@@ -527,7 +527,7 @@ beads/
 
 ### Git Workflow
 
-**Auto-sync provides batching!** bd automatically:
+**Auto-sync provides batching!** beads automatically:
 
 - **Exports** to JSONL after CRUD operations (30-second debounce for batching)
 - **Imports** from JSONL when it's newer than DB (e.g., after `git pull`)
@@ -540,7 +540,7 @@ The 30-second debounce provides a **transaction window** for batch operations - 
 **IMPORTANT for AI agents:** When you finish making issue changes, always run:
 
 ```bash
-bd sync
+beads sync
 ```
 
 This immediately:
@@ -555,22 +555,22 @@ This immediately:
 
 ```bash
 # Make multiple changes (batched in 30-second window)
-bd create "Fix bug" -p 1
-bd create "Add tests" -p 1
-bd update bd-42 --status in_progress
-bd close bd-40 --reason "Completed"
+beads create "Fix bug" -p 1
+beads create "Add tests" -p 1
+beads update beads-42 --status in_progress
+beads close beads-40 --reason "Completed"
 
 # Force immediate sync at end of session
-bd sync
+beads sync
 
 # Now safe to end session - everything is committed and pushed
 ```
 
 **Why this matters:**
 
-- Without `bd sync`, changes sit in 30-second debounce window
+- Without `beads sync`, changes sit in 30-second debounce window
 - User might think you pushed but JSONL is still dirty
-- `bd sync` forces immediate flush/commit/push
+- `beads sync` forces immediate flush/commit/push
 
 **Alternative**: Install git hooks for automatic flush on commit:
 
@@ -595,7 +595,7 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 
 **What you lose without daemon mode:**
 
-- **Auto-sync** - No automatic commit/push of changes (use `bd sync` manually)
+- **Auto-sync** - No automatic commit/push of changes (use `beads sync` manually)
 - **MCP server** - The beads-mcp server requires daemon mode for multi-repo support
 - **Background watching** - No automatic detection of remote changes
 
@@ -604,16 +604,16 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
 1. **Use `--no-daemon` flag** (recommended):
 
    ```bash
-   bd --no-daemon ready
-   bd --no-daemon create "Fix bug" -p 1
-   bd --no-daemon update bd-42 --status in_progress
+   beads --no-daemon ready
+   beads --no-daemon create "Fix bug" -p 1
+   beads --no-daemon update beads-42 --status in_progress
    ```
 
 2. **Disable daemon via environment variable** (for entire worktree session):
 
    ```bash
    export BEADS_NO_DAEMON=1
-   bd ready  # All commands use direct mode
+   beads ready  # All commands use direct mode
    ```
 
 3. **Disable auto-start** (less safe, still warns):
@@ -623,7 +623,7 @@ Git worktrees share the same `.git` directory and thus share the same `.beads` d
    ```
 
 **Automatic Detection:**
-bd automatically detects when you're in a worktree and shows a prominent warning if daemon mode is active. The `--no-daemon` mode works correctly with worktrees since it operates directly on the database without shared state.
+beads automatically detects when you're in a worktree and shows a prominent warning if daemon mode is active. The `--no-daemon` mode works correctly with worktrees since it operates directly on the database without shared state.
 
 **Why It Matters:**
 The daemon maintains its own view of the current working directory and git state. When multiple worktrees share the same `.beads` database, the daemon may commit changes intended for one branch to a different branch, leading to confusion and incorrect git history.
@@ -645,14 +645,14 @@ git checkout --ours .beads/beads.jsonl    # Keep local version
 # OR manually resolve in editor
 
 # Import the resolved JSONL
-bd import -i .beads/beads.jsonl
+beads import -i .beads/beads.jsonl
 
 # Commit the merge
 git add .beads/beads.jsonl
 git commit
 ```
 
-**bd automatically handles updates** - same ID with different content is a normal update operation. No special flags needed.
+**beads automatically handles updates** - same ID with different content is a normal update operation. No special flags needed.
 
 ### Advanced: Intelligent Merge Tools
 
@@ -664,11 +664,11 @@ For Git merge conflicts in `.beads/issues.jsonl`, consider using **[beads-merge]
 - Leaves remaining conflicts for manual resolution
 - Works as a Git/jujutsu merge driver
 
-**Beads-merge** helps with intelligent field-level merging during git merge. After resolving, just `bd import` to update your database.
+**Beads-merge** helps with intelligent field-level merging during git merge. After resolving, just `beads import` to update your database.
 
 ## Current Project Status
 
-Run `bd stats` to see overall progress.
+Run `beads stats` to see overall progress.
 
 ### Active Areas
 
@@ -676,21 +676,21 @@ Run `bd stats` to see overall progress.
 - **Examples**: Growing collection of agent integrations
 - **Documentation**: Comprehensive but can always improve
 - **MCP Server**: Implemented at `integrations/beads-mcp/` with Claude Code plugin
-- **Migration Tools**: Planned (see bd-6)
+- **Migration Tools**: Planned (see beads-6)
 
 ### 1.0 Milestone
 
-We're working toward 1.0. Key blockers tracked in bd. Run:
+We're working toward 1.0. Key blockers tracked in beads. Run:
 
 ```bash
-bd dep tree bd-8  # Show 1.0 epic dependencies
+beads dep tree beads-8  # Show 1.0 epic dependencies
 ```
 
 ## Exclusive Lock Protocol (Advanced)
 
 **For external tools that need full database control** (e.g., CI/CD, deterministic execution systems):
 
-The bd daemon respects exclusive locks via `.beads/.exclusive-lock` file. When this lock exists:
+The beads daemon respects exclusive locks via `.beads/.exclusive-lock` file. When this lock exists:
 
 - Daemon skips all operations for the locked database
 - External tool has complete control over git sync and database operations
@@ -712,7 +712,7 @@ See [exclusive-lock.md](docs/exclusive-lock.md) for:
 echo '{"holder":"my-tool","pid":'$$',"hostname":"'$(hostname)'","started_at":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","version":"1.0.0"}' > .beads/.exclusive-lock
 
 # Do work...
-bd create "My issue" -p 1
+beads create "My issue" -p 1
 
 # Release lock
 rm .beads/.exclusive-lock
@@ -722,11 +722,11 @@ rm .beads/.exclusive-lock
 
 ### Adding a New Command
 
-1. Create file in `cmd/bd/`
-2. Add to root command in `cmd/bd/main.go`
+1. Create file in `cmd/beads/`
+2. Add to root command in `cmd/beads/main.go`
 3. Implement with Cobra framework
 4. Add `--json` flag for agent use
-5. Add tests in `cmd/bd/*_test.go`
+5. Add tests in `cmd/beads/*_test.go`
 6. Document in README.md
 
 ### Adding Storage Features
@@ -736,7 +736,7 @@ rm .beads/.exclusive-lock
 3. Update `internal/types/types.go` if new types
 4. Implement in `internal/storage/sqlite/sqlite.go`
 5. Add tests
-6. Update export/import in `cmd/bd/export.go` and `cmd/bd/import.go`
+6. Update export/import in `cmd/beads/export.go` and `cmd/beads/import.go`
 
 ### Adding Examples
 
@@ -748,10 +748,10 @@ rm .beads/.exclusive-lock
 
 ## Questions?
 
-- Check existing issues: `bd list`
+- Check existing issues: `beads list`
 - Look at recent commits: `git log --oneline -20`
 - Read the docs: README.md, advanced.md, extending.md
-- Create an issue if unsure: `bd create "Question: ..." -t task -p 2`
+- Create an issue if unsure: `beads create "Question: ..." -t task -p 2`
 
 ## Important Files
 
@@ -764,22 +764,22 @@ rm .beads/.exclusive-lock
 ## Pro Tips for Agents
 
 - Always use `--json` flags for programmatic use
-- **Always run `bd sync` at end of session** to flush/commit/push immediately
+- **Always run `beads sync` at end of session** to flush/commit/push immediately
 - Link discoveries with `discovered-from` to maintain context
-- Check `bd ready` before asking "what next?"
-- Auto-sync batches changes in 30-second window - use `bd sync` to force immediate flush
+- Check `beads ready` before asking "what next?"
+- Auto-sync batches changes in 30-second window - use `beads sync` to force immediate flush
 - Use `--no-auto-flush` or `--no-auto-import` to disable automatic sync if needed
-- Use `bd dep tree` to understand complex dependencies
+- Use `beads dep tree` to understand complex dependencies
 - Priority 0-1 issues are usually more important than 2-4
 - Use `--dry-run` to preview import changes before applying
 - Hash IDs eliminate collisions - same ID with different content is a normal update
-- Use `--id` flag with `bd create` to partition ID space for parallel workers (e.g., `worker1-100`, `worker2-500`)
+- Use `--id` flag with `beads create` to partition ID space for parallel workers (e.g., `worker1-100`, `worker2-500`)
 
 ## Building and Testing
 
 ```bash
 # Build
-go build -o bd ./cmd/bd
+go build -o beads ./cmd/beads
 
 # Test
 go test ./...
@@ -789,9 +789,9 @@ go test -coverprofile=coverage.out ./...
 go tool cover -html=coverage.out
 
 # Run locally
-./bd init --prefix test
-./bd create "Test issue" -p 1
-./bd ready
+./beads init --prefix test
+./beads create "Test issue" -p 1
+./beads ready
 ```
 
 ## Version Management
@@ -830,14 +830,14 @@ git push origin main
 
 **Files updated automatically:**
 
-- `cmd/bd/version.go` - CLI version
+- `cmd/beads/version.go` - CLI version
 - `.claude-plugin/plugin.json` - Plugin version
 - `.claude-plugin/marketplace.json` - Marketplace version
 - `integrations/beads-mcp/pyproject.toml` - MCP server version
 - `README.md` - Documentation version
 - `plugin.md` - Version requirements
 
-**Why this matters:** We had version mismatches (bd-66) when only `version.go` was updated. This script prevents that by updating all components atomically.
+**Why this matters:** We had version mismatches (beads-66) when only `version.go` was updated. This script prevents that by updating all components atomically.
 
 See `scripts/README.md` for more details.
 
@@ -857,12 +857,12 @@ See `scripts/README.md` for more details.
 
 Happy coding!
 
-<!-- bd onboard section -->
-## Issue Tracking with bd (beads)
+<!-- beads onboard section -->
+## Issue Tracking with beads (beads)
 
-**IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
+**IMPORTANT**: This project uses **beads (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
 
-### Why bd?
+### Why beads?
 
 - Dependency-aware: Track blockers and relationships between issues
 - Git-friendly: Auto-syncs to JSONL for version control
@@ -871,36 +871,36 @@ Happy coding!
 
 ### Quick Start
 
-**FIRST TIME?** Just run `bd init` - it auto-imports issues from git:
+**FIRST TIME?** Just run `beads init` - it auto-imports issues from git:
 
 ```bash
-bd init --prefix bd
+beads init --prefix beads
 ```
 
 **Check for ready work:**
 
 ```bash
-bd ready --json
+beads ready --json
 ```
 
 **Create new issues:**
 
 ```bash
-bd create "Issue title" -t bug|feature|task -p 0-4 --json
-bd create "Issue title" -p 1 --deps discovered-from:bd-123 --json
+beads create "Issue title" -t bug|feature|task -p 0-4 --json
+beads create "Issue title" -p 1 --deps discovered-from:beads-123 --json
 ```
 
 **Claim and update:**
 
 ```bash
-bd update bd-42 --status in_progress --json
-bd update bd-42 --priority 1 --json
+beads update beads-42 --status in_progress --json
+beads update beads-42 --priority 1 --json
 ```
 
 **Complete work:**
 
 ```bash
-bd close bd-42 --reason "Completed" --json
+beads close beads-42 --reason "Completed" --json
 ```
 
 ### Issue Types
@@ -921,16 +921,16 @@ bd close bd-42 --reason "Completed" --json
 
 ### Workflow for AI Agents
 
-1. **Check ready work**: `bd ready` shows unblocked issues
-2. **Claim your task**: `bd update <id> --status in_progress`
+1. **Check ready work**: `beads ready` shows unblocked issues
+2. **Claim your task**: `beads update <id> --status in_progress`
 3. **Work on it**: Implement, test, document
 4. **Discover new work?** Create linked issue:
-   - `bd create "Found bug" -p 1 --deps discovered-from:<parent-id>`
-5. **Complete**: `bd close <id> --reason "Done"`
+   - `beads create "Found bug" -p 1 --deps discovered-from:<parent-id>`
+5. **Complete**: `beads close <id> --reason "Done"`
 
 ### Auto-Sync
 
-bd automatically syncs with git:
+beads automatically syncs with git:
 
 - Exports to `.beads/issues.jsonl` after changes (5s debounce)
 - Imports from JSONL when newer (e.g., after `git pull`)
@@ -959,26 +959,26 @@ Then use `mcp__beads__*` functions instead of CLI commands.
 
 ### Important Rules
 
-**Project Work (MUST use bd):**
+**Project Work (MUST use beads):**
 
-- ✔ Create bd issue for ANY code/docs/config changes
+- ✔ Create beads issue for ANY code/docs/config changes
 - ✔ Always use `--json` flag for programmatic use
 - ✔ Link discovered work with `discovered-from` dependencies
-- ✔ Check `bd ready` before asking "what should I work on?"
-- ✔ Run `bd sync` at end of session to commit/push
+- ✔ Check `beads ready` before asking "what should I work on?"
+- ✔ Run `beads sync` at end of session to commit/push
 
 **What NOT to do:**
 
 - ✘ Do NOT create markdown TODO lists
 - ✘ Do NOT use external issue trackers
 - ✘ Do NOT duplicate tracking systems
-- ✘ Do NOT commit work without a bd issue
+- ✘ Do NOT commit work without a beads issue
 
 **Ephemeral Session Planning (escape hatch):**
 
 - ✔ Native agent tools (like TodoWrite) are OK for temporary task breakdown
 - ✔ Use for complex multi-step work that helps YOU plan, not project history
-- ✔ When in doubt, use bd
+- ✔ When in doubt, use beads
 
 For more details, see README.md and quickstart.md.
-<!-- /bd onboard section -->
+<!-- /beads onboard section -->

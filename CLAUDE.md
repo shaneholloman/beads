@@ -1,7 +1,7 @@
 
-<!-- bd integration note -->
-**Note**: This project uses [bd (beads)](https://github.com/shaneholloman/beads) for issue tracking. Use `bd` commands or the beads MCP server instead of markdown TODOs. See AGENTS.md for workflow details.
-<!-- /bd integration note -->
+<!-- beads integration note -->
+**Note**: This project uses [beads (beads)](https://github.com/shaneholloman/beads) for issue tracking. Use `beads` commands or the beads MCP server instead of markdown TODOs. See AGENTS.md for workflow details.
+<!-- /beads integration note -->
 
 # Instructions for Claude
 

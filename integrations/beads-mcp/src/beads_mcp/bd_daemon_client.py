@@ -1,4 +1,4 @@
-"""Client for interacting with bd daemon via RPC over Unix socket."""
+"""Client for interacting with beads daemon via RPC over Unix socket."""
 
 import asyncio
 import json
@@ -7,7 +7,7 @@ import socket
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .bd_client import BdClientBase, BdError
+from .beads_client import BeadsClientBase, BeadsError
 from .models import (
     AddDependencyParams,
     BlockedIssue,
@@ -42,8 +42,8 @@ class DaemonConnectionError(DaemonError):
     pass
 
 
-class BdDaemonClient(BdClientBase):
-    """Client for calling bd daemon via RPC over Unix socket."""
+class BeadsDaemonClient(BeadsClientBase):
+    """Client for calling beads daemon via RPC over Unix socket."""
 
     socket_path: str | None
     working_dir: str | None
@@ -73,10 +73,10 @@ class BdDaemonClient(BdClientBase):
     async def _find_socket_path(self) -> str:
         """Find daemon socket path by searching for .beads directory.
         
-        Checks local .beads/bd.sock first, then falls back to global ~/.beads/bd.sock.
+        Checks local .beads/beads.sock first, then falls back to global ~/.beads/beads.sock.
 
         Returns:
-            Path to bd.sock file
+            Path to beads.sock file
 
         Raises:
             DaemonNotRunningError: If no .beads directory or socket file found
@@ -84,12 +84,12 @@ class BdDaemonClient(BdClientBase):
         if self.socket_path:
             return self.socket_path
 
-        # Walk up from working_dir to find .beads/bd.sock
+        # Walk up from working_dir to find .beads/beads.sock
         current = Path(self.working_dir).resolve()
         while True:
             beads_dir = current / ".beads"
             if beads_dir.is_dir():
-                sock_path = beads_dir / "bd.sock"
+                sock_path = beads_dir / "beads.sock"
                 if sock_path.exists():
                     return str(sock_path)
                 # Found .beads but no socket - check global before failing
@@ -102,15 +102,15 @@ class BdDaemonClient(BdClientBase):
                 break
             current = parent
         
-        # Check for global daemon socket at ~/.beads/bd.sock
+        # Check for global daemon socket at ~/.beads/beads.sock
         home = Path.home()
-        global_sock_path = home / ".beads" / "bd.sock"
+        global_sock_path = home / ".beads" / "beads.sock"
         if global_sock_path.exists():
             return str(global_sock_path)
         
         # No socket found anywhere
         raise DaemonNotRunningError(
-            "Daemon socket not found. Is the daemon running? Try: bd daemon (local) or bd daemon --global"
+            "Daemon socket not found. Is the daemon running? Try: beads daemon (local) or beads daemon --global"
         )
 
     async def _send_request(self, operation: str, args: Dict[str, Any]) -> Dict[str, Any]:

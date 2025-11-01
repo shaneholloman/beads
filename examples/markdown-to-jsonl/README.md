@@ -1,19 +1,19 @@
 # Markdown to JSONL Converter
 
-Convert markdown planning documents into `bd` issues.
+Convert markdown planning documents into `beads` issues.
 
 ## Overview
 
-This example shows how to bridge the gap between markdown planning docs and tracked issues, without adding complexity to the `bd` core tool.
+This example shows how to bridge the gap between markdown planning docs and tracked issues, without adding complexity to the `beads` core tool.
 
-The converter script (`md2jsonl.py`) parses markdown files and outputs JSONL that can be imported into `bd`.
+The converter script (`md2jsonl.py`) parses markdown files and outputs JSONL that can be imported into `beads`.
 
 ## Features
 
 - ✔ **YAML Frontmatter** - Extract metadata (priority, type, assignee)
 - ✔ **Headings as Issues** - Each H1/H2 becomes an issue
 - ✔ **Task Lists** - Markdown checklists become sub-issues
-- ✔ **Dependency Parsing** - Extract "blocks: bd-10" references
+- ✔ **Dependency Parsing** - Extract "blocks: beads-10" references
 - ✔ **Customizable** - Modify the script for your conventions
 
 ## Usage
@@ -21,14 +21,14 @@ The converter script (`md2jsonl.py`) parses markdown files and outputs JSONL tha
 ### Basic conversion
 
 ```bash
-python md2jsonl.py feature.md | bd import
+python md2jsonl.py feature.md | beads import
 ```
 
 ### Save to file first
 
 ```bash
 python md2jsonl.py feature.md > issues.jsonl
-bd import -i issues.jsonl
+beads import -i issues.jsonl
 ```
 
 ### Preview before importing
@@ -91,8 +91,8 @@ Reference other issues in the description:
 This task requires the database schema to be ready first.
 
 Dependencies:
-- blocks: bd-5
-- related: bd-10, bd-15
+- blocks: beads-5
+- related: beads-10, beads-15
 ```
 
 The script extracts these and creates dependency records.
@@ -108,8 +108,8 @@ python md2jsonl.py example-feature.md > example-issues.jsonl
 # View the output
 cat example-issues.jsonl | jq .
 
-# Import into bd
-bd import -i example-issues.jsonl
+# Import into beads
+beads import -i example-issues.jsonl
 ```
 
 ## Customization
@@ -142,12 +142,12 @@ For production use, you might want to:
 
 This example demonstrates the **lightweight extension pattern**:
 
-- ✔ Keep `bd` core focused and minimal
+- ✔ Keep `beads` core focused and minimal
 - ✔ Let users customize for their workflows
 - ✔ Use existing import infrastructure
 - ✔ Easy to understand and modify
 
-Rather than adding markdown support to `bd` core (800+ LOC + dependencies + maintenance), we provide a simple converter that users can adapt.
+Rather than adding markdown support to `beads` core (800+ LOC + dependencies + maintenance), we provide a simple converter that users can adapt.
 
 ## Contributing
 
@@ -162,6 +162,6 @@ Consider:
 
 ## See Also
 
-- [bd README](../../README.md) - Main documentation
+- [beads README](../../README.md) - Main documentation
 - [Python Agent Example](../python-agent/) - Full agent workflow
-- [JSONL Format](../../TEXT_FORMATS.md) - Understanding bd's JSONL structure
+- [JSONL Format](../../TEXT_FORMATS.md) - Understanding beads's JSONL structure

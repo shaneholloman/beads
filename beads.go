@@ -1,10 +1,10 @@
-// Package beads provides a minimal public API for extending bd with custom orchestration.
+// Package beads provides a minimal public API for extending beads with custom orchestration.
 //
-// Most extensions should use direct SQL queries against bd's database.
+// Most extensions should use direct SQL queries against beads's database.
 // This package exports only the essential types and functions needed for
-// Go-based extensions that want to use bd's storage layer programmatically.
+// Go-based extensions that want to use beads's storage layer programmatically.
 //
-// For detailed guidance on extending bd, see extending.md.
+// For detailed guidance on extending beads, see extending.md.
 package beads
 
 import (
@@ -23,7 +23,7 @@ import (
 const CanonicalDatabaseName = "beads.db"
 
 // LegacyDatabaseNames are old names that should be migrated
-var LegacyDatabaseNames = []string{"bd.db", "issues.db", "bugs.db"}
+var LegacyDatabaseNames = []string{"beads.db", "issues.db", "bugs.db"}
 
 // Issue represents a tracked work item with metadata, dependencies, and status.
 type (
@@ -110,13 +110,13 @@ const (
 // Storage provides the minimal interface for extension orchestration
 type Storage = storage.Storage
 
-// NewSQLiteStorage opens a bd SQLite database for programmatic access.
+// NewSQLiteStorage opens a beads SQLite database for programmatic access.
 // Most extensions should use this to query ready work and update issue status.
 func NewSQLiteStorage(dbPath string) (Storage, error) {
 	return sqlite.New(dbPath)
 }
 
-// FindDatabasePath discovers the bd database path using bd's standard search order:
+// FindDatabasePath discovers the beads database path using beads's standard search order:
 //  1. $BEADS_DB environment variable
 //  2. .beads/*.db in current directory or ancestors
 //
@@ -141,7 +141,7 @@ func FindDatabasePath() string {
 // the first one found, or defaults to "issues.jsonl".
 //
 // This function does not create directories or files - it only discovers paths.
-// Use this when you need to know where bd stores its JSONL export.
+// Use this when you need to know where beads stores its JSONL export.
 func FindJSONLPath(dbPath string) string {
 	if dbPath == "" {
 		return ""
@@ -202,7 +202,7 @@ func findDatabaseInTree() string {
 				var validDBs []string
 				for _, match := range matches {
 					baseName := filepath.Base(match)
-					// Skip backup files (e.g., beads.db.backup, bd.db.backup)
+					// Skip backup files (e.g., beads.db.backup, beads.db.backup)
 					if filepath.Ext(baseName) != ".backup" {
 						validDBs = append(validDBs, match)
 					}
@@ -215,7 +215,7 @@ func findDatabaseInTree() string {
 					for _, db := range validDBs {
 						fmt.Fprintf(os.Stderr, "  - %s\n", filepath.Base(db))
 					}
-					fmt.Fprintf(os.Stderr, "Run 'bd init' to migrate to %s or manually remove old databases.\n\n", CanonicalDatabaseName)
+					fmt.Fprintf(os.Stderr, "Run 'beads init' to migrate to %s or manually remove old databases.\n\n", CanonicalDatabaseName)
 				}
 
 				if len(validDBs) > 0 {
@@ -231,7 +231,7 @@ func findDatabaseInTree() string {
 						}
 						if isLegacy {
 							fmt.Fprintf(os.Stderr, "WARNING: Using legacy database name: %s\n", dbName)
-							fmt.Fprintf(os.Stderr, "Run 'bd migrate' to upgrade to canonical name: %s\n\n", CanonicalDatabaseName)
+							fmt.Fprintf(os.Stderr, "Run 'beads migrate' to upgrade to canonical name: %s\n\n", CanonicalDatabaseName)
 						}
 					}
 					return validDBs[0]

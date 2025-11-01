@@ -12,7 +12,7 @@ DependencyType = Literal["blocks", "related", "parent-child", "discovered-from"]
 
 
 class Issue(BaseModel):
-    """Issue model matching bd JSON output."""
+    """Issue model matching beads JSON output."""
 
     id: str
     title: str
@@ -146,13 +146,13 @@ class BlockedIssue(Issue):
 
 
 class InitParams(BaseModel):
-    """Parameters for initializing bd."""
+    """Parameters for initializing beads."""
 
     prefix: str | None = None
 
 
 class InitResult(BaseModel):
-    """Result from bd init command."""
+    """Result from beads init command."""
 
     database: str
     prefix: str

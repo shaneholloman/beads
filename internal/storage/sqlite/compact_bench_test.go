@@ -15,7 +15,7 @@ func BenchmarkGetTier1Candidates(b *testing.B) {
 
 	for i := 0; i < 100; i++ {
 		issue := &types.Issue{
-			ID:          generateID(b, "bd-", i),
+			ID:          generateID(b, "beads-", i),
 			Title:       "Benchmark issue",
 			Description: "Test description for benchmarking",
 			Status:      "closed",
@@ -44,7 +44,7 @@ func BenchmarkGetTier2Candidates(b *testing.B) {
 
 	for i := 0; i < 50; i++ {
 		issue := &types.Issue{
-			ID:          generateID(b, "bd-", i),
+			ID:          generateID(b, "beads-", i),
 			Title:       "Benchmark issue",
 			Description: "Test",
 			Status:      "closed",
@@ -89,7 +89,7 @@ func BenchmarkCheckEligibility(b *testing.B) {
 	ctx := context.Background()
 
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Eligible",
 		Description: "Test",
 		Status:      "closed",

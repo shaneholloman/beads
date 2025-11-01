@@ -31,17 +31,17 @@ import (
 // - Dense graphs with many dependencies can be slow, but are rare in practice
 // - No optimization needed for normal workflows
 
-// BenchmarkCycleDetection_Linear_100 tests linear chain (sparse): bd-1 → bd-2 → bd-3 ... → bd-100
+// BenchmarkCycleDetection_Linear_100 tests linear chain (sparse): beads-1 → beads-2 → beads-3 ... → beads-100
 func BenchmarkCycleDetection_Linear_100(b *testing.B) {
 	benchmarkCycleDetectionLinear(b, 100)
 }
 
-// BenchmarkCycleDetection_Linear_1000 tests linear chain (sparse): bd-1 → bd-2 → ... → bd-1000
+// BenchmarkCycleDetection_Linear_1000 tests linear chain (sparse): beads-1 → beads-2 → ... → beads-1000
 func BenchmarkCycleDetection_Linear_1000(b *testing.B) {
 	benchmarkCycleDetectionLinear(b, 1000)
 }
 
-// BenchmarkCycleDetection_Linear_5000 tests linear chain (sparse): bd-1 → bd-2 → ... → bd-5000
+// BenchmarkCycleDetection_Linear_5000 tests linear chain (sparse): beads-1 → beads-2 → ... → beads-5000
 func BenchmarkCycleDetection_Linear_5000(b *testing.B) {
 	benchmarkCycleDetectionLinear(b, 5000)
 }

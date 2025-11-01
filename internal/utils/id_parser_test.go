@@ -17,27 +17,27 @@ func TestParseIssueID(t *testing.T) {
 	}{
 		{
 			name:     "already has prefix",
-			input:    "bd-a3f8e9",
-			prefix:   "bd-",
-			expected: "bd-a3f8e9",
+			input:    "beads-a3f8e9",
+			prefix:   "beads-",
+			expected: "beads-a3f8e9",
 		},
 		{
 			name:     "missing prefix",
 			input:    "a3f8e9",
-			prefix:   "bd-",
-			expected: "bd-a3f8e9",
+			prefix:   "beads-",
+			expected: "beads-a3f8e9",
 		},
 		{
 			name:     "hierarchical with prefix",
-			input:    "bd-a3f8e9.1.2",
-			prefix:   "bd-",
-			expected: "bd-a3f8e9.1.2",
+			input:    "beads-a3f8e9.1.2",
+			prefix:   "beads-",
+			expected: "beads-a3f8e9.1.2",
 		},
 		{
 			name:     "hierarchical without prefix",
 			input:    "a3f8e9.1.2",
-			prefix:   "bd-",
-			expected: "bd-a3f8e9.1.2",
+			prefix:   "beads-",
+			expected: "beads-a3f8e9.1.2",
 		},
 		{
 			name:     "custom prefix with ID",
@@ -68,23 +68,23 @@ func TestResolvePartialID(t *testing.T) {
 	store := memory.New("")
 
 	// Create test issues with sequential IDs (current implementation)
-	// When hash IDs (bd-165) are implemented, these can be hash-based
+	// When hash IDs (beads-165) are implemented, these can be hash-based
 	issue1 := &types.Issue{
-		ID:        "bd-1",
+		ID:        "beads-1",
 		Title:     "Test Issue 1",
 		Status:    types.StatusOpen,
 		Priority:  1,
 		IssueType: types.TypeTask,
 	}
 	issue2 := &types.Issue{
-		ID:        "bd-2",
+		ID:        "beads-2",
 		Title:     "Test Issue 2",
 		Status:    types.StatusOpen,
 		Priority:  1,
 		IssueType: types.TypeTask,
 	}
 	issue3 := &types.Issue{
-		ID:        "bd-10",
+		ID:        "beads-10",
 		Title:     "Test Issue 3",
 		Status:    types.StatusOpen,
 		Priority:  1,
@@ -102,7 +102,7 @@ func TestResolvePartialID(t *testing.T) {
 	}
 
 	// Set config for prefix
-	if err := store.SetConfig(ctx, "issue_prefix", "bd-"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads-"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -115,39 +115,39 @@ func TestResolvePartialID(t *testing.T) {
 	}{
 		{
 			name:     "exact match with prefix",
-			input:    "bd-1",
-			expected: "bd-1",
+			input:    "beads-1",
+			expected: "beads-1",
 		},
 		{
 			name:     "exact match without prefix",
 			input:    "1",
-			expected: "bd-1",
+			expected: "beads-1",
 		},
 		{
 			name:     "exact match with prefix (two digits)",
-			input:    "bd-10",
-			expected: "bd-10",
+			input:    "beads-10",
+			expected: "beads-10",
 		},
 		{
 			name:     "exact match without prefix (two digits)",
 			input:    "10",
-			expected: "bd-10",
+			expected: "beads-10",
 		},
 		{
 			name:        "nonexistent issue",
-			input:       "bd-999",
+			input:       "beads-999",
 			shouldError: true,
 			errorMsg:    "no issue found",
 		},
 		{
 			name:     "partial match - unique substring",
-			input:    "bd-1",
-			expected: "bd-1",
+			input:    "beads-1",
+			expected: "beads-1",
 		},
 		{
 			name:     "ambiguous partial match",
-			input:    "bd-1",
-			expected: "bd-1", // Will match exactly, not ambiguously
+			input:    "beads-1",
+			expected: "beads-1", // Will match exactly, not ambiguously
 		},
 	}
 
@@ -179,14 +179,14 @@ func TestResolvePartialIDs(t *testing.T) {
 
 	// Create test issues
 	issue1 := &types.Issue{
-		ID:        "bd-1",
+		ID:        "beads-1",
 		Title:     "Test Issue 1",
 		Status:    types.StatusOpen,
 		Priority:  1,
 		IssueType: types.TypeTask,
 	}
 	issue2 := &types.Issue{
-		ID:        "bd-2",
+		ID:        "beads-2",
 		Title:     "Test Issue 2",
 		Status:    types.StatusOpen,
 		Priority:  1,
@@ -200,7 +200,7 @@ func TestResolvePartialIDs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := store.SetConfig(ctx, "issue_prefix", "bd-"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads-"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -213,12 +213,12 @@ func TestResolvePartialIDs(t *testing.T) {
 		{
 			name:     "resolve multiple IDs without prefix",
 			inputs:   []string{"1", "2"},
-			expected: []string{"bd-1", "bd-2"},
+			expected: []string{"beads-1", "beads-2"},
 		},
 		{
 			name:     "resolve mixed full and partial IDs",
-			inputs:   []string{"bd-1", "2"},
-			expected: []string{"bd-1", "bd-2"},
+			inputs:   []string{"beads-1", "2"},
+			expected: []string{"beads-1", "beads-2"},
 		},
 		{
 			name:        "error on nonexistent ID",
@@ -263,7 +263,7 @@ func TestResolvePartialID_NoConfig(t *testing.T) {
 
 	// Create test issue without setting config (test default prefix)
 	issue1 := &types.Issue{
-		ID:        "bd-1",
+		ID:        "beads-1",
 		Title:     "Test Issue",
 		Status:    types.StatusOpen,
 		Priority:  1,
@@ -274,14 +274,14 @@ func TestResolvePartialID_NoConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Don't set config - should use default "bd" prefix
+	// Don't set config - should use default "beads" prefix
 	result, err := ResolvePartialID(ctx, store, "1")
 	if err != nil {
 		t.Fatalf("ResolvePartialID failed with default config: %v", err)
 	}
 
-	if result != "bd-1" {
-		t.Errorf("ResolvePartialID(\"1\") with default config = %q; want \"bd-1\"", result)
+	if result != "beads-1" {
+		t.Errorf("ResolvePartialID(\"1\") with default config = %q; want \"beads-1\"", result)
 	}
 }
 
@@ -293,8 +293,8 @@ func TestExtractIssuePrefix(t *testing.T) {
 	}{
 		{
 			name:     "standard format",
-			issueID:  "bd-a3f8e9",
-			expected: "bd",
+			issueID:  "beads-a3f8e9",
+			expected: "beads",
 		},
 		{
 			name:     "custom prefix",
@@ -303,8 +303,8 @@ func TestExtractIssuePrefix(t *testing.T) {
 		},
 		{
 			name:     "hierarchical ID",
-			issueID:  "bd-a3f8e9.1.2",
-			expected: "bd",
+			issueID:  "beads-a3f8e9.1.2",
+			expected: "beads",
 		},
 		{
 			name:     "no hyphen",
@@ -318,8 +318,8 @@ func TestExtractIssuePrefix(t *testing.T) {
 		},
 		{
 			name:     "only prefix",
-			issueID:  "bd-",
-			expected: "bd",
+			issueID:  "beads-",
+			expected: "beads",
 		},
 	}
 
@@ -341,17 +341,17 @@ func TestExtractIssueNumber(t *testing.T) {
 	}{
 		{
 			name:     "simple number",
-			issueID:  "bd-123",
+			issueID:  "beads-123",
 			expected: 123,
 		},
 		{
 			name:     "hash ID (no number)",
-			issueID:  "bd-a3f8e9",
+			issueID:  "beads-a3f8e9",
 			expected: 0,
 		},
 		{
 			name:     "hierarchical with number",
-			issueID:  "bd-42.1.2",
+			issueID:  "beads-42.1.2",
 			expected: 42,
 		},
 		{
@@ -366,17 +366,17 @@ func TestExtractIssueNumber(t *testing.T) {
 		},
 		{
 			name:     "zero",
-			issueID:  "bd-0",
+			issueID:  "beads-0",
 			expected: 0,
 		},
 		{
 			name:     "large number",
-			issueID:  "bd-999999",
+			issueID:  "beads-999999",
 			expected: 999999,
 		},
 		{
 			name:     "number with text after",
-			issueID:  "bd-123abc",
+			issueID:  "beads-123abc",
 			expected: 123,
 		},
 	}

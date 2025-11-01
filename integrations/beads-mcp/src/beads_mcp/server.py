@@ -46,7 +46,7 @@ _cleanup_done = False
 mcp = FastMCP(
     name="Beads",
     instructions="""
-We track work in Beads (bd) instead of Markdown.
+We track work in Beads (beads) instead of Markdown.
 Check the resource beads://quickstart to see how.
 
 IMPORTANT: Call set_context with your workspace root before any write operations.
@@ -207,9 +207,9 @@ def _resolve_workspace_root(path: str) -> str:
 # Register quickstart resource
 @mcp.resource("beads://quickstart", name="Beads Quickstart Guide")
 async def get_quickstart() -> str:
-    """Get beads (bd) quickstart guide.
+    """Get beads (beads) quickstart guide.
 
-    Read this first to understand how to use beads (bd) commands.
+    Read this first to understand how to use beads (beads) commands.
     """
     return await beads_quickstart()
 
@@ -217,7 +217,7 @@ async def get_quickstart() -> str:
 # Context management tools
 @mcp.tool(
     name="set_context",
-    description="Set the workspace root directory for all bd operations. Call this first!",
+    description="Set the workspace root directory for all beads operations. Call this first!",
 )
 async def set_context(workspace_root: str) -> str:
     """Set workspace root directory and discover the beads database.
@@ -244,7 +244,7 @@ async def set_context(workspace_root: str) -> str:
         return (
             f"Context set successfully:\n"
             f"  Workspace root: {resolved_root}\n"
-            f"  Database: Not found (run 'bd init' to create)"
+            f"  Database: Not found (run 'beads init' to create)"
         )
     
     # Set database path
@@ -466,13 +466,13 @@ async def blocked(workspace_root: str | None = None) -> list[BlockedIssue]:
 
 @mcp.tool(
     name="init",
-    description="""Initialize bd in current directory. Creates .beads/ directory and
+    description="""Initialize beads in current directory. Creates .beads/ directory and
 database with optional custom prefix for issue IDs.""",
 )
 @with_workspace
 @require_context
 async def init(prefix: str | None = None, workspace_root: str | None = None) -> str:
-    """Initialize bd in current directory."""
+    """Initialize beads in current directory."""
     return await beads_init(prefix=prefix)
 
 

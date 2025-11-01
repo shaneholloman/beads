@@ -1,0 +1,10 @@
+# Test beads export command
+beads init --prefix test
+beads create 'Test issue'
+beads export -o export.jsonl
+exists export.jsonl
+
+# Verify the exported file contains the issue
+beads import -i export.jsonl
+beads list
+stdout 'Test issue'

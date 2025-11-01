@@ -4,7 +4,7 @@ AI-supervised issue tracker for coding workflows. Manage tasks, discover work, a
 
 ## What is Beads?
 
-Beads (`bd`) is an issue tracker designed specifically for AI-supervised coding workflows. It helps AI agents and developers:
+Beads (`beads`) is an issue tracker designed specifically for AI-supervised coding workflows. It helps AI agents and developers:
 
 - Track work with a simple CLI
 - Discover and link related tasks during development
@@ -62,37 +62,37 @@ After installation, restart Claude Code to activate the MCP server.
 
 ```bash
 # Initialize beads in your project
-/bd-init
+/beads-init
 
 # Create your first issue
-/bd-create "Set up project structure" feature 1
+/beads-create "Set up project structure" feature 1
 
 # See what's ready to work on
-/bd-ready
+/beads-ready
 
 # Show full workflow guide
-/bd-workflow
+/beads-workflow
 ```
 
 ## Available Commands
 
 ### Version Management
 
-- **`/bd-version`** - Check bd CLI, plugin, and MCP server versions
+- **`/beads-version`** - Check beads CLI, plugin, and MCP server versions
 
 ### Core Workflow Commands
 
-- **`/bd-ready`** - Find tasks with no blockers, ready to work on
-- **`/bd-create [title] [type] [priority]`** - Create a new issue interactively
-- **`/bd-show [issue-id]`** - Show detailed information about an issue
-- **`/bd-update [issue-id] [status]`** - Update issue status or other fields
-- **`/bd-close [issue-id] [reason]`** - Close a completed issue
+- **`/beads-ready`** - Find tasks with no blockers, ready to work on
+- **`/beads-create [title] [type] [priority]`** - Create a new issue interactively
+- **`/beads-show [issue-id]`** - Show detailed information about an issue
+- **`/beads-update [issue-id] [status]`** - Update issue status or other fields
+- **`/beads-close [issue-id] [reason]`** - Close a completed issue
 
 ### Project Management
 
-- **`/bd-init`** - Initialize beads in the current project
-- **`/bd-workflow`** - Show the AI-supervised issue workflow guide
-- **`/bd-stats`** - Show project statistics and progress
+- **`/beads-init`** - Initialize beads in the current project
+- **`/beads-workflow`** - Show the AI-supervised issue workflow guide
+- **`/beads-stats`** - Show project statistics and progress
 
 ### Agents
 
@@ -102,7 +102,7 @@ After installation, restart Claude Code to activate the MCP server.
 
 The plugin includes a full-featured MCP server with these tools:
 
-- **`init`** - Initialize bd in current directory
+- **`init`** - Initialize beads in current directory
 - **`create`** - Create new issue (bug, feature, task, epic, chore)
 - **`list`** - List issues with filters (status, priority, type, assignee)
 - **`ready`** - Find tasks with no blockers ready to work on
@@ -121,11 +121,11 @@ The plugin includes a full-featured MCP server with these tools:
 
 The beads workflow is designed for AI agents but works great for humans too:
 
-1. **Find ready work**: `/bd-ready`
-2. **Claim your task**: `/bd-update <id> in_progress`
+1. **Find ready work**: `/beads-ready`
+2. **Claim your task**: `/beads-update <id> in_progress`
 3. **Work on it**: Implement, test, document
 4. **Discover new work**: Create issues for bugs/TODOs found during work
-5. **Complete**: `/bd-close <id> "Done: <summary>"`
+5. **Complete**: `/beads-close <id> "Done: <summary>"`
 6. **Repeat**: Check for newly unblocked tasks
 
 ## Issue Types
@@ -195,7 +195,7 @@ No configuration needed. Claude Code will prompt for approval on each MCP tool i
 - **Server-level auto-approval**: Convenient for trusted projects, but allows any beads operation without confirmation
 - **Project-level auto-approval**: Good balance for multi-project workflows with project-specific trust levels
 
-**Limitation:** Claude Code doesn't currently support per-tool approval granularity. You cannot auto-approve only read operations (like `bd ready`, `bd show`) while requiring confirmation for mutations (like `bd create`, `bd update`). It's all-or-nothing at the server level.
+**Limitation:** Claude Code doesn't currently support per-tool approval granularity. You cannot auto-approve only read operations (like `beads ready`, `beads show`) while requiring confirmation for mutations (like `beads create`, `beads update`). It's all-or-nothing at the server level.
 
 **Recommended Configuration:**
 
@@ -213,7 +213,7 @@ For more information, see the [Claude Code settings documentation](https://docs.
 
 The MCP server supports these environment variables:
 
-- **`BEADS_PATH`** - Path to bd executable (default: `bd` in PATH)
+- **`BEADS_PATH`** - Path to beads executable (default: `beads` in PATH)
 - **`BEADS_DB`** - Path to beads database file (default: auto-discover from cwd)
 - **`BEADS_ACTOR`** - Actor name for audit trail (default: `$USER`)
 - **`BEADS_NO_AUTO_FLUSH`** - Disable automatic JSONL sync (default: `false`)
@@ -227,29 +227,29 @@ To customize, edit your Claude Code MCP settings or the plugin configuration.
 
 ```bash
 # Create a high-priority bug
-/bd-create "Fix authentication" bug 1
+/beads-create "Fix authentication" bug 1
 
 # See ready work
-/bd-ready
+/beads-ready
 
-# Start working on bd-10
-/bd-update bd-10 in_progress
+# Start working on beads-10
+/beads-update beads-10 in_progress
 
 # Complete the task
-/bd-close bd-10 "Fixed auth token validation"
+/beads-close beads-10 "Fixed auth token validation"
 ```
 
 ### Discovering Work During Development
 
 ```bash
-# Working on bd-10, found a related bug
-/bd-create "Add rate limiting to API" feature 2
+# Working on beads-10, found a related bug
+/beads-create "Add rate limiting to API" feature 2
 
 # Link it to current work (via MCP tool)
-# Use `dep` tool: issue="bd-11", depends_on="bd-10", type="discovered-from"
+# Use `dep` tool: issue="beads-11", depends_on="beads-10", type="discovered-from"
 
 # Close original task
-/bd-close bd-10 "Done, discovered bd-11 for rate limiting"
+/beads-close beads-10 "Done, discovered beads-11 for rate limiting"
 ```
 
 ### Using the Task Agent
@@ -278,7 +278,7 @@ This enables seamless collaboration:
 
 ```bash
 # Make changes
-bd create "Add feature" -p 1
+beads create "Add feature" -p 1
 
 # Changes auto-export after 5 seconds
 # Commit when ready
@@ -287,7 +287,7 @@ git commit -m "Add feature tracking"
 
 # After pull, JSONL auto-imports
 git pull
-bd ready  # Fresh data from git!
+beads ready  # Fresh data from git!
 ```
 
 ## Updating
@@ -304,48 +304,48 @@ Check for plugin updates:
 
 Claude Code will pull the latest version from GitHub. After updating, **restart Claude Code** to apply MCP server changes.
 
-### 2. bd CLI Updates
+### 2. beads CLI Updates
 
-The plugin requires the `bd` CLI to be installed. Update it separately:
+The plugin requires the `beads` CLI to be installed. Update it separately:
 
 ```bash
 # Quick update
 curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash
 
 # Or with go
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 ### 3. Version Compatibility
 
-The MCP server **automatically checks** bd CLI version on startup and will fail with a clear error if your version is too old.
+The MCP server **automatically checks** beads CLI version on startup and will fail with a clear error if your version is too old.
 
 Check version compatibility manually:
 
 ```bash
-/bd-version
+/beads-version
 ```
 
 This will show:
 
-- bd CLI version
+- beads CLI version
 - Plugin version
 - MCP server status
 - Compatibility warnings if versions mismatch
 
 **Recommended update workflow:**
 
-1. Check versions: `/bd-version`
-2. Update bd CLI if needed (see above)
+1. Check versions: `/beads-version`
+2. Update beads CLI if needed (see above)
 3. Update plugin: `/plugin update beads`
 4. Restart Claude Code
-5. Verify: `/bd-version`
+5. Verify: `/beads-version`
 
 ### Version Numbering
 
-Beads follows semantic versioning. The plugin version tracks the bd CLI version:
+Beads follows semantic versioning. The plugin version tracks the beads CLI version:
 
-- Plugin 0.9.2 requires bd CLI >= 0.9.0 (checked automatically at startup)
+- Plugin 0.9.2 requires beads CLI >= 0.9.0 (checked automatically at startup)
 - Major version bumps may introduce breaking changes
 - Check CHANGELOG.md for release notes
 
@@ -355,7 +355,7 @@ Beads follows semantic versioning. The plugin version tracks the bd CLI version:
 
 1. Check installation: `/plugin list`
 2. Restart Claude Code
-3. Verify `bd` is in PATH: `which bd`
+3. Verify `beads` is in PATH: `which beads`
 4. Check uv is installed: `which uv`
 
 ### MCP server not connecting
@@ -367,17 +367,17 @@ Beads follows semantic versioning. The plugin version tracks the bd CLI version:
 
 ### Commands not working
 
-1. Make sure you're in a project with beads initialized: `/bd-init`
+1. Make sure you're in a project with beads initialized: `/beads-init`
 2. Check if database exists: `ls -la .beads/`
 3. Try direct MCP tool access instead of slash commands
-4. Check the beads CLI works: `bd --help`
+4. Check the beads CLI works: `beads --help`
 
 ### MCP tool errors
 
-1. Verify `bd` executable location: `BEADS_PATH` env var
-2. Check `bd` works in terminal: `bd stats`
+1. Verify `beads` executable location: `BEADS_PATH` env var
+2. Check `beads` works in terminal: `beads stats`
 3. Review MCP server logs in Claude Code
-4. Try reinitializing: `/bd-init`
+4. Try reinitializing: `/beads-init`
 
 ## Learn More
 

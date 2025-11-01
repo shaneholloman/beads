@@ -152,7 +152,7 @@ func (s *Server) handleImport(req *Request) Response {
 		}
 	}
 
-	// Note: The actual import logic is complex and lives in cmd/bd/import.go
+	// Note: The actual import logic is complex and lives in cmd/beads/import.go
 	// For now, we'll return an error suggesting to use direct mode
 	// In the future, we can refactor the import logic into a shared package
 	return Response{
@@ -162,7 +162,7 @@ func (s *Server) handleImport(req *Request) Response {
 }
 
 // checkAndAutoImportIfStale checks if JSONL is newer than last import and triggers auto-import
-// This fixes bd-132: daemon shows stale data after git pull
+// This fixes beads-132: daemon shows stale data after git pull
 func (s *Server) checkAndAutoImportIfStale(req *Request) error {
 	// Get storage for this request
 	store := s.storage
@@ -260,7 +260,7 @@ func (s *Server) triggerExport(ctx context.Context, store storage.Storage, dbPat
 
 	// Write to JSONL file
 	// Note: We reuse the export logic from the daemon's existing export mechanism
-	// For now, this is a simple implementation - could be refactored to share with cmd/bd
+	// For now, this is a simple implementation - could be refactored to share with cmd/beads
 	file, err := os.Create(jsonlPath) // #nosec G304 - controlled path from config
 	if err != nil {
 		return fmt.Errorf("failed to create JSONL file: %w", err)

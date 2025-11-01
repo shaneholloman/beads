@@ -15,7 +15,7 @@ func setupTestMemory(t *testing.T) *MemoryStorage {
 	ctx := context.Background()
 
 	// Set issue_prefix config
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("failed to set issue_prefix: %v", err)
 	}
 
@@ -169,7 +169,7 @@ func TestGetIssueNotFound(t *testing.T) {
 	defer store.Close()
 
 	ctx := context.Background()
-	issue, err := store.GetIssue(ctx, "bd-999")
+	issue, err := store.GetIssue(ctx, "beads-999")
 	if err != nil {
 		t.Fatalf("GetIssue failed: %v", err)
 	}
@@ -585,16 +585,16 @@ func TestLoadFromIssues(t *testing.T) {
 
 	issues := []*types.Issue{
 		{
-			ID:           "bd-1",
+			ID:           "beads-1",
 			Title:        "Issue 1",
 			Status:       types.StatusOpen,
 			Priority:     1,
 			IssueType:    types.TypeTask,
 			Labels:       []string{"bug", "critical"},
-			Dependencies: []*types.Dependency{{IssueID: "bd-1", DependsOnID: "bd-2", Type: types.DepBlocks}},
+			Dependencies: []*types.Dependency{{IssueID: "beads-1", DependsOnID: "beads-2", Type: types.DepBlocks}},
 		},
 		{
-			ID:        "bd-2",
+			ID:        "beads-2",
 			Title:     "Issue 2",
 			Status:    types.StatusOpen,
 			Priority:  1,
@@ -608,7 +608,7 @@ func TestLoadFromIssues(t *testing.T) {
 
 	// Verify issues loaded
 	ctx := context.Background()
-	loaded, err := store.GetIssue(ctx, "bd-1")
+	loaded, err := store.GetIssue(ctx, "beads-1")
 	if err != nil {
 		t.Fatalf("GetIssue failed: %v", err)
 	}
@@ -632,8 +632,8 @@ func TestLoadFromIssues(t *testing.T) {
 	}
 
 	// Verify counter updated
-	if store.counters["bd"] != 2 {
-		t.Errorf("Expected counter bd=2, got %d", store.counters["bd"])
+	if store.counters["beads"] != 2 {
+		t.Errorf("Expected counter beads=2, got %d", store.counters["beads"])
 	}
 }
 

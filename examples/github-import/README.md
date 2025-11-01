@@ -1,10 +1,10 @@
-# GitHub Issues to bd Importer
+# GitHub Issues to beads Importer
 
-Import issues from GitHub repositories into `bd`.
+Import issues from GitHub repositories into `beads`.
 
 ## Overview
 
-This tool converts GitHub Issues to bd's JSONL format, supporting both:
+This tool converts GitHub Issues to beads's JSONL format, supporting both:
 
 1. **GitHub API** - Fetch issues directly from a repository
 2. **JSON Export** - Parse manually exported GitHub issues
@@ -13,7 +13,7 @@ This tool converts GitHub Issues to bd's JSONL format, supporting both:
 
 - ✔ **Fetch from GitHub API** - Direct import from any public/private repo
 - ✔ **JSON file import** - Parse exported GitHub issues JSON
-- ✔ **Label mapping** - Auto-map GitHub labels to bd priority/type
+- ✔ **Label mapping** - Auto-map GitHub labels to beads priority/type
 - ✔ **Preserve metadata** - Keep assignees, timestamps, descriptions
 - ✔ **Cross-references** - Convert `#123` references to dependencies
 - ✔ **External links** - Preserve URLs back to original GitHub issues
@@ -40,12 +40,12 @@ export GITHUB_TOKEN=ghp_your_token_here
 
 ```bash
 # Fetch all issues from a repository
-python gh2jsonl.py --repo owner/repo | bd import
+python gh2jsonl.py --repo owner/repo | beads import
 
 # Save to file first (recommended)
 python gh2jsonl.py --repo owner/repo > issues.jsonl
-bd import -i issues.jsonl --dry-run  # Preview
-bd import -i issues.jsonl             # Import
+beads import -i issues.jsonl --dry-run  # Preview
+beads import -i issues.jsonl             # Import
 
 # Fetch only open issues
 python gh2jsonl.py --repo owner/repo --state open
@@ -63,19 +63,19 @@ Export issues from GitHub (via API or manually), then:
 curl -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/owner/repo/issues/123 > issue.json
 
-python gh2jsonl.py --file issue.json | bd import
+python gh2jsonl.py --file issue.json | beads import
 
 # Multiple issues
 curl -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/owner/repo/issues > issues.json
 
-python gh2jsonl.py --file issues.json | bd import
+python gh2jsonl.py --file issues.json | beads import
 ```
 
 ### Custom Options
 
 ```bash
-# Use custom prefix (instead of 'bd')
+# Use custom prefix (instead of 'beads')
 python gh2jsonl.py --repo owner/repo --prefix myproject
 
 # Start numbering from specific ID
@@ -87,11 +87,11 @@ python gh2jsonl.py --repo owner/repo --token ghp_...
 
 ## Label Mapping
 
-The script maps GitHub labels to bd fields:
+The script maps GitHub labels to beads fields:
 
 ### Priority Mapping
 
-| GitHub Labels | bd Priority |
+| GitHub Labels | beads Priority |
 |--------------|-------------|
 | `critical`, `p0`, `urgent` | 0 (Critical) |
 | `high`, `p1`, `important` | 1 (High) |
@@ -101,7 +101,7 @@ The script maps GitHub labels to bd fields:
 
 ### Type Mapping
 
-| GitHub Labels | bd Type |
+| GitHub Labels | beads Type |
 |--------------|---------|
 | `bug`, `defect` | bug |
 | `feature`, `enhancement` | feature |
@@ -111,7 +111,7 @@ The script maps GitHub labels to bd fields:
 
 ### Status Mapping
 
-| GitHub State | GitHub Labels | bd Status |
+| GitHub State | GitHub Labels | beads Status |
 |-------------|---------------|-----------|
 | closed | (any) | closed |
 | open | `in progress`, `in-progress`, `wip` | in_progress |
@@ -124,9 +124,9 @@ All other labels are preserved in the `labels` field. Labels used for mapping (p
 
 ## Field Mapping
 
-| GitHub Field | bd Field | Notes |
+| GitHub Field | beads Field | Notes |
 |--------------|----------|-------|
-| `number` | (internal mapping) | GH#123 → bd-1, etc. |
+| `number` | (internal mapping) | GH#123 → beads-1, etc. |
 | `title` | `title` | Direct copy |
 | `body` | `description` | Direct copy |
 | `state` | `status` | See status mapping |
@@ -150,11 +150,11 @@ See also owner/other-repo#789.
 
 **Result:**
 
-- If GH#123 was imported, creates `related` dependency to its bd ID
-- If GH#456 was imported, creates `related` dependency to its bd ID
+- If GH#123 was imported, creates `related` dependency to its beads ID
+- If GH#456 was imported, creates `related` dependency to its beads ID
 - Cross-repo references (#789) are ignored (unless those issues were also imported)
 
-**Note:** Dependency records use `"issue_id": ""` format, which the bd importer automatically fills. This matches the behavior of the markdown-to-jsonl converter.
+**Note:** Dependency records use `"issue_id": ""` format, which the beads importer automatically fills. This matches the behavior of the markdown-to-jsonl converter.
 
 ## Examples
 
@@ -169,8 +169,8 @@ python gh2jsonl.py --repo mycompany/myapp --state open > open-issues.jsonl
 cat open-issues.jsonl | jq .
 
 # Import
-bd import -i open-issues.jsonl
-bd ready  # See what's ready to work on
+beads import -i open-issues.jsonl
+beads ready  # See what's ready to work on
 ```
 
 ### Example 2: Full Repository Migration
@@ -180,13 +180,13 @@ bd ready  # See what's ready to work on
 python gh2jsonl.py --repo mycompany/myapp > all-issues.jsonl
 
 # Preview import (check for new issues and updates)
-bd import -i all-issues.jsonl --dry-run
+beads import -i all-issues.jsonl --dry-run
 
 # Import issues
-bd import -i all-issues.jsonl
+beads import -i all-issues.jsonl
 
 # View stats
-bd stats
+beads stats
 ```
 
 ### Example 3: Partial Import from JSON
@@ -196,7 +196,7 @@ bd stats
 gh api repos/owner/repo/issues?labels=p1,bug > high-priority-bugs.json
 
 # Import
-python gh2jsonl.py --file high-priority-bugs.json | bd import
+python gh2jsonl.py --file high-priority-bugs.json | beads import
 ```
 
 ## Customization
@@ -219,7 +219,7 @@ def map_priority(self, labels: List[str]) -> int:
 
 ### 2. Add Custom Fields
 
-Map additional GitHub fields to bd:
+Map additional GitHub fields to beads:
 
 ```python
 def convert_issue(self, gh_issue: Dict[str, Any]) -> Dict[str, Any]:
@@ -247,7 +247,7 @@ def extract_dependencies_from_body(self, body: str) -> List[str]:
 
 ## Limitations
 
-- **Single assignee**: GitHub supports multiple assignees, bd supports one
+- **Single assignee**: GitHub supports multiple assignees, beads supports one
 - **No milestones**: GitHub milestones aren't mapped (consider using design field)
 - **Simple cross-refs**: Only basic `#123` patterns detected
 - **No comments**: Issue comments aren't imported (only the body)
@@ -300,11 +300,11 @@ python gh2jsonl.py --repo owner/repo --token ghp_...
 
 ### Issue numbers don't match
 
-This is expected! GitHub issue numbers (e.g., #123) are mapped to bd IDs (e.g., bd-1) based on import order. The original GitHub URL is preserved in `external_ref`.
+This is expected! GitHub issue numbers (e.g., #123) are mapped to beads IDs (e.g., beads-1) based on import order. The original GitHub URL is preserved in `external_ref`.
 
 ## See Also
 
-- [bd README](../../README.md) - Main documentation
+- [beads README](../../README.md) - Main documentation
 - [Markdown Import Example](../markdown-to-jsonl/) - Import from markdown
-- [TEXT_FORMATS.md](../../TEXT_FORMATS.md) - Understanding bd's JSONL format
+- [TEXT_FORMATS.md](../../TEXT_FORMATS.md) - Understanding beads's JSONL format
 - [JSONL Import Guide](../../README.md#import) - Import collision handling

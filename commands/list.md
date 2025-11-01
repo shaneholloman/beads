@@ -17,10 +17,10 @@ List beads issues with optional filtering.
 
 ## Examples
 
-- `bd list --status open --priority 1`: High priority open issues
-- `bd list --type bug --assignee alice`: Alice's assigned bugs
-- `bd list --label backend,needs-review`: Backend issues needing review
-- `bd list --title "auth"`: Issues with "auth" in the title
+- `beads list --status open --priority 1`: High priority open issues
+- `beads list --type bug --assignee alice`: Alice's assigned bugs
+- `beads list --label backend,needs-review`: Backend issues needing review
+- `beads list --title "auth"`: Issues with "auth" in the title
 
 ## Output Formats
 

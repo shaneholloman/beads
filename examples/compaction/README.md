@@ -29,16 +29,16 @@ Fully automated compaction for cron jobs. No interaction required.
 
 ```bash
 # Configure
-export BD_REPO_PATH="/path/to/your/repo"
-export BD_LOG_FILE="$HOME/.bd-compact.log"
+export BEADS_REPO_PATH="/path/to/your/repo"
+export BEADS_LOG_FILE="$HOME/.beads-compact.log"
 export ANTHROPIC_API_KEY="sk-ant-..."
 
 # Test manually
 ./cron-compact.sh
 
 # Install to cron (monthly)
-cp cron-compact.sh /etc/cron.monthly/bd-compact
-chmod +x /etc/cron.monthly/bd-compact
+cp cron-compact.sh /etc/cron.monthly/beads-compact
+chmod +x /etc/cron.monthly/beads-compact
 
 # Or add to crontab
 crontab -e
@@ -135,7 +135,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 ./workflow.sh
 
 # Test cron script
-export BD_REPO_PATH="$(pwd)"
+export BEADS_REPO_PATH="$(pwd)"
 ./cron-compact.sh
 
 # Test auto-compact (dry run)
@@ -144,12 +144,12 @@ export BD_REPO_PATH="$(pwd)"
 
 ## Troubleshooting
 
-### Script says "bd command not found"
+### Script says "beads command not found"
 
-Ensure bd is in PATH:
+Ensure beads is in PATH:
 
 ```bash
-which bd
+which beads
 export PATH="$PATH:/usr/local/bin"
 ```
 
@@ -175,7 +175,7 @@ log show --predicate 'process == "cron"' --last 1h
 Verify script is executable:
 
 ```bash
-chmod +x /etc/cron.monthly/bd-compact
+chmod +x /etc/cron.monthly/beads-compact
 ```
 
 ## Cost Monitoring
@@ -184,13 +184,13 @@ Track compaction costs:
 
 ```bash
 # Show stats after compaction
-bd compact --stats
+beads compact --stats
 
 # Estimate monthly cost
 # (issues_compacted / 1000) * $1.00
 ```
 
-Set up alerts if costs exceed budget (future feature: bd-cost-alert).
+Set up alerts if costs exceed budget (future feature: beads-cost-alert).
 
 ## See Also
 

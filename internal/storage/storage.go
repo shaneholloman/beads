@@ -52,16 +52,16 @@ type Storage interface {
 
 	// Dirty tracking (for incremental JSONL export)
 	GetDirtyIssues(ctx context.Context) ([]string, error)
-	GetDirtyIssueHash(ctx context.Context, issueID string) (string, error) // For timestamp-only dedup (bd-164)
-	ClearDirtyIssues(ctx context.Context) error                            // WARNING: Race condition (bd-52), use ClearDirtyIssuesByID
+	GetDirtyIssueHash(ctx context.Context, issueID string) (string, error) // For timestamp-only dedup (beads-164)
+	ClearDirtyIssues(ctx context.Context) error                            // WARNING: Race condition (beads-52), use ClearDirtyIssuesByID
 	ClearDirtyIssuesByID(ctx context.Context, issueIDs []string) error
 
-	// Export hash tracking (for timestamp-only dedup, bd-164)
+	// Export hash tracking (for timestamp-only dedup, beads-164)
 	GetExportHash(ctx context.Context, issueID string) (string, error)
 	SetExportHash(ctx context.Context, issueID, contentHash string) error
 	ClearAllExportHashes(ctx context.Context) error
 
-	// JSONL file integrity (bd-160)
+	// JSONL file integrity (beads-160)
 	GetJSONLFileHash(ctx context.Context) (string, error)
 	SetJSONLFileHash(ctx context.Context, fileHash string) error
 

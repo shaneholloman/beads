@@ -12,8 +12,8 @@ import (
 )
 
 // ServerVersion is the version of this RPC server
-// This should match the bd CLI version for proper compatibility checks
-// It's set dynamically by daemon.go from cmd/bd/version.go before starting the server
+// This should match the beads CLI version for proper compatibility checks
+// It's set dynamically by daemon.go from cmd/beads/version.go before starting the server
 var ServerVersion = "0.0.0" // Placeholder; overridden by daemon startup
 
 const (
@@ -54,7 +54,7 @@ type Server struct {
 // MutationEvent represents a database mutation for event-driven sync
 type MutationEvent struct {
 	Type      string // "create", "update", "delete", "comment"
-	IssueID   string // e.g., "bd-42"
+	IssueID   string // e.g., "beads-42"
 	Timestamp time.Time
 }
 

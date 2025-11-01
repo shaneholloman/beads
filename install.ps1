@@ -1,4 +1,4 @@
-# Beads (bd) Windows installer
+# Beads (beads) Windows installer
 # Usage:
 #   irm https://raw.githubusercontent.com/shaneholloman/beads/main/install.ps1 | iex
 
@@ -59,9 +59,9 @@ function Install-WithGo {
         return $false
     }
 
-    Write-Info "Installing bd via go install..."
+    Write-Info "Installing beads via go install..."
     try {
-        & go install github.com/shaneholloman/beads/cmd/bd@latest
+        & go install github.com/shaneholloman/beads/cmd/beads@latest
         if ($LASTEXITCODE -ne 0) {
             Write-WarningMsg "go install exited with code $LASTEXITCODE"
             return $false
@@ -82,12 +82,12 @@ function Install-WithGo {
         $binDir = Join-Path $gopath "bin"
     }
 
-    $bdPath = Join-Path $binDir "bd.exe"
+    $beadsPath = Join-Path $binDir "beads.exe"
     # Record where we expect the binary to have been installed in this run
-    $Script:LastInstallPath = $bdPath
+    $Script:LastInstallPath = $beadsPath
 
-    if (-not (Test-Path $bdPath)) {
-        Write-WarningMsg "bd.exe not found in $binDir after install"
+    if (-not (Test-Path $beadsPath)) {
+        Write-WarningMsg "beads.exe not found in $binDir after install"
     }
 
     $pathEntries = [Environment]::GetEnvironmentVariable("PATH", "Process").Split([IO.Path]::PathSeparator) | ForEach-Object { $_.Trim() }
@@ -99,7 +99,7 @@ function Install-WithGo {
 }
 
 function Install-FromSource {
-    Write-Info "Building bd from source..."
+    Write-Info "Building beads from source..."
 
     $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("beads-install-" + [guid]::NewGuid().ToString("N"))
     New-Item -ItemType Directory -Path $tempRoot | Out-Null
@@ -135,8 +135,8 @@ function Install-FromSource {
 
         Push-Location $repoPath
         try {
-            Write-Info "Compiling bd.exe..."
-            & go build -o bd.exe ./cmd/bd
+            Write-Info "Compiling beads.exe..."
+            & go build -o beads.exe ./cmd/beads
             if ($LASTEXITCODE -ne 0) {
                 throw "go build failed with exit code $LASTEXITCODE"
             }
@@ -144,14 +144,14 @@ function Install-FromSource {
             Pop-Location
         }
 
-        $installDir = Join-Path $env:LOCALAPPDATA "Programs\bd"
+        $installDir = Join-Path $env:LOCALAPPDATA "Programs\beads"
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
 
-        Copy-Item -Path (Join-Path $repoPath "bd.exe") -Destination (Join-Path $installDir "bd.exe") -Force
-        Write-Success "bd installed to $installDir\bd.exe"
+        Copy-Item -Path (Join-Path $repoPath "beads.exe") -Destination (Join-Path $installDir "beads.exe") -Force
+        Write-Success "beads installed to $installDir\beads.exe"
 
             # Record where we installed the binary when building from source
-            $Script:LastInstallPath = Join-Path $installDir "bd.exe"
+            $Script:LastInstallPath = Join-Path $installDir "beads.exe"
 
         $pathEntries = [Environment]::GetEnvironmentVariable("PATH", "Process").Split([IO.Path]::PathSeparator) | ForEach-Object { $_.Trim() }
         if (-not ($pathEntries -contains $installDir)) {
@@ -164,12 +164,12 @@ function Install-FromSource {
     return $true
 }
 
-function Get-BdPathsInPath {
+function Get-BeadsPathsInPath {
     $pathEntries = [Environment]::GetEnvironmentVariable("PATH", "Process").Split([IO.Path]::PathSeparator) | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }
     $found = @()
     foreach ($entry in $pathEntries) {
         try {
-            $candidate = Join-Path $entry "bd.exe"
+            $candidate = Join-Path $entry "beads.exe"
         } catch {
             continue
         }
@@ -185,12 +185,12 @@ function Get-BdPathsInPath {
     return $found
 }
 
-function Warn-IfMultipleBd {
-    $paths = Get-BdPathsInPath
+function Warn-IfMultipleBeads {
+    $paths = Get-BeadsPathsInPath
     if ($paths.Count -le 1) { return }
 
-    Write-WarningMsg "Multiple 'bd' executables found on your PATH. This can cause an older version to be executed instead of the one we installed."
-    Write-Host "Found the following 'bd' executables (entries earlier in PATH take precedence):" -ForegroundColor Yellow
+    Write-WarningMsg "Multiple 'beads' executables found on your PATH. This can cause an older version to be executed instead of the one we installed."
+    Write-Host "Found the following 'beads' executables (entries earlier in PATH take precedence):" -ForegroundColor Yellow
     $i = 0
     foreach ($p in $paths) {
         $i++
@@ -207,32 +207,32 @@ function Warn-IfMultipleBd {
         Write-Host "`nWe installed to: $($Script:LastInstallPath)" -ForegroundColor Cyan
         $first = $paths[0]
         if ($first -ne $Script:LastInstallPath) {
-            Write-WarningMsg "The 'bd' executable that appears first in your PATH is different from the one we installed. To make the newly installed 'bd' the one you get when running 'bd', either:"
+            Write-WarningMsg "The 'beads' executable that appears first in your PATH is different from the one we installed. To make the newly installed 'beads' the one you get when running 'beads', either:"
             Write-Host "  - Remove the older $first from your PATH, or" -ForegroundColor Yellow
             Write-Host "  - Reorder your PATH so that $([System.IO.Path]::GetDirectoryName($Script:LastInstallPath)) appears before $([System.IO.Path]::GetDirectoryName($first))" -ForegroundColor Yellow
-            Write-Host "After updating PATH, restart your shell and run 'bd version' to confirm." -ForegroundColor Yellow
+            Write-Host "After updating PATH, restart your shell and run 'beads version' to confirm." -ForegroundColor Yellow
         } else {
-            Write-Host "The installed 'bd' is first in your PATH." -ForegroundColor Green
+            Write-Host "The installed 'beads' is first in your PATH." -ForegroundColor Green
         }
     } else {
-        Write-WarningMsg "We couldn't determine where we installed 'bd' during this run."
+        Write-WarningMsg "We couldn't determine where we installed 'beads' during this run."
     }
 }
 
 function Verify-Install {
     Write-Info "Verifying installation..."
-    # If there are multiple bd binaries on PATH, warn the user before running the verification
-    try { Warn-IfMultipleBd } catch { }
+    # If there are multiple beads binaries on PATH, warn the user before running the verification
+    try { Warn-IfMultipleBeads } catch { }
     try {
-        $versionOutput = & bd version 2>$null
+        $versionOutput = & beads version 2>$null
         if ($LASTEXITCODE -ne 0) {
-            Write-WarningMsg "bd version exited with code $LASTEXITCODE"
+            Write-WarningMsg "beads version exited with code $LASTEXITCODE"
             return $false
         }
-        Write-Success "bd is installed: $versionOutput"
+        Write-Success "beads is installed: $versionOutput"
         return $true
     } catch {
-        Write-WarningMsg "bd is not on PATH yet. Add the install directory to PATH and re-open your shell."
+        Write-WarningMsg "beads is not on PATH yet. Add the install directory to PATH and re-open your shell."
         return $false
     }
 }
@@ -262,7 +262,7 @@ if (-not $installed) {
 
 if ($installed) {
     Verify-Install | Out-Null
-    Write-Success "Installation complete. Run 'bd quickstart' inside a repo to begin."
+    Write-Success "Installation complete. Run 'beads quickstart' inside a repo to begin."
 } else {
     Write-Err "Installation failed. Please install Go 1.24+ and try again."
     exit 1

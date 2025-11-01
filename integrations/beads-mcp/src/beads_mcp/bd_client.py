@@ -1,4 +1,4 @@
-"""Client for interacting with bd (beads) CLI and daemon."""
+"""Client for interacting with beads (beads) CLI and daemon."""
 
 import asyncio
 import json
@@ -24,37 +24,37 @@ from .models import (
 )
 
 
-class BdError(Exception):
-    """Base exception for bd CLI errors."""
+class BeadsError(Exception):
+    """Base exception for beads CLI errors."""
 
     pass
 
 
-class BdNotFoundError(BdError):
-    """Raised when bd command is not found."""
+class BeadsNotFoundError(BeadsError):
+    """Raised when beads command is not found."""
 
     @staticmethod
     def installation_message(attempted_path: str) -> str:
         """Get helpful installation message.
 
         Args:
-            attempted_path: Path where we tried to find bd
+            attempted_path: Path where we tried to find beads
 
         Returns:
             Formatted error message with installation instructions
         """
         return (
-            f"bd CLI not found at: {attempted_path}\n\n"
-            "The beads Claude Code plugin requires the bd CLI to be installed separately.\n\n"
-            "Install bd CLI:\n"
+            f"beads CLI not found at: {attempted_path}\n\n"
+            "The beads Claude Code plugin requires the beads CLI to be installed separately.\n\n"
+            "Install beads CLI:\n"
             "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash\n\n"
             "Or visit: https://github.com/shaneholloman/beads#installation\n\n"
             "After installation, restart Claude Code to reload the MCP server."
         )
 
 
-class BdCommandError(BdError):
-    """Raised when bd command fails."""
+class BeadsCommandError(BeadsError):
+    """Raised when beads command fails."""
 
     stderr: str
     returncode: int
@@ -65,14 +65,14 @@ class BdCommandError(BdError):
         self.returncode = returncode
 
 
-class BdVersionError(BdError):
-    """Raised when bd version is incompatible with MCP server."""
+class BeadsVersionError(BeadsError):
+    """Raised when beads version is incompatible with MCP server."""
 
     pass
 
 
-class BdClientBase(ABC):
-    """Abstract base class for bd clients (CLI or daemon)."""
+class BeadsClientBase(ABC):
+    """Abstract base class for beads clients (CLI or daemon)."""
 
     @abstractmethod
     async def ready(self, params: Optional[ReadyWorkParams] = None) -> List[Issue]:
@@ -130,10 +130,10 @@ class BdClientBase(ABC):
         pass
 
 
-class BdCliClient(BdClientBase):
-    """Client for calling bd CLI commands and parsing JSON output."""
+class BeadsCliClient(BeadsClientBase):
+    """Client for calling beads CLI commands and parsing JSON output."""
 
-    bd_path: str
+    beads_path: str
     beads_db: str | None
     actor: str | None
     no_auto_flush: bool
@@ -142,25 +142,25 @@ class BdCliClient(BdClientBase):
 
     def __init__(
         self,
-        bd_path: str | None = None,
+        beads_path: str | None = None,
         beads_db: str | None = None,
         actor: str | None = None,
         no_auto_flush: bool | None = None,
         no_auto_import: bool | None = None,
         working_dir: str | None = None,
     ):
-        """Initialize bd client.
+        """Initialize beads client.
 
         Args:
-            bd_path: Path to bd executable (optional, loads from config if not provided)
+            beads_path: Path to beads executable (optional, loads from config if not provided)
             beads_db: Path to beads database file (optional, loads from config if not provided)
             actor: Actor name for audit trail (optional, loads from config if not provided)
             no_auto_flush: Disable automatic JSONL sync (optional, loads from config if not provided)
             no_auto_import: Disable automatic JSONL import (optional, loads from config if not provided)
-            working_dir: Working directory for bd commands (optional, loads from config/env if not provided)
+            working_dir: Working directory for beads commands (optional, loads from config/env if not provided)
         """
         config = load_config()
-        self.bd_path = bd_path if bd_path is not None else config.beads_path
+        self.beads_path = beads_path if beads_path is not None else config.beads_path
         self.beads_db = beads_db if beads_db is not None else config.beads_db
         self.actor = actor if actor is not None else config.beads_actor
         self.no_auto_flush = no_auto_flush if no_auto_flush is not None else config.beads_no_auto_flush
@@ -168,7 +168,7 @@ class BdCliClient(BdClientBase):
         self.working_dir = working_dir if working_dir is not None else config.beads_working_dir
 
     def _get_working_dir(self) -> str:
-        """Get working directory for bd commands.
+        """Get working directory for beads commands.
 
         Returns:
             Working directory path, falls back to current directory if not configured
@@ -179,13 +179,13 @@ class BdCliClient(BdClientBase):
         return os.getcwd()
 
     def _global_flags(self) -> list[str]:
-        """Build list of global flags for bd commands.
+        """Build list of global flags for beads commands.
 
         Returns:
             List of global flag arguments
         """
         flags = []
-        # NOTE: --db flag removed in v0.20.1, bd now auto-discovers database via cwd
+        # NOTE: --db flag removed in v0.20.1, beads now auto-discovers database via cwd
         # We pass cwd via _run_command instead
         if self.actor:
             flags.extend(["--actor", self.actor])
@@ -196,27 +196,27 @@ class BdCliClient(BdClientBase):
         return flags
 
     async def _run_command(self, *args: str, cwd: str | None = None) -> object:
-        """Run bd command and parse JSON output.
+        """Run beads command and parse JSON output.
 
         Args:
-            *args: Command arguments to pass to bd
+            *args: Command arguments to pass to beads
             cwd: Optional working directory override for this command
 
         Returns:
             Parsed JSON output (dict or list)
 
         Raises:
-            BdNotFoundError: If bd command not found
-            BdCommandError: If bd command fails
+            BeadsNotFoundError: If beads command not found
+            BeadsCommandError: If beads command fails
         """
-        cmd = [self.bd_path, *args, *self._global_flags(), "--json"]
+        cmd = [self.beads_path, *args, *self._global_flags(), "--json"]
         working_dir = cwd if cwd is not None else self._get_working_dir()
 
         # Log database routing for debugging
         import sys
         working_dir = self._get_working_dir()
         db_info = self.beads_db if self.beads_db else "auto-discover"
-        print(f"[beads-mcp] Running bd command: {' '.join(args)}", file=sys.stderr)
+        print(f"[beads-mcp] Running beads command: {' '.join(args)}", file=sys.stderr)
         print(f"[beads-mcp]   Database: {db_info}", file=sys.stderr)
         print(f"[beads-mcp]   Working dir: {working_dir}", file=sys.stderr)
 
@@ -229,11 +229,11 @@ class BdCliClient(BdClientBase):
             )
             stdout, stderr = await process.communicate()
         except FileNotFoundError as e:
-            raise BdNotFoundError(BdNotFoundError.installation_message(self.bd_path)) from e
+            raise BeadsNotFoundError(BeadsNotFoundError.installation_message(self.beads_path)) from e
 
         if process.returncode != 0:
-            raise BdCommandError(
-                f"bd command failed: {stderr.decode()}",
+            raise BeadsCommandError(
+                f"beads command failed: {stderr.decode()}",
                 stderr=stderr.decode(),
                 returncode=process.returncode or 1,
             )
@@ -246,24 +246,24 @@ class BdCliClient(BdClientBase):
             result: object = json.loads(stdout_str)
             return result
         except json.JSONDecodeError as e:
-            raise BdCommandError(
-                f"Failed to parse bd JSON output: {e}",
+            raise BeadsCommandError(
+                f"Failed to parse beads JSON output: {e}",
                 stderr=stdout_str,
             ) from e
 
     async def _check_version(self) -> None:
-        """Check that bd CLI version meets minimum requirements.
+        """Check that beads CLI version meets minimum requirements.
 
         Raises:
-            BdVersionError: If bd version is incompatible
-            BdNotFoundError: If bd command not found
+            BeadsVersionError: If beads version is incompatible
+            BeadsNotFoundError: If beads command not found
         """
         # Minimum required version
         min_version = (0, 9, 0)
 
         try:
             process = await asyncio.create_subprocess_exec(
-                self.bd_path,
+                self.beads_path,
                 "version",
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
@@ -271,20 +271,20 @@ class BdCliClient(BdClientBase):
             )
             stdout, stderr = await process.communicate()
         except FileNotFoundError as e:
-            raise BdNotFoundError(BdNotFoundError.installation_message(self.bd_path)) from e
+            raise BeadsNotFoundError(BeadsNotFoundError.installation_message(self.beads_path)) from e
 
         if process.returncode != 0:
-            raise BdCommandError(
-                f"bd version failed: {stderr.decode()}",
+            raise BeadsCommandError(
+                f"beads version failed: {stderr.decode()}",
                 stderr=stderr.decode(),
                 returncode=process.returncode or 1,
             )
 
-        # Parse version from output like "bd version 0.9.2"
+        # Parse version from output like "beads version 0.9.2"
         version_output = stdout.decode().strip()
         match = re.search(r"(\d+)\.(\d+)\.(\d+)", version_output)
         if not match:
-            raise BdVersionError(f"Could not parse bd version from: {version_output}")
+            raise BeadsVersionError(f"Could not parse beads version from: {version_output}")
 
         version = tuple(int(x) for x in match.groups())
 
@@ -292,9 +292,9 @@ class BdCliClient(BdClientBase):
             min_ver_str = ".".join(str(x) for x in min_version)
             cur_ver_str = ".".join(str(x) for x in version)
             install_cmd = "curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash"
-            raise BdVersionError(
-                f"bd version {cur_ver_str} is too old. "
-                f"This MCP server requires bd >= {min_ver_str}. "
+            raise BeadsVersionError(
+                f"beads version {cur_ver_str} is too old. "
+                f"This MCP server requires beads >= {min_ver_str}. "
                 f"Update with: {install_cmd}"
             )
 
@@ -360,17 +360,17 @@ class BdCliClient(BdClientBase):
             Issue details
 
         Raises:
-            BdCommandError: If issue not found
+            BeadsCommandError: If issue not found
         """
         data = await self._run_command("show", params.issue_id)
-        # bd show returns an array, extract first element
+        # beads show returns an array, extract first element
         if isinstance(data, list):
             if not data:
-                raise BdCommandError(f"Issue not found: {params.issue_id}")
+                raise BeadsCommandError(f"Issue not found: {params.issue_id}")
             data = data[0]
         
         if not isinstance(data, dict):
-            raise BdCommandError(f"Invalid response for show {params.issue_id}")
+            raise BeadsCommandError(f"Invalid response for show {params.issue_id}")
 
         return Issue.model_validate(data)
 
@@ -404,7 +404,7 @@ class BdCliClient(BdClientBase):
 
         data = await self._run_command(*args)
         if not isinstance(data, dict):
-            raise BdCommandError("Invalid response for create")
+            raise BeadsCommandError("Invalid response for create")
 
         return Issue.model_validate(data)
 
@@ -439,14 +439,14 @@ class BdCliClient(BdClientBase):
             args.extend(["--external-ref", params.external_ref])
 
         data = await self._run_command(*args)
-        # bd update returns an array, extract first element
+        # beads update returns an array, extract first element
         if isinstance(data, list):
             if not data:
-                raise BdCommandError(f"Issue not found: {params.issue_id}")
+                raise BeadsCommandError(f"Issue not found: {params.issue_id}")
             data = data[0]
         
         if not isinstance(data, dict):
-            raise BdCommandError(f"Invalid response for update {params.issue_id}")
+            raise BeadsCommandError(f"Invalid response for update {params.issue_id}")
 
         return Issue.model_validate(data)
 
@@ -463,7 +463,7 @@ class BdCliClient(BdClientBase):
 
         data = await self._run_command(*args)
         if not isinstance(data, list):
-            raise BdCommandError(f"Invalid response for close {params.issue_id}")
+            raise BeadsCommandError(f"Invalid response for close {params.issue_id}")
 
         return [Issue.model_validate(issue) for issue in data]
 
@@ -483,7 +483,7 @@ class BdCliClient(BdClientBase):
 
         data = await self._run_command(*args)
         if not isinstance(data, list):
-            raise BdCommandError(f"Invalid response for reopen {params.issue_ids}")
+            raise BeadsCommandError(f"Invalid response for reopen {params.issue_ids}")
 
         return [Issue.model_validate(issue) for issue in data]
 
@@ -493,9 +493,9 @@ class BdCliClient(BdClientBase):
         Args:
             params: Dependency parameters
         """
-        # bd dep add doesn't return JSON, just prints confirmation
+        # beads dep add doesn't return JSON, just prints confirmation
         cmd = [
-            self.bd_path,
+            self.beads_path,
             "dep",
             "add",
             params.issue_id,
@@ -514,22 +514,22 @@ class BdCliClient(BdClientBase):
             )
             _stdout, stderr = await process.communicate()
         except FileNotFoundError as e:
-            raise BdNotFoundError(BdNotFoundError.installation_message(self.bd_path)) from e
+            raise BeadsNotFoundError(BeadsNotFoundError.installation_message(self.beads_path)) from e
 
         if process.returncode != 0:
-            raise BdCommandError(
-                f"bd dep add failed: {stderr.decode()}",
+            raise BeadsCommandError(
+                f"beads dep add failed: {stderr.decode()}",
                 stderr=stderr.decode(),
                 returncode=process.returncode or 1,
             )
 
     async def quickstart(self) -> str:
-        """Get bd quickstart guide.
+        """Get beads quickstart guide.
 
         Returns:
             Quickstart guide text
         """
-        cmd = [self.bd_path, "quickstart"]
+        cmd = [self.beads_path, "quickstart"]
 
         try:
             process = await asyncio.create_subprocess_exec(
@@ -540,11 +540,11 @@ class BdCliClient(BdClientBase):
             )
             stdout, stderr = await process.communicate()
         except FileNotFoundError as e:
-            raise BdNotFoundError(BdNotFoundError.installation_message(self.bd_path)) from e
+            raise BeadsNotFoundError(BeadsNotFoundError.installation_message(self.beads_path)) from e
 
         if process.returncode != 0:
-            raise BdCommandError(
-                f"bd quickstart failed: {stderr.decode()}",
+            raise BeadsCommandError(
+                f"beads quickstart failed: {stderr.decode()}",
                 stderr=stderr.decode(),
                 returncode=process.returncode or 1,
             )
@@ -559,7 +559,7 @@ class BdCliClient(BdClientBase):
         """
         data = await self._run_command("stats")
         if not isinstance(data, dict):
-            raise BdCommandError("Invalid response for stats")
+            raise BeadsCommandError("Invalid response for stats")
 
         return Stats.model_validate(data)
 
@@ -576,7 +576,7 @@ class BdCliClient(BdClientBase):
         return [BlockedIssue.model_validate(issue) for issue in data]
 
     async def init(self, params: InitParams | None = None) -> str:
-        """Initialize bd in current directory.
+        """Initialize beads in current directory.
 
         Args:
             params: Initialization parameters
@@ -585,7 +585,7 @@ class BdCliClient(BdClientBase):
             Initialization output message
         """
         params = params or InitParams()
-        cmd = [self.bd_path, "init"]
+        cmd = [self.beads_path, "init"]
 
         if params.prefix:
             cmd.extend(["--prefix", params.prefix])
@@ -605,11 +605,11 @@ class BdCliClient(BdClientBase):
             )
             stdout, stderr = await process.communicate()
         except FileNotFoundError as e:
-            raise BdNotFoundError(BdNotFoundError.installation_message(self.bd_path)) from e
+            raise BeadsNotFoundError(BeadsNotFoundError.installation_message(self.beads_path)) from e
 
         if process.returncode != 0:
-            raise BdCommandError(
-                f"bd init failed: {stderr.decode()}",
+            raise BeadsCommandError(
+                f"beads init failed: {stderr.decode()}",
                 stderr=stderr.decode(),
                 returncode=process.returncode or 1,
             )
@@ -618,23 +618,23 @@ class BdCliClient(BdClientBase):
 
 
 # Backwards compatibility alias
-BdClient = BdCliClient
+BeadsClient = BeadsCliClient
 
 
-def create_bd_client(
+def create_beads_client(
     prefer_daemon: bool = False,
-    bd_path: Optional[str] = None,
+    beads_path: Optional[str] = None,
     beads_db: Optional[str] = None,
     actor: Optional[str] = None,
     no_auto_flush: Optional[bool] = None,
     no_auto_import: Optional[bool] = None,
     working_dir: Optional[str] = None,
-) -> BdClientBase:
-    """Create a bd client (daemon or CLI-based).
+) -> BeadsClientBase:
+    """Create a beads client (daemon or CLI-based).
 
     Args:
         prefer_daemon: If True, attempt to use daemon client first, fall back to CLI
-        bd_path: Path to bd executable (for CLI client)
+        beads_path: Path to beads executable (for CLI client)
         beads_db: Path to beads database (for CLI client)
         actor: Actor name for audit trail
         no_auto_flush: Disable auto-flush (CLI only)
@@ -642,19 +642,19 @@ def create_bd_client(
         working_dir: Working directory for database discovery
 
     Returns:
-        BdClientBase implementation (daemon or CLI)
+        BeadsClientBase implementation (daemon or CLI)
 
     Note:
         If prefer_daemon is True and daemon is not running, falls back to CLI client.
-        To check if daemon is running without falling back, use BdDaemonClient directly.
+        To check if daemon is running without falling back, use BeadsDaemonClient directly.
     """
     if prefer_daemon:
         try:
-            from .bd_daemon_client import BdDaemonClient
+            from .beads_daemon_client import BeadsDaemonClient
             from pathlib import Path
 
             # Check if daemon socket exists before creating client
-            # Walk up from working_dir to find .beads/bd.sock, then check global
+            # Walk up from working_dir to find .beads/beads.sock, then check global
             search_dir = Path(working_dir) if working_dir else Path.cwd()
             socket_found = False
 
@@ -662,7 +662,7 @@ def create_bd_client(
             while True:
                 beads_dir = current / ".beads"
                 if beads_dir.is_dir():
-                    sock_path = beads_dir / "bd.sock"
+                    sock_path = beads_dir / "beads.sock"
                     if sock_path.exists():
                         socket_found = True
                         break
@@ -676,15 +676,15 @@ def create_bd_client(
                     break
                 current = parent
 
-            # If no local socket, check global daemon socket at ~/.beads/bd.sock
+            # If no local socket, check global daemon socket at ~/.beads/beads.sock
             if not socket_found:
-                global_sock_path = Path.home() / ".beads" / "bd.sock"
+                global_sock_path = Path.home() / ".beads" / "beads.sock"
                 if global_sock_path.exists():
                     socket_found = True
 
             if socket_found:
                 # Daemon is running, use it
-                client = BdDaemonClient(
+                client = BeadsDaemonClient(
                     working_dir=working_dir,
                     actor=actor,
                 )
@@ -698,8 +698,8 @@ def create_bd_client(
             pass
 
     # Use CLI client
-    return BdCliClient(
-        bd_path=bd_path,
+    return BeadsCliClient(
+        beads_path=beads_path,
         beads_db=beads_db,
         actor=actor,
         no_auto_flush=no_auto_flush,

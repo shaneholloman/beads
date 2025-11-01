@@ -26,13 +26,13 @@ If you prefer step-by-step control:
 
    ```bash
    # Kill by process name
-   pkill -f "bd.*daemon"
+   pkill -f "beads.*daemon"
    
    # Verify no daemons are running
-   pgrep -lf "bd.*daemon" || echo "No daemons running ✔"
+   pgrep -lf "beads.*daemon" || echo "No daemons running ✔"
    
    # Alternative: find and kill by socket
-   find ~/.config -name "bd.sock" -type f 2>/dev/null | while read sock; do
+   find ~/.config -name "beads.sock" -type f 2>/dev/null | while read sock; do
      echo "Found daemon socket: $sock"
    done
    ```
@@ -47,14 +47,14 @@ If you prefer step-by-step control:
    ```bash
    TMPDIR=/tmp go test ./...
    golangci-lint run ./...
-   TMPDIR=/tmp go build -o bd ./cmd/bd
-   ./bd version  # Verify it shows new version
+   TMPDIR=/tmp go build -o beads ./cmd/beads
+   ./beads version  # Verify it shows new version
    ```
 
 3. **Skip local install** (avoid go install vs brew conflicts):
-   - Use `./bd` directly from the repo for testing
-   - Your system bd will be updated via brew after Homebrew formula update
-   - Or temporarily: `alias bd="$PWD/bd"` if needed
+   - Use `./beads` directly from the repo for testing
+   - Your system beads will be updated via brew after Homebrew formula update
+   - Or temporarily: `alias beads="$PWD/beads"` if needed
 
 4. **Update CHANGELOG.md**:
    - Add version heading: `## [0.9.X] - YYYY-MM-DD`
@@ -80,7 +80,7 @@ git push origin main
 
 This updates:
 
-- `cmd/bd/version.go`
+- `cmd/beads/version.go`
 - `.claude-plugin/plugin.json`
 - `.claude-plugin/marketplace.json`
 - `integrations/beads-mcp/pyproject.toml`
@@ -91,8 +91,8 @@ This updates:
 **IMPORTANT**: After version bump, rebuild the local binary:
 
 ```bash
-go build -o bd ./cmd/bd
-./bd version  # Should show new version
+go build -o beads ./cmd/beads
+./beads version  # Should show new version
 ```
 
 ## Publish to All Channels
@@ -155,39 +155,39 @@ cd /tmp/homebrew-beads || git clone https://github.com/shaneholloman/homebrew-be
 cd /tmp/homebrew-beads
 git pull
 
-# Update Formula/bd.rb (replace version and SHA256):
+# Update Formula/beads.rb (replace version and SHA256):
 # - url: https://github.com/shaneholloman/beads/archive/refs/tags/v0.9.X.tar.gz
 # - sha256: <computed SHA256>
 
 # Commit and push
-git add Formula/bd.rb
-git commit -m "Update bd formula to v0.9.X"
+git add Formula/beads.rb
+git commit -m "Update beads formula to v0.9.X"
 git push origin main
 
 # CRITICAL: Verify the installation works
 brew update
-brew upgrade bd  # Or: brew reinstall bd
-bd version  # MUST show v0.9.X - if not, the release is incomplete!
+brew upgrade beads  # Or: brew reinstall beads
+beads version  # MUST show v0.9.X - if not, the release is incomplete!
 ```
 
 **WARNING: DO NOT SKIP THE VERIFICATION STEP ABOVE** - This ensures users can actually install the new version.
 
-**Note**: Until this step is complete, users with Homebrew-installed bd will still have the old version.
+**Note**: Until this step is complete, users with Homebrew-installed beads will still have the old version.
 
-**Note:** If you have an old bd binary from `go install` in your PATH, remove it to avoid conflicts:
+**Note:** If you have an old beads binary from `go install` in your PATH, remove it to avoid conflicts:
 
 ```bash
-# Find where bd is installed
-which bd
+# Find where beads is installed
+which beads
 
-# If it's in a Go toolchain path (e.g., ~/go/bin/bd or mise-managed Go), remove it
+# If it's in a Go toolchain path (e.g., ~/go/bin/beads or mise-managed Go), remove it
 # Common locations:
-rm ~/go/bin/bd                                    # Standard go install location
-rm ~/.local/share/mise/installs/go/*/bin/bd      # mise-managed Go installs
+rm ~/go/bin/beads                                    # Standard go install location
+rm ~/.local/share/mise/installs/go/*/bin/beads      # mise-managed Go installs
 
 # Verify you're using the correct version
-which bd        # Should show /opt/homebrew/bin/bd or your package manager's path
-bd version      # Should show the latest version
+which beads        # Should show /opt/homebrew/bin/beads or your package manager's path
+beads version      # Should show the latest version
 ```
 
 ### 4. GitHub Releases (Automated)
@@ -217,8 +217,8 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
 1. **Kill old daemons again**:
 
    ```bash
-   pkill -f "bd.*daemon"
-   pgrep -lf "bd.*daemon" || echo "No daemons running ✔"
+   pkill -f "beads.*daemon"
+   pgrep -lf "beads.*daemon" || echo "No daemons running ✔"
    ```
 
    This ensures your local machine picks up the new version immediately.
@@ -227,14 +227,14 @@ The release will appear at: <https://github.com/shaneholloman/beads/releases>
 
    ```bash
    # Homebrew
-   brew update && brew upgrade bd && bd version
+   brew update && brew upgrade beads && beads version
    
    # PyPI
    pip install --upgrade beads-mcp
    beads-mcp --help
    
    # Check daemon version matches client
-   bd version --daemon  # Should match client version after first command
+   beads version --daemon  # Should match client version after first command
    ```
 
 3. **Announce** (optional):

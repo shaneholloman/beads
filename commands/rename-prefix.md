@@ -16,8 +16,8 @@ Updates all issue IDs and all text references across all fields.
 
 ## Usage
 
-- **Preview**: `bd rename-prefix kw- --dry-run`
-- **Apply**: `bd rename-prefix kw-`
+- **Preview**: `beads rename-prefix kw- --dry-run`
+- **Apply**: `beads rename-prefix kw-`
 
 Example: Rename from 'knowledge-work-' to 'kw-'
 

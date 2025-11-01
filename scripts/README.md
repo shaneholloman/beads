@@ -64,7 +64,7 @@ After the script finishes:
 
 - GitHub Actions builds binaries for all platforms (~5 minutes)
 - PyPI package is published automatically
-- Users can `brew upgrade bd` to get the new version
+- Users can `brew upgrade beads` to get the new version
 - GitHub Release is created with binaries and changelog
 
 ---
@@ -90,7 +90,7 @@ Bumps the version number across all beads components in a single command.
 
 Updates version in all these files:
 
-- `cmd/bd/version.go` - bd CLI version constant
+- `cmd/beads/version.go` - beads CLI version constant
 - `.claude-plugin/plugin.json` - Plugin version
 - `.claude-plugin/marketplace.json` - Marketplace plugin version
 - `integrations/beads-mcp/pyproject.toml` - MCP server version
@@ -119,7 +119,7 @@ git push origin main
 
 ### Why This Script Exists
 
-Previously, version bumps only updated `cmd/bd/version.go`, leaving other components out of sync. This script ensures all version numbers stay consistent across the project.
+Previously, version bumps only updated `cmd/beads/version.go`, leaving other components out of sync. This script ensures all version numbers stay consistent across the project.
 
 ### Safety
 

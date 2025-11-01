@@ -1,0 +1,8 @@
+# Test beads import command
+beads init --prefix test
+beads import -i import.jsonl
+beads show test-99
+stdout 'Imported issue'
+
+-- import.jsonl --
+{"id":"test-99","title":"Imported issue","status":"open","priority":1,"issue_type":"task","created_at":"2025-01-01T00:00:00Z","updated_at":"2025-01-01T00:00:00Z"}

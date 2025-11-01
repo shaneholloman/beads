@@ -1,4 +1,4 @@
-// Package types defines core data structures for the bd issue tracker.
+// Package types defines core data structures for the beads issue tracker.
 package types
 
 import (
@@ -10,7 +10,7 @@ import (
 
 // ExclusiveLock represents the lock file format for external tools to claim
 // exclusive management of a beads database. When this lock is present,
-// the bd daemon will skip the database in its sync cycle.
+// the beads daemon will skip the database in its sync cycle.
 type ExclusiveLock struct {
 	Holder    string    `json:"holder"`     // Name of lock holder (e.g., "vc-executor")
 	PID       int       `json:"pid"`        // Process ID

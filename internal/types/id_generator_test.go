@@ -19,7 +19,7 @@ func TestGenerateHashID(t *testing.T) {
 	}{
 		{
 			name:        "basic hash ID",
-			prefix:      "bd",
+			prefix:      "beads",
 			title:       "Fix auth bug",
 			description: "Users can't log in",
 			created:     now,
@@ -60,8 +60,8 @@ func TestGenerateHashID_Deterministic(t *testing.T) {
 	now := time.Date(2025, 10, 30, 12, 0, 0, 0, time.UTC)
 
 	// Same inputs should produce same hash
-	hash1 := GenerateHashID("bd", "Title", "Desc", now, "ws1")
-	hash2 := GenerateHashID("bd", "Title", "Desc", now, "ws1")
+	hash1 := GenerateHashID("beads", "Title", "Desc", now, "ws1")
+	hash2 := GenerateHashID("beads", "Title", "Desc", now, "ws1")
 
 	if hash1 != hash2 {
 		t.Errorf("expected deterministic hash, got %s and %s", hash1, hash2)
@@ -71,7 +71,7 @@ func TestGenerateHashID_Deterministic(t *testing.T) {
 func TestGenerateHashID_DifferentInputs(t *testing.T) {
 	now := time.Date(2025, 10, 30, 12, 0, 0, 0, time.UTC)
 
-	baseHash := GenerateHashID("bd", "Title", "Desc", now, "ws1")
+	baseHash := GenerateHashID("beads", "Title", "Desc", now, "ws1")
 
 	tests := []struct {
 		name        string
@@ -88,7 +88,7 @@ func TestGenerateHashID_DifferentInputs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hash := GenerateHashID("bd", tt.title, tt.description, tt.created, tt.workspaceID)
+			hash := GenerateHashID("beads", tt.title, tt.description, tt.created, tt.workspaceID)
 			if hash == baseHash {
 				t.Errorf("expected different hash for %s, got same: %s", tt.name, hash)
 			}
@@ -105,27 +105,27 @@ func TestGenerateChildID(t *testing.T) {
 	}{
 		{
 			name:        "first level child",
-			parentID:    "bd-af78e9a2",
+			parentID:    "beads-af78e9a2",
 			childNumber: 1,
-			want:        "bd-af78e9a2.1",
+			want:        "beads-af78e9a2.1",
 		},
 		{
 			name:        "second level child",
-			parentID:    "bd-af78e9a2.1",
+			parentID:    "beads-af78e9a2.1",
 			childNumber: 2,
-			want:        "bd-af78e9a2.1.2",
+			want:        "beads-af78e9a2.1.2",
 		},
 		{
 			name:        "third level child",
-			parentID:    "bd-af78e9a2.1.2",
+			parentID:    "beads-af78e9a2.1.2",
 			childNumber: 3,
-			want:        "bd-af78e9a2.1.2.3",
+			want:        "beads-af78e9a2.1.2.3",
 		},
 		{
 			name:        "large child number",
-			parentID:    "bd-af78e9a2",
+			parentID:    "beads-af78e9a2",
 			childNumber: 347,
-			want:        "bd-af78e9a2.347",
+			want:        "beads-af78e9a2.347",
 		},
 	}
 
@@ -149,30 +149,30 @@ func TestParseHierarchicalID(t *testing.T) {
 	}{
 		{
 			name:       "root level (no parent)",
-			id:         "bd-af78e9a2",
-			wantRoot:   "bd-af78e9a2",
+			id:         "beads-af78e9a2",
+			wantRoot:   "beads-af78e9a2",
 			wantParent: "",
 			wantDepth:  0,
 		},
 		{
 			name:       "first level child",
-			id:         "bd-af78e9a2.1",
-			wantRoot:   "bd-af78e9a2",
-			wantParent: "bd-af78e9a2",
+			id:         "beads-af78e9a2.1",
+			wantRoot:   "beads-af78e9a2",
+			wantParent: "beads-af78e9a2",
 			wantDepth:  1,
 		},
 		{
 			name:       "second level child",
-			id:         "bd-af78e9a2.1.2",
-			wantRoot:   "bd-af78e9a2",
-			wantParent: "bd-af78e9a2.1",
+			id:         "beads-af78e9a2.1.2",
+			wantRoot:   "beads-af78e9a2",
+			wantParent: "beads-af78e9a2.1",
 			wantDepth:  2,
 		},
 		{
 			name:       "third level child",
-			id:         "bd-af78e9a2.1.2.3",
-			wantRoot:   "bd-af78e9a2",
-			wantParent: "bd-af78e9a2.1.2",
+			id:         "beads-af78e9a2.1.2.3",
+			wantRoot:   "beads-af78e9a2",
+			wantParent: "beads-af78e9a2.1.2",
 			wantDepth:  3,
 		},
 	}
@@ -199,13 +199,13 @@ func BenchmarkGenerateHashID(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = GenerateHashID("bd", "Fix auth bug", "Users can't log in", now, "workspace-1")
+		_ = GenerateHashID("beads", "Fix auth bug", "Users can't log in", now, "workspace-1")
 	}
 }
 
 func BenchmarkGenerateChildID(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		GenerateChildID("bd-af78e9a2", 42)
+		GenerateChildID("beads-af78e9a2", 42)
 	}
 }

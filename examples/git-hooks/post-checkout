@@ -17,8 +17,8 @@ fi
 
 set -e
 
-# Check if bd is installed
-if ! command -v bd &> /dev/null; then
+# Check if beads is installed
+if ! command -v beads &> /dev/null; then
     exit 0
 fi
 
@@ -30,10 +30,10 @@ fi
 # Import issues from JSONL
 echo "🔗 Importing beads issues from JSONL..."
 
-if bd import -i .beads/issues.jsonl 2>/dev/null; then
+if beads import -i .beads/issues.jsonl 2>/dev/null; then
     echo "✓ Beads issues imported successfully"
 else
-    echo "Warning: bd import failed"
+    echo "Warning: beads import failed"
 fi
 
 exit 0

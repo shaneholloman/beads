@@ -1,14 +1,14 @@
 #!/bin/bash
 # Automated monthly compaction for cron
-# Install: cp cron-compact.sh /etc/cron.monthly/bd-compact
-#          chmod +x /etc/cron.monthly/bd-compact
+# Install: cp cron-compact.sh /etc/cron.monthly/beads-compact
+#          chmod +x /etc/cron.monthly/beads-compact
 #
 # Or add to crontab:
 #   0 2 1 * * /path/to/cron-compact.sh
 
 # Configuration
 REPO_PATH="${BD_REPO_PATH:-$HOME/your-project}"
-LOG_FILE="${BD_LOG_FILE:-$HOME/.bd-compact.log}"
+LOG_FILE="${BD_LOG_FILE:-$HOME/.beads-compact.log}"
 API_KEY="${ANTHROPIC_API_KEY}"
 
 # Exit on error
@@ -19,7 +19,7 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-log "=== Starting BD Compaction ==="
+log "=== Starting BEADS Compaction ==="
 
 # Check API key
 if [ -z "$API_KEY" ]; then
@@ -36,9 +36,9 @@ fi
 cd "$REPO_PATH"
 log "Repository: $(pwd)"
 
-# Check bd is installed
-if ! command -v bd &> /dev/null; then
-  log "ERROR: bd command not found"
+# Check beads is installed
+if ! command -v beads &> /dev/null; then
+  log "ERROR: beads command not found"
   exit 1
 fi
 
@@ -48,17 +48,17 @@ git pull origin main 2>&1 | tee -a "$LOG_FILE"
 
 # Tier 1 compaction
 log "Running Tier 1 compaction..."
-TIER1_COUNT=$(bd compact --all --json 2>&1 | jq '. | length' || echo "0")
+TIER1_COUNT=$(beads compact --all --json 2>&1 | jq '. | length' || echo "0")
 log "Compacted $TIER1_COUNT Tier 1 issues"
 
 # Tier 2 compaction
 log "Running Tier 2 compaction..."
-TIER2_COUNT=$(bd compact --all --tier 2 --json 2>&1 | jq '. | length' || echo "0")
+TIER2_COUNT=$(beads compact --all --tier 2 --json 2>&1 | jq '. | length' || echo "0")
 log "Compacted $TIER2_COUNT Tier 2 issues"
 
 # Show statistics
 log "Compaction statistics:"
-bd compact --stats 2>&1 | tee -a "$LOG_FILE"
+beads compact --stats 2>&1 | tee -a "$LOG_FILE"
 
 # Commit and push if changes exist
 if git diff --quiet .beads/issues.jsonl issues.db 2>/dev/null; then

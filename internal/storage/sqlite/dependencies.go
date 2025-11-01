@@ -56,7 +56,7 @@ func (s *SQLiteStorage) AddDependency(ctx context.Context, dep *types.Dependency
 		// Correct: Task (child) depends on Epic (parent) - child belongs to parent
 		// Incorrect: Epic (parent) depends on Task (child) - backwards
 		if issueExists.IssueType == types.TypeEpic && dependsOnExists.IssueType != types.TypeEpic {
-			return fmt.Errorf("invalid parent-child dependency: parent (%s) cannot depend on child (%s). Use: bd dep add %s %s --type parent-child",
+			return fmt.Errorf("invalid parent-child dependency: parent (%s) cannot depend on child (%s). Use: beads dep add %s %s --type parent-child",
 				dep.IssueID, dep.DependsOnID, dep.DependsOnID, dep.IssueID)
 		}
 	}
@@ -521,7 +521,7 @@ func (s *SQLiteStorage) DetectCycles(ctx context.Context) ([][]*types.Issue, err
 		}
 		seen[pathStr] = true
 
-		// Parse the path string: "bd-1→bd-2→bd-3→bd-1"
+		// Parse the path string: "beads-1→beads-2→beads-3→beads-1"
 		issueIDs := strings.Split(pathStr, "→")
 
 		// Remove the duplicate last element (cycle closes back to start)

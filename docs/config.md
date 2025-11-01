@@ -1,21 +1,21 @@
 # Configuration System
 
-bd has two complementary configuration systems:
+beads has two complementary configuration systems:
 
 1. **Tool-level configuration** (Viper): User preferences for tool behavior (flags, output format)
-2. **Project-level configuration** (`bd config`): Integration data and project-specific settings
+2. **Project-level configuration** (`beads config`): Integration data and project-specific settings
 
 ## Tool-Level Configuration (Viper)
 
 ### Overview
 
-Tool preferences control how `bd` behaves globally or per-user. These are stored in config files or environment variables and managed by [Viper](https://github.com/spf13/viper).
+Tool preferences control how `beads` behaves globally or per-user. These are stored in config files or environment variables and managed by [Viper](https://github.com/spf13/viper).
 
 **Configuration precedence** (highest to lowest):
 
 1. Command-line flags (`--json`, `--no-daemon`, etc.)
 2. Environment variables (`BD_JSON`, `BD_NO_DAEMON`, etc.)
-3. Config file (`~/.config/bd/config.yaml` or `.beads/config.yaml`)
+3. Config file (`~/.config/beads/config.yaml` or `.beads/config.yaml`)
 4. Defaults
 
 ### Config File Locations
@@ -23,7 +23,7 @@ Tool preferences control how `bd` behaves globally or per-user. These are stored
 Viper searches for `config.yaml` in these locations (in order):
 
 1. `.beads/config.yaml` - Project-specific tool settings (version-controlled)
-2. `~/.config/bd/config.yaml` - User-specific tool settings
+2. `~/.config/beads/config.yaml` - User-specific tool settings
 3. `~/.beads/config.yaml` - Legacy user settings
 
 ### Supported Settings
@@ -43,7 +43,7 @@ Tool-level settings you can configure:
 
 ### Example Config File
 
-`~/.config/bd/config.yaml`:
+`~/.config/beads/config.yaml`:
 
 ```yaml
 # Default to JSON output for scripting
@@ -74,7 +74,7 @@ flush-debounce: 15s
 - Should I use the daemon? (`--no-daemon`)
 - How should the CLI behave?
 
-**Project config (`bd config`)** is project data:
+**Project config (`beads config`)** is project data:
 
 - What's our Jira URL?
 - What are our Linear tokens?
@@ -82,9 +82,9 @@ flush-debounce: 15s
 
 This separation is correct: **tool settings are user-specific, project config is team-shared**.
 
-Agents benefit from `bd config`'s structured CLI interface over manual YAML editing.
+Agents benefit from `beads config`'s structured CLI interface over manual YAML editing.
 
-## Project-Level Configuration (`bd config`)
+## Project-Level Configuration (`beads config`)
 
 ### Overview
 
@@ -100,40 +100,40 @@ Project configuration is:
 ### Set Configuration
 
 ```bash
-bd config set <key> <value>
-bd config set --json <key> <value>  # JSON output
+beads config set <key> <value>
+beads config set --json <key> <value>  # JSON output
 ```
 
 Examples:
 
 ```bash
-bd config set jira.url "https://company.atlassian.net"
-bd config set jira.project "PROJ"
-bd config set jira.status_map.todo "open"
+beads config set jira.url "https://company.atlassian.net"
+beads config set jira.project "PROJ"
+beads config set jira.status_map.todo "open"
 ```
 
 ### Get Configuration
 
 ```bash
-bd config get <key>
-bd config get --json <key>  # JSON output
+beads config get <key>
+beads config get --json <key>  # JSON output
 ```
 
 Examples:
 
 ```bash
-bd config get jira.url
+beads config get jira.url
 # Output: https://company.atlassian.net
 
-bd config get --json jira.url
+beads config get --json jira.url
 # Output: {"key":"jira.url","value":"https://company.atlassian.net"}
 ```
 
 ### List All Configuration
 
 ```bash
-bd config list
-bd config list --json  # JSON output
+beads config list
+beads config list --json  # JSON output
 ```
 
 Example output:
@@ -160,14 +160,14 @@ JSON output:
 ### Unset Configuration
 
 ```bash
-bd config unset <key>
-bd config unset --json <key>  # JSON output
+beads config unset <key>
+beads config unset --json <key>  # JSON output
 ```
 
 Example:
 
 ```bash
-bd config unset jira.url
+beads config unset jira.url
 ```
 
 ## Namespace Convention
@@ -177,7 +177,7 @@ Configuration keys use dot-notation namespaces to organize settings:
 ### Core Namespaces
 
 - `compact_*` - Compaction settings (see extending.md)
-- `issue_prefix` - Issue ID prefix (managed by `bd init`)
+- `issue_prefix` - Issue ID prefix (managed by `beads init`)
 - `max_collision_prob` - Maximum collision probability for adaptive hash IDs (default: 0.25)
 - `min_hash_length` - Minimum hash ID length (default: 4)
 - `max_hash_length` - Maximum hash ID length (default: 8)
@@ -196,17 +196,17 @@ Use these namespaces for external integrations:
 ```bash
 # Configure adaptive ID lengths (see docs/adaptive-ids.md)
 # Default: 25% max collision probability
-bd config set max_collision_prob "0.25"
+beads config set max_collision_prob "0.25"
 
 # Start with 4-char IDs, scale up as database grows
-bd config set min_hash_length "4"
-bd config set max_hash_length "8"
+beads config set min_hash_length "4"
+beads config set max_hash_length "8"
 
 # Stricter collision tolerance (1%)
-bd config set max_collision_prob "0.01"
+beads config set max_collision_prob "0.01"
 
 # Force minimum 5-char IDs for consistency
-bd config set min_hash_length "5"
+beads config set min_hash_length "5"
 ```
 
 See [docs/adaptive-ids.md](adaptive-ids.md) for detailed documentation.
@@ -215,45 +215,45 @@ See [docs/adaptive-ids.md](adaptive-ids.md) for detailed documentation.
 
 ```bash
 # Configure Jira connection
-bd config set jira.url "https://company.atlassian.net"
-bd config set jira.project "PROJ"
-bd config set jira.api_token "YOUR_TOKEN"
+beads config set jira.url "https://company.atlassian.net"
+beads config set jira.project "PROJ"
+beads config set jira.api_token "YOUR_TOKEN"
 
-# Map bd statuses to Jira statuses
-bd config set jira.status_map.open "To Do"
-bd config set jira.status_map.in_progress "In Progress"
-bd config set jira.status_map.closed "Done"
+# Map beads statuses to Jira statuses
+beads config set jira.status_map.open "To Do"
+beads config set jira.status_map.in_progress "In Progress"
+beads config set jira.status_map.closed "Done"
 
-# Map bd issue types to Jira issue types
-bd config set jira.type_map.bug "Bug"
-bd config set jira.type_map.feature "Story"
-bd config set jira.type_map.task "Task"
+# Map beads issue types to Jira issue types
+beads config set jira.type_map.bug "Bug"
+beads config set jira.type_map.feature "Story"
+beads config set jira.type_map.task "Task"
 ```
 
 ### Example: Linear Integration
 
 ```bash
 # Configure Linear connection
-bd config set linear.api_token "YOUR_TOKEN"
-bd config set linear.team_id "team-123"
+beads config set linear.api_token "YOUR_TOKEN"
+beads config set linear.team_id "team-123"
 
 # Map statuses
-bd config set linear.status_map.open "Backlog"
-bd config set linear.status_map.in_progress "In Progress"
-bd config set linear.status_map.closed "Done"
+beads config set linear.status_map.open "Backlog"
+beads config set linear.status_map.in_progress "In Progress"
+beads config set linear.status_map.closed "Done"
 ```
 
 ### Example: GitHub Integration
 
 ```bash
 # Configure GitHub connection
-bd config set github.org "myorg"
-bd config set github.repo "myrepo"
-bd config set github.token "YOUR_TOKEN"
+beads config set github.org "myorg"
+beads config set github.repo "myrepo"
+beads config set github.token "YOUR_TOKEN"
 
-# Map bd labels to GitHub labels
-bd config set github.label_map.bug "bug"
-bd config set github.label_map.feature "enhancement"
+# Map beads labels to GitHub labels
+beads config set github.label_map.bug "bug"
+beads config set github.label_map.feature "enhancement"
 ```
 
 ## Use in Scripts
@@ -264,10 +264,10 @@ Configuration is designed for scripting. Use `--json` for machine-readable outpu
 #!/bin/bash
 
 # Get Jira URL
-JIRA_URL=$(bd config get --json jira.url | jq -r '.value')
+JIRA_URL=$(beads config get --json jira.url | jq -r '.value')
 
 # Get all config and extract multiple values
-bd config list --json | jq -r '.["jira.project"]'
+beads config list --json | jq -r '.["jira.project"]'
 ```
 
 Example Python script:
@@ -278,7 +278,7 @@ import subprocess
 
 def get_config(key):
     result = subprocess.run(
-        ["bd", "config", "get", "--json", key],
+        ["beads", "config", "get", "--json", key],
         capture_output=True,
         text=True
     )
@@ -287,7 +287,7 @@ def get_config(key):
 
 def list_config():
     result = subprocess.run(
-        ["bd", "config", "list", "--json"],
+        ["beads", "config", "list", "--json"],
         capture_output=True,
         text=True
     )
@@ -303,15 +303,15 @@ jira_project = get_config("jira.project")
 1. **Use namespaces**: Prefix keys with integration name (e.g., `jira.*`, `linear.*`)
 2. **Hierarchical keys**: Use dots for structure (e.g., `jira.status_map.open`)
 3. **Document your keys**: Add comments in integration scripts
-4. **Security**: Store tokens in config, but add `.beads/*.db` to `.gitignore` (bd does this automatically)
+4. **Security**: Store tokens in config, but add `.beads/*.db` to `.gitignore` (beads does this automatically)
 5. **Per-project**: Configuration is project-specific, so each repo can have different settings
 
-## Integration with bd Commands
+## Integration with beads Commands
 
-Some bd commands automatically use configuration:
+Some beads commands automatically use configuration:
 
-- `bd compact` uses `compact_tier1_days`, `compact_tier1_dep_levels`, etc.
-- `bd init` sets `issue_prefix`
+- `beads compact` uses `compact_tier1_days`, `compact_tier1_dep_levels`, etc.
+- `beads init` sets `issue_prefix`
 
 External integration scripts can read configuration to sync with Jira, Linear, GitHub, etc.
 

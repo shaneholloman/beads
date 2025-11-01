@@ -1,10 +1,10 @@
-# bd Git Hooks
+# beads Git Hooks
 
-This directory contains git hooks that integrate bd (beads) with your git workflow, solving the race condition between daemon auto-flush and git commits.
+This directory contains git hooks that integrate beads (beads) with your git workflow, solving the race condition between daemon auto-flush and git commits.
 
 ## The Problem
 
-When using bd in daemon mode, operations trigger a 5-second debounced auto-flush to JSONL. This creates a race condition:
+When using beads in daemon mode, operations trigger a 5-second debounced auto-flush to JSONL. This creates a race condition:
 
 1. User closes issue via MCP → daemon schedules flush (5 sec delay)
 2. User commits code changes → JSONL appears clean
@@ -13,9 +13,9 @@ When using bd in daemon mode, operations trigger a 5-second debounced auto-flush
 
 ## The Solution
 
-These git hooks ensure bd changes are always synchronized with your commits:
+These git hooks ensure beads changes are always synchronized with your commits:
 
-- **pre-commit** - Flushes pending bd changes to JSONL before commit
+- **pre-commit** - Flushes pending beads changes to JSONL before commit
 - **post-merge** - Imports updated JSONL after git pull/merge
 
 ## Installation
@@ -49,7 +49,7 @@ chmod +x .git/hooks/pre-commit .git/hooks/post-merge
 Before each commit, the hook runs:
 
 ```bash
-bd sync --flush-only
+beads sync --flush-only
 ```
 
 This:
@@ -65,7 +65,7 @@ The hook is silent on success, fast (no git operations), and safe (fails commit 
 After a git pull or merge, the hook runs:
 
 ```bash
-bd import -i .beads/issues.jsonl
+beads import -i .beads/issues.jsonl
 ```
 
 This ensures your local database reflects the merged state. The hook:
@@ -78,7 +78,7 @@ This ensures your local database reflects the merged state. The hook:
 
 ## Compatibility
 
-- **Auto-sync**: Works alongside bd's automatic 5-second debounce
+- **Auto-sync**: Works alongside beads's automatic 5-second debounce
 - **Direct mode**: Hooks work in both daemon and `--no-daemon` mode
 - **Worktrees**: Safe to use with git worktrees
 
@@ -88,7 +88,7 @@ This ensures your local database reflects the merged state. The hook:
 ✔ Database always in sync with git  
 ✔ Automatic collision resolution on merge  
 ✔ Fast and silent operation  
-✔ Optional - manual `bd sync` still works  
+✔ Optional - manual `beads sync` still works  
 
 ## Uninstall
 
@@ -102,6 +102,6 @@ Your backed-up hooks (if any) are in `.git/hooks/*.backup-*`.
 
 ## Related
 
-- See [bd-51](../../.beads/bd-51) for the race condition bug report
+- See [beads-51](../../.beads/beads-51) for the race condition bug report
 - See [AGENTS.md](../../AGENTS.md) for the full git workflow
 - See [examples/](../) for other integrations

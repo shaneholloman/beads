@@ -11,19 +11,19 @@ from beads_mcp.server import mcp
 
 
 @pytest.fixture(scope="session")
-def bd_executable():
-    """Verify bd is available in PATH."""
-    bd_path = shutil.which("bd")
-    if not bd_path:
+def beads_executable():
+    """Verify beads is available in PATH."""
+    beads_path = shutil.which("beads")
+    if not beads_path:
         pytest.fail(
-            "bd executable not found in PATH. "
-            "Please install bd or add it to your PATH before running integration tests."
+            "beads executable not found in PATH. "
+            "Please install beads or add it to your PATH before running integration tests."
         )
-    return bd_path
+    return beads_path
 
 
 @pytest.fixture
-async def temp_db(bd_executable):
+async def temp_db(beads_executable):
     """Create a temporary database file and initialize it - fully hermetic."""
     # Create temp directory for database
     temp_dir = tempfile.mkdtemp(prefix="beads_mcp_test_", dir="/tmp")
@@ -42,7 +42,7 @@ async def temp_db(bd_executable):
         prefix="beads_mcp_test_workspace_", dir="/tmp"
     ) as temp_workspace:
         process = await asyncio.create_subprocess_exec(
-            bd_executable,
+            beads_executable,
             "init",
             "--prefix",
             "test",
@@ -63,10 +63,10 @@ async def temp_db(bd_executable):
 
 
 @pytest.fixture
-async def mcp_client(bd_executable, temp_db, monkeypatch):
+async def mcp_client(beads_executable, temp_db, monkeypatch):
     """Create MCP client with temporary database."""
     from beads_mcp import tools
-    from beads_mcp.bd_client import BdClient
+    from beads_mcp.beads_client import BeadsClient
 
     # Reset client before test
     tools._client = None
@@ -78,7 +78,7 @@ async def mcp_client(bd_executable, temp_db, monkeypatch):
 
     # Create a pre-configured client with explicit paths (bypasses config loading)
     temp_dir = os.path.dirname(temp_db)
-    tools._client = BdClient(bd_path=bd_executable, beads_db=temp_db, working_dir=temp_dir)
+    tools._client = BeadsClient(beads_path=beads_executable, beads_db=temp_db, working_dir=temp_dir)
 
     # Create test client
     async with Client(mcp) as client:
@@ -101,7 +101,7 @@ async def test_quickstart_resource(mcp_client):
     assert result is not None
     content = result[0].text
     assert len(content) > 0
-    assert "beads" in content.lower() or "bd" in content.lower()
+    assert "beads" in content.lower() or "beads" in content.lower()
 
 
 @pytest.mark.asyncio
@@ -594,7 +594,7 @@ async def test_blocked_tool(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_init_tool(mcp_client, bd_executable):
+async def test_init_tool(mcp_client, beads_executable):
     """Test init tool."""
     import os
     import tempfile
@@ -610,8 +610,8 @@ async def test_init_tool(mcp_client, bd_executable):
         original_client = tools._client
 
         # Create a new client pointing to the new database path
-        from beads_mcp.bd_client import BdClient
-        tools._client = BdClient(bd_path=bd_executable, beads_db=new_db_path)
+        from beads_mcp.beads_client import BeadsClient
+        tools._client = BeadsClient(beads_path=beads_executable, beads_db=new_db_path)
 
         try:
             # Call init tool
@@ -619,7 +619,7 @@ async def test_init_tool(mcp_client, bd_executable):
             output = result.content[0].text
 
             # Verify output contains success message
-            assert "bd initialized successfully!" in output
+            assert "beads initialized successfully!" in output
         finally:
             # Restore original client
             tools._client = original_client

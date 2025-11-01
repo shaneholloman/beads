@@ -28,12 +28,12 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 In your beads project directory:
 
 ```bash
-bd daemon start
+beads daemon start
 ```
 
 The daemon will:
 
-- Listen on `.beads/bd.sock` (Windows: file stores loopback TCP metadata)
+- Listen on `.beads/beads.sock` (Windows: file stores loopback TCP metadata)
 - Route operations to correct database based on request cwd
 - Handle multiple repos simultaneously
 
@@ -42,11 +42,11 @@ The daemon will:
 ```bash
 # Test with beads repo
 cd ~/src/vc/adar/beads
-bd list
+beads list
 
 # Test with another repo
 cd ~/src/vc/wyvern
-bd list
+beads list
 
 # Both should show correct issues for their respective databases
 ```
@@ -109,19 +109,19 @@ If you want to temporarily use CLI mode:
 
 ```bash
 # Start daemon
-bd daemon start
+beads daemon start
 
 # Check status
-bd daemon status
+beads daemon status
 
 # View logs
-bd daemon logs
+beads daemon logs
 
 # Stop daemon
-bd daemon stop
+beads daemon stop
 
 # Restart daemon
-bd daemon stop && bd daemon start
+beads daemon stop && beads daemon start
 ```
 
 ## Troubleshooting
@@ -132,7 +132,7 @@ Start the daemon in your beads project:
 
 ```bash
 cd ~/src/vc/adar/beads
-bd daemon start
+beads daemon start
 ```
 
 ### Wrong database being used
@@ -140,7 +140,7 @@ bd daemon start
 1. Check where daemon is running:
 
    ```bash
-   bd daemon status
+   beads daemon status
    ```
 
 2. Use `set_context` tool in Claude to set workspace root:
@@ -169,7 +169,7 @@ Ensure:
     "beads-adar": {
       "command": "beads-mcp",
       "env": {
-        "BEADS_DB": "/path/to/adar/.beads/bd.db"
+        "BEADS_DB": "/path/to/adar/.beads/beads.db"
       }
     },
     "beads-wyvern": {

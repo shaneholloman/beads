@@ -6,16 +6,16 @@ pkgs.buildGoModule {
   src = self;
 
   # Point to the main Go package
-  subPackages = [ "cmd/bd" ];
+  subPackages = [ "cmd/beads" ];
 
   # Go module dependencies hash (computed via nix build)
   vendorHash = "sha256-DJqTiLGLZNGhHXag50gHFXTVXCBdj8ytbYbPL3QAq8M=";
 
   meta = with pkgs.lib; {
-    description = "beads (bd) - An issue tracker designed for AI-supervised coding workflows";
+    description = "beads (beads) - An issue tracker designed for AI-supervised coding workflows";
     homepage = "https://github.com/shaneholloman/beads";
     license = licenses.mit;
-    mainProgram = "bd";
+    mainProgram = "beads";
     maintainers = [ ];
   };
 }

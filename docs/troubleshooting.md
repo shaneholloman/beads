@@ -1,6 +1,6 @@
-# Troubleshooting bd
+# Troubleshooting beads
 
-Common issues and solutions for bd users.
+Common issues and solutions for beads users.
 
 ## Table of Contents
 
@@ -14,36 +14,36 @@ Common issues and solutions for bd users.
 
 ## Installation Issues
 
-### `bd: command not found`
+### `beads: command not found`
 
-bd is not in your PATH. Either:
+beads is not in your PATH. Either:
 
 ```bash
 # Check if installed
-go list -f {{.Target}} github.com/shaneholloman/beads/cmd/bd
+go list -f {{.Target}} github.com/shaneholloman/beads/cmd/beads
 
 # Add Go bin to PATH (add to ~/.bashrc or ~/.zshrc)
 export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Or reinstall
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
-### `zsh: killed bd` or crashes on macOS
+### `zsh: killed beads` or crashes on macOS
 
-Some users report crashes when running `bd init` or other commands on macOS. This is typically caused by CGO/SQLite compatibility issues.
+Some users report crashes when running `beads init` or other commands on macOS. This is typically caused by CGO/SQLite compatibility issues.
 
 **Workaround:**
 
 ```bash
 # Build with CGO enabled
-CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/bd@latest
+CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/beads@latest
 
 # Or if building from source
 git clone https://github.com/shaneholloman/beads
 cd beads
-CGO_ENABLED=1 go build -o bd ./cmd/bd
-sudo mv bd /usr/local/bin/
+CGO_ENABLED=1 go build -o beads ./cmd/beads
+sudo mv beads /usr/local/bin/
 ```
 
 If you installed via Homebrew, this shouldn't be necessary as the formula already enables CGO. If you're still seeing crashes with the Homebrew version, please [file an issue](https://github.com/shaneholloman/beads/issues).
@@ -52,30 +52,30 @@ If you installed via Homebrew, this shouldn't be necessary as the formula alread
 
 ### `database is locked`
 
-Another bd process is accessing the database, or SQLite didn't close properly. Solutions:
+Another beads process is accessing the database, or SQLite didn't close properly. Solutions:
 
 ```bash
 # Find and kill hanging processes
-ps aux | grep bd
+ps aux | grep beads
 kill <pid>
 
-# Remove lock files (safe if no bd processes running)
+# Remove lock files (safe if no beads processes running)
 rm .beads/*.db-journal .beads/*.db-wal .beads/*.db-shm
 ```
 
-**Note**: bd uses a pure Go SQLite driver (`modernc.org/sqlite`) for better portability. Under extreme concurrent load (100+ simultaneous operations), you may see "database is locked" errors. This is a known limitation of the pure Go implementation and does not affect normal usage. For very high concurrency scenarios, consider using the CGO-enabled driver or PostgreSQL (planned for future release).
+**Note**: beads uses a pure Go SQLite driver (`modernc.org/sqlite`) for better portability. Under extreme concurrent load (100+ simultaneous operations), you may see "database is locked" errors. This is a known limitation of the pure Go implementation and does not affect normal usage. For very high concurrency scenarios, consider using the CGO-enabled driver or PostgreSQL (planned for future release).
 
-### `bd init` fails with "directory not empty"
+### `beads init` fails with "directory not empty"
 
 `.beads/` already exists. Options:
 
 ```bash
 # Use existing database
-bd list  # Should work if already initialized
+beads list  # Should work if already initialized
 
 # Or remove and reinitialize (DESTROYS DATA!)
 rm -rf .beads/
-bd init
+beads init
 ```
 
 ### `failed to import: issue already exists`
@@ -84,11 +84,11 @@ You're trying to import issues that conflict with existing ones. Options:
 
 ```bash
 # Skip existing issues (only import new ones)
-bd import -i issues.jsonl --skip-existing
+beads import -i issues.jsonl --skip-existing
 
 # Or clear database and re-import everything
 rm .beads/*.db
-bd import -i .beads/issues.jsonl
+beads import -i .beads/issues.jsonl
 ```
 
 ### Database corruption
@@ -103,15 +103,15 @@ sqlite3 .beads/*.db "PRAGMA integrity_check;"
 
 # If corrupted, reimport from JSONL (source of truth in git)
 mv .beads/*.db .beads/*.db.backup
-bd init
-bd import -i .beads/issues.jsonl
+beads init
+beads import -i .beads/issues.jsonl
 ```
 
 For **logical consistency issues** (ID collisions from branch merges, parallel workers):
 
 ```bash
 # This is NOT corruption - use collision resolution instead
-bd import -i .beads/issues.jsonl --resolve-collisions
+beads import -i .beads/issues.jsonl --resolve-collisions
 ```
 
 See [FAQ](faq.md#whats-the-difference-between-sqlite-corruption-and-id-collisions) for the distinction.
@@ -135,7 +135,7 @@ If you see a warning about multiple `.beads` databases in the directory hierarch
 ╚══════════════════════════════════════════════════════════════════════════╝
 ```
 
-This means bd found multiple `.beads` directories in your directory hierarchy. The `▶` marker shows which database is actively being used (usually the closest one to your current directory).
+This means beads found multiple `.beads` directories in your directory hierarchy. The `▶` marker shows which database is actively being used (usually the closest one to your current directory).
 
 **Why this matters:**
 
@@ -146,13 +146,13 @@ This means bd found multiple `.beads` directories in your directory hierarchy. T
 **Solutions:**
 
 1. **If you have nested projects** (intentional):
-   - This is fine! bd is designed to support this
+   - This is fine! beads is designed to support this
    - Just be aware which database you're using
    - Set `BEADS_DB` environment variable if you want to override the default selection
 
 2. **If you have accidental duplicates** (unintentional):
    - Decide which database to keep
-   - Export issues from the unwanted database: `cd <unwanted-dir> && bd export -o backup.jsonl`
+   - Export issues from the unwanted database: `cd <unwanted-dir> && beads export -o backup.jsonl`
    - Remove the unwanted `.beads` directory: `rm -rf <unwanted-dir>/.beads`
    - Optionally import issues into the main database if needed
 
@@ -160,13 +160,13 @@ This means bd found multiple `.beads` directories in your directory hierarchy. T
 
    ```bash
    # Temporarily use specific database
-   BEADS_DB=/path/to/.beads/issues.db bd list
+   BEADS_DB=/path/to/.beads/issues.db beads list
 
    # Or add to shell config for permanent override
    export BEADS_DB=/path/to/.beads/issues.db
    ```
 
-**Note**: The warning only appears when bd detects multiple databases. If you see this consistently and want to suppress it, you're using the correct database (marked with `▶`).
+**Note**: The warning only appears when beads detects multiple databases. If you see this consistently and want to suppress it, you're using the correct database (marked with `▶`).
 
 ## Git and Sync Issues
 
@@ -186,7 +186,7 @@ Example resolution:
 # After resolving conflicts manually
 git add .beads/issues.jsonl
 git commit
-bd import -i .beads/issues.jsonl  # Sync to SQLite
+beads import -i .beads/issues.jsonl  # Sync to SQLite
 ```
 
 See [advanced.md](advanced.md) for detailed merge strategies.
@@ -199,13 +199,13 @@ If git shows a conflict in `.beads/issues.jsonl`, it's because the same issue wa
 
 ```bash
 # Preview what will be updated
-bd import -i .beads/issues.jsonl --dry-run
+beads import -i .beads/issues.jsonl --dry-run
 
 # Resolve git conflict (keep newer version or manually merge)
 git checkout --theirs .beads/issues.jsonl  # Or --ours, or edit manually
 
 # Import updates the database
-bd import -i .beads/issues.jsonl
+beads import -i .beads/issues.jsonl
 ```
 
 See [advanced.md#handling-git-merge-conflicts](advanced.md#handling-git-merge-conflicts) for details.
@@ -228,50 +228,50 @@ Check if auto-sync is enabled:
 
 ```bash
 # Check if daemon is running
-ps aux | grep "bd daemon"
+ps aux | grep "beads daemon"
 
 # Manually export/import
-bd export -o .beads/issues.jsonl
-bd import -i .beads/issues.jsonl
+beads export -o .beads/issues.jsonl
+beads import -i .beads/issues.jsonl
 
 # Install git hooks for guaranteed sync
 cd examples/git-hooks && ./install.sh
 ```
 
-If you disabled auto-sync with `--no-auto-flush` or `--no-auto-import`, remove those flags or use `bd sync` manually.
+If you disabled auto-sync with `--no-auto-flush` or `--no-auto-import`, remove those flags or use `beads sync` manually.
 
 ## Ready Work and Dependencies
 
-### `bd ready` shows nothing but I have open issues
+### `beads ready` shows nothing but I have open issues
 
 Those issues probably have open blockers. Check:
 
 ```bash
 # See blocked issues
-bd blocked
+beads blocked
 
 # Show dependency tree (default max depth: 50)
-bd dep tree <issue-id>
+beads dep tree <issue-id>
 
 # Limit tree depth to prevent deep traversals
-bd dep tree <issue-id> --max-depth 10
+beads dep tree <issue-id> --max-depth 10
 
 # Remove blocking dependency if needed
-bd dep remove <from-id> <to-id>
+beads dep remove <from-id> <to-id>
 ```
 
 Remember: Only `blocks` dependencies affect ready work.
 
 ### Circular dependency errors
 
-bd prevents dependency cycles, which break ready work detection. To fix:
+beads prevents dependency cycles, which break ready work detection. To fix:
 
 ```bash
 # Detect all cycles
-bd dep cycles
+beads dep cycles
 
 # Remove the dependency causing the cycle
-bd dep remove <from-id> <to-id>
+beads dep remove <from-id> <to-id>
 
 # Or redesign your dependency structure
 ```
@@ -282,10 +282,10 @@ Check the dependency type:
 
 ```bash
 # Show full issue details including dependencies
-bd show <issue-id>
+beads show <issue-id>
 
 # Visualize the dependency tree
-bd dep tree <issue-id>
+beads dep tree <issue-id>
 ```
 
 Remember: Different dependency types have different meanings:
@@ -303,10 +303,10 @@ For large databases (10k+ issues):
 
 ```bash
 # Export only open issues
-bd export --format=jsonl --status=open -o .beads/issues.jsonl
+beads export --format=jsonl --status=open -o .beads/issues.jsonl
 
 # Or filter by priority
-bd export --format=jsonl --priority=0 --priority=1 -o critical.jsonl
+beads export --format=jsonl --priority=0 --priority=1 -o critical.jsonl
 ```
 
 Consider splitting large projects into multiple databases.
@@ -317,13 +317,13 @@ Check database size and consider compaction:
 
 ```bash
 # Check database stats
-bd stats
+beads stats
 
 # Preview compaction candidates
-bd compact --dry-run --all
+beads compact --dry-run --all
 
 # Compact old closed issues
-bd compact --days 90
+beads compact --days 90
 ```
 
 ### Large JSONL files
@@ -335,11 +335,11 @@ If `.beads/issues.jsonl` is very large:
 ls -lh .beads/issues.jsonl
 
 # Remove old closed issues
-bd compact --days 90
+beads compact --days 90
 
 # Or split into multiple projects
-cd ~/project/component1 && bd init --prefix comp1
-cd ~/project/component2 && bd init --prefix comp2
+cd ~/project/component1 && beads init --prefix comp1
+cd ~/project/component2 && beads init --prefix comp2
 ```
 
 ## Agent-Specific Issues
@@ -348,10 +348,10 @@ cd ~/project/component2 && bd init --prefix comp2
 
 Agents may not realize an issue already exists. Prevention strategies:
 
-- Have agents search first: `bd list --json | grep "title"`
-- Use labels to mark auto-created issues: `bd create "..." -l auto-generated`
-- Review and deduplicate periodically: `bd list | sort`
-- Use `bd merge` to consolidate duplicates: `bd merge bd-2 --into bd-1`
+- Have agents search first: `beads list --json | grep "title"`
+- Use labels to mark auto-created issues: `beads create "..." -l auto-generated`
+- Review and deduplicate periodically: `beads list | sort`
+- Use `beads merge` to consolidate duplicates: `beads merge beads-2 --into beads-1`
 
 ### Agent gets confused by complex dependencies
 
@@ -359,13 +359,13 @@ Simplify the dependency structure:
 
 ```bash
 # Check for overly complex trees
-bd dep tree <issue-id>
+beads dep tree <issue-id>
 
 # Remove unnecessary dependencies
-bd dep remove <from-id> <to-id>
+beads dep remove <from-id> <to-id>
 
 # Use labels instead of dependencies for loose relationships
-bd label add <issue-id> related-to-feature-X
+beads label add <issue-id> related-to-feature-X
 ```
 
 ### Agent can't find ready work
@@ -374,14 +374,14 @@ Check if issues are blocked:
 
 ```bash
 # See what's blocked
-bd blocked
+beads blocked
 
 # See what's actually ready
-bd ready --json
+beads ready --json
 
 # Check specific issue
-bd show <issue-id>
-bd dep tree <issue-id>
+beads show <issue-id>
+beads dep tree <issue-id>
 ```
 
 ### MCP server not working
@@ -396,29 +396,29 @@ pip list | grep beads-mcp
 cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
 
 # Test CLI works
-bd version
-bd ready
+beads version
+beads ready
 
 # Check for daemon
-ps aux | grep "bd daemon"
+ps aux | grep "beads daemon"
 ```
 
 See [integrations/beads-mcp/README.md](../integrations/beads-mcp/README.md) for MCP-specific troubleshooting.
 
 ### Claude Code sandbox mode
 
-**Issue:** Claude Code's sandbox restricts network access to a single socket, conflicting with bd's daemon and git operations.
+**Issue:** Claude Code's sandbox restricts network access to a single socket, conflicting with beads's daemon and git operations.
 
 **Solution:** Use the `--sandbox` flag:
 
 ```bash
 # Sandbox mode disables daemon and auto-sync
-bd --sandbox ready
-bd --sandbox create "Fix bug" -p 1
-bd --sandbox update bd-42 --status in_progress
+beads --sandbox ready
+beads --sandbox create "Fix bug" -p 1
+beads --sandbox update beads-42 --status in_progress
 
 # Or set individual flags
-bd --no-daemon --no-auto-flush --no-auto-import <command>
+beads --no-daemon --no-auto-flush --no-auto-import <command>
 ```
 
 **What sandbox mode does:**
@@ -426,13 +426,13 @@ bd --no-daemon --no-auto-flush --no-auto-import <command>
 - Disables daemon (uses direct SQLite mode)
 - Disables auto-export to JSONL
 - Disables auto-import from JSONL
-- Allows bd to work in network-restricted environments
+- Allows beads to work in network-restricted environments
 
 **Note:** You'll need to manually sync when outside the sandbox:
 
 ```bash
 # After leaving sandbox, sync manually
-bd sync
+beads sync
 ```
 
 **Related:** See [Claude Code sandboxing documentation](https://www.anthropic.com/engineering/claude-code-sandboxing) for more about sandbox restrictions.
@@ -442,8 +442,8 @@ bd sync
 ### Windows: Path issues
 
 ```pwsh
-# Check if bd.exe is in PATH
-where.exe bd
+# Check if beads.exe is in PATH
+where.exe beads
 
 # Add Go bin to PATH (permanently)
 [Environment]::SetEnvironmentVariable(
@@ -458,20 +458,20 @@ $env:Path = [Environment]::GetEnvironmentVariable("Path", "User")
 
 ### Windows: Firewall blocking daemon
 
-The daemon listens on loopback TCP. Allow `bd.exe` through Windows Firewall:
+The daemon listens on loopback TCP. Allow `beads.exe` through Windows Firewall:
 
 1. Open Windows Security → Firewall & network protection
 2. Click "Allow an app through firewall"
-3. Add `bd.exe` and enable for Private networks
+3. Add `beads.exe` and enable for Private networks
 4. Or disable firewall temporarily for testing
 
 ### macOS: Gatekeeper blocking execution
 
-If macOS blocks bd:
+If macOS blocks beads:
 
 ```bash
 # Remove quarantine attribute
-xattr -d com.apple.quarantine /usr/local/bin/bd
+xattr -d com.apple.quarantine /usr/local/bin/beads
 
 # Or allow in System Preferences
 # System Preferences → Security & Privacy → General → "Allow anyway"
@@ -482,12 +482,12 @@ xattr -d com.apple.quarantine /usr/local/bin/bd
 If you get permission errors:
 
 ```bash
-# Make bd executable
-chmod +x /usr/local/bin/bd
+# Make beads executable
+chmod +x /usr/local/bin/beads
 
 # Or install to user directory
 mkdir -p ~/.local/bin
-mv bd ~/.local/bin/
+mv beads ~/.local/bin/
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
@@ -496,9 +496,9 @@ export PATH="$HOME/.local/bin:$PATH"
 If none of these solutions work:
 
 1. **Check existing issues**: [GitHub Issues](https://github.com/shaneholloman/beads/issues)
-2. **Enable debug logging**: `bd --verbose <command>`
+2. **Enable debug logging**: `beads --verbose <command>`
 3. **File a bug report**: Include:
-   - bd version: `bd version`
+   - beads version: `beads version`
    - OS and architecture: `uname -a`
    - Error message and full command
    - Steps to reproduce

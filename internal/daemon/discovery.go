@@ -38,7 +38,7 @@ func walkWithDepth(root string, currentDepth, maxDepth int, fn func(path string,
 			if name == "node_modules" || name == "vendor" || name == ".git" {
 				continue
 			}
-			// Recurse into subdirectory
+			// Recurse into subeadsirectory
 			if err := walkWithDepth(path, currentDepth+1, maxDepth, fn); err != nil {
 				return err
 			}
@@ -68,7 +68,7 @@ type DaemonInfo struct {
 	Error               string
 }
 
-// DiscoverDaemons discovers running bd daemons using the registry
+// DiscoverDaemons discovers running beads daemons using the registry
 // Falls back to filesystem scanning if searchRoots is explicitly provided (for compatibility)
 func DiscoverDaemons(searchRoots []string) ([]DaemonInfo, error) {
 	// If searchRoots is explicitly provided, use legacy filesystem scan
@@ -87,7 +87,7 @@ func DiscoverDaemons(searchRoots []string) ([]DaemonInfo, error) {
 	return registry.List()
 }
 
-// discoverDaemonsLegacy scans the filesystem for running bd daemons (legacy method)
+// discoverDaemonsLegacy scans the filesystem for running beads daemons (legacy method)
 // It searches common locations and uses the Status RPC endpoint to gather metadata
 func discoverDaemonsLegacy(searchRoots []string) ([]DaemonInfo, error) {
 	var daemons []DaemonInfo
@@ -109,12 +109,12 @@ func discoverDaemonsLegacy(searchRoots []string) ([]DaemonInfo, error) {
 		}
 	}
 
-	// Search for .beads/bd.sock files (limit depth to avoid traversing entire filesystem)
+	// Search for .beads/beads.sock files (limit depth to avoid traversing entire filesystem)
 	for _, root := range searchRoots {
 		maxDepth := 10 // Limit recursion depth
 		if err := walkWithDepth(root, 0, maxDepth, func(path string, info os.FileInfo) error {
 			// Skip if not a socket file
-			if info.Name() != "bd.sock" {
+			if info.Name() != "beads.sock" {
 				return nil
 			}
 
@@ -181,7 +181,7 @@ func discoverDaemon(socketPath string) DaemonInfo {
 // FindDaemonByWorkspace finds a daemon serving a specific workspace
 func FindDaemonByWorkspace(workspacePath string) (*DaemonInfo, error) {
 	// First try the socket in the workspace itself
-	socketPath := filepath.Join(workspacePath, ".beads", "bd.sock")
+	socketPath := filepath.Join(workspacePath, ".beads", "beads.sock")
 	if _, err := os.Stat(socketPath); err == nil {
 		daemon := discoverDaemon(socketPath)
 		if daemon.Alive {

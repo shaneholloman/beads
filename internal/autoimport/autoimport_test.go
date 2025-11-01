@@ -40,13 +40,13 @@ func (n *testNotifier) Errorf(format string, args ...interface{}) {
 }
 
 func TestAutoImportIfNewer_NoJSONL(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-autoimport-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-autoimport-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	store := memory.New("")
 	notify := &testNotifier{}
 
@@ -67,13 +67,13 @@ func TestAutoImportIfNewer_NoJSONL(t *testing.T) {
 }
 
 func TestAutoImportIfNewer_UnchangedHash(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-autoimport-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-autoimport-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	jsonlPath := filepath.Join(tmpDir, "issues.jsonl")
 
 	// Create test JSONL
@@ -123,13 +123,13 @@ func TestAutoImportIfNewer_UnchangedHash(t *testing.T) {
 }
 
 func TestAutoImportIfNewer_ChangedHash(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-autoimport-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-autoimport-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	jsonlPath := filepath.Join(tmpDir, "issues.jsonl")
 
 	// Create test JSONL
@@ -183,13 +183,13 @@ func TestAutoImportIfNewer_ChangedHash(t *testing.T) {
 }
 
 func TestAutoImportIfNewer_MergeConflict(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-autoimport-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-autoimport-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	jsonlPath := filepath.Join(tmpDir, "issues.jsonl")
 
 	// Create JSONL with merge conflict markers
@@ -223,13 +223,13 @@ func TestAutoImportIfNewer_MergeConflict(t *testing.T) {
 }
 
 func TestAutoImportIfNewer_WithRemapping(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-autoimport-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-autoimport-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	jsonlPath := filepath.Join(tmpDir, "issues.jsonl")
 
 	// Create test JSONL
@@ -296,13 +296,13 @@ func TestCheckStaleness_NoMetadata(t *testing.T) {
 	store := memory.New("")
 	ctx := context.Background()
 
-	tmpDir, err := os.MkdirTemp("", "bd-stale-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-stale-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 
 	stale, err := CheckStaleness(ctx, store, dbPath)
 	if err != nil {
@@ -315,13 +315,13 @@ func TestCheckStaleness_NoMetadata(t *testing.T) {
 }
 
 func TestCheckStaleness_NewerJSONL(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-stale-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-stale-test-*")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	dbPath := filepath.Join(tmpDir, "bd.db")
+	dbPath := filepath.Join(tmpDir, "beads.db")
 	jsonlPath := filepath.Join(tmpDir, "issues.jsonl")
 
 	// Create old import time

@@ -1,0 +1,7 @@
+# Test beads help command
+beads help
+stdout 'Usage:'
+stdout 'Available Commands:'
+stdout 'create'
+stdout 'list'
+stdout 'show'

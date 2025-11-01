@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// ExtractIssuePrefix extracts the prefix from an issue ID like "bd-123" -> "bd"
+// ExtractIssuePrefix extracts the prefix from an issue ID like "beads-123" -> "beads"
 func ExtractIssuePrefix(issueID string) string {
 	parts := strings.SplitN(issueID, "-", 2)
 	if len(parts) < 2 {
@@ -14,7 +14,7 @@ func ExtractIssuePrefix(issueID string) string {
 	return parts[0]
 }
 
-// ExtractIssueNumber extracts the number from an issue ID like "bd-123" -> 123
+// ExtractIssueNumber extracts the number from an issue ID like "beads-123" -> 123
 func ExtractIssueNumber(issueID string) int {
 	parts := strings.SplitN(issueID, "-", 2)
 	if len(parts) < 2 {

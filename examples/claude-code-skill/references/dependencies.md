@@ -1,10 +1,10 @@
 # Dependency Types Guide
 
-Deep dive into bd's four dependency types: blocks, related, parent-child, and discovered-from.
+Deep dive into beads's four dependency types: blocks, related, parent-child, and discovered-from.
 
 ## Contents
 
-- [Overview](#overview) - Four types at a glance, which affect bd ready?
+- [Overview](#overview) - Four types at a glance, which affect beads ready?
 - [blocks - Hard Blocker](#blocks---hard-blocker)
   - [When to Use](#when-to-use) - Prerequisites, sequential steps, build order
   - [When NOT to Use](#when-not-to-use) - Soft preferences, parallel work
@@ -44,9 +44,9 @@ Deep dive into bd's four dependency types: blocks, related, parent-child, and di
 
 ## Overview
 
-bd supports four dependency types that serve different purposes in organizing and tracking work:
+beads supports four dependency types that serve different purposes in organizing and tracking work:
 
-| Type | Purpose | Affects `bd ready`? | Common Use |
+| Type | Purpose | Affects `beads ready`? | Common Use |
 |------|---------|---------------------|------------|
 | **blocks** | Hard blocker | Yes - blocked issues excluded | Sequential work, prerequisites |
 | **related** | Soft link | No - just informational | Context, related work |
@@ -61,7 +61,7 @@ bd supports four dependency types that serve different purposes in organizing an
 
 **Semantics**: Issue A blocks issue B. B cannot start until A is complete.
 
-**Effect**: Issue B disappears from `bd ready` until issue A is closed.
+**Effect**: Issue B disappears from `beads ready` until issue A is closed.
 
 ### When to Use
 
@@ -93,7 +93,7 @@ db-schema-1: "Create users table"
 api-endpoint-2: "Add GET /users endpoint"
 
 Why: Endpoint literally needs table to exist
-Effect: api-endpoint-2 won't show in bd ready until db-schema-1 closed
+Effect: api-endpoint-2 won't show in beads ready until db-schema-1 closed
 ```
 
 **Example 2: Migration Sequence**
@@ -106,7 +106,7 @@ migrate-2: "Run schema migration"
 migrate-3: "Verify data integrity"
 
 Why: Each step must complete before next can safely proceed
-Effect: bd ready shows only migrate-1; closing it reveals migrate-2, etc.
+Effect: beads ready shows only migrate-1; closing it reveals migrate-2, etc.
 ```
 
 **Example 3: Library Installation**
@@ -123,9 +123,9 @@ Effect: Can't start auth-2 until setup-1 complete
 ### Creating blocks Dependencies
 
 ```bash
-bd dep add prerequisite-issue blocked-issue
+beads dep add prerequisite-issue blocked-issue
 # or explicitly:
-bd dep add prerequisite-issue blocked-issue --type blocks
+beads dep add prerequisite-issue blocked-issue --type blocks
 ```
 
 **Direction matters**: `from_id` blocks `to_id`. Think: "prerequisite blocks dependent".
@@ -150,7 +150,7 @@ One foundational issue blocks multiple dependent features.
 step-1 blocks step-2 blocks step-3 blocks step-4
 
 Linear chain where each step depends on previous.
-bd ready shows only current step.
+beads ready shows only current step.
 ```
 
 **Pattern: Parallel Then Merge**
@@ -171,12 +171,12 @@ When you close an issue that's blocking others:
 
 ```
 1. Close db-schema-1
-2. bd automatically updates: api-endpoint-2 is now ready
-3. bd ready shows api-endpoint-2
+2. beads automatically updates: api-endpoint-2 is now ready
+3. beads ready shows api-endpoint-2
 4. No manual unblocking needed
 ```
 
-This is why `blocks` is powerful - bd maintains ready state automatically.
+This is why `blocks` is powerful - beads maintains ready state automatically.
 
 ---
 
@@ -184,7 +184,7 @@ This is why `blocks` is powerful - bd maintains ready state automatically.
 
 **Semantics**: Issues are related but neither blocks the other.
 
-**Effect**: No impact on `bd ready`. Pure informational link.
+**Effect**: No impact on `beads ready`. Pure informational link.
 
 ### When to Use
 
@@ -235,13 +235,13 @@ perf-1: "Investigate Redis caching"
 perf-2: "Investigate CDN caching"
 
 Why: Both address performance, different approaches, explore both
-Effect: Both show in bd ready; choosing one doesn't block the other
+Effect: Both show in beads ready; choosing one doesn't block the other
 ```
 
 ### Creating related Dependencies
 
 ```bash
-bd dep add issue-1 issue-2 --type related
+beads dep add issue-1 issue-2 --type related
 ```
 
 **Direction doesn't matter** for `related` - it's a symmetric link.
@@ -280,7 +280,7 @@ Related links show what areas it covers.
 
 **Semantics**: Issue A is parent of issue B. Typically A is an epic, B is a subtask.
 
-**Effect**: No impact on `bd ready`. Creates hierarchical structure.
+**Effect**: No impact on `beads ready`. Creates hierarchical structure.
 
 ### When to Use
 
@@ -312,7 +312,7 @@ oauth-epic: "Implement OAuth integration" (epic)
     - oauth-4: "Create login UI" (task)
 
 Why: Epic decomposed into implementable tasks
-Effect: Hierarchical structure; all show in bd ready (unless blocked)
+Effect: Hierarchical structure; all show in beads ready (unless blocked)
 ```
 
 **Example 2: Research with Findings**
@@ -332,7 +332,7 @@ Effect: Can track progress across all investigations
 ### Creating parent-child Dependencies
 
 ```bash
-bd dep add parent-epic-id child-task-id --type parent-child
+beads dep add parent-epic-id child-task-id --type parent-child
 ```
 
 **Direction matters**: `from_id` is parent, `to_id` is child.
@@ -358,7 +358,7 @@ blocks: Shows they must be done in order
 
 ```
 Epic with no ordering between children:
-All children show in bd ready immediately.
+All children show in beads ready immediately.
 Work on any child in any order.
 Close epic when all children complete.
 ```
@@ -367,7 +367,7 @@ Close epic when all children complete.
 
 ```
 Epic with blocks dependencies between children:
-bd ready shows only first child.
+beads ready shows only first child.
 Closing each child unblocks next.
 Epic provides structure, blocks provides order.
 ```
@@ -392,7 +392,7 @@ Multiple levels of hierarchy for complex projects.
 
 **Semantics**: Issue B was discovered while working on issue A.
 
-**Effect**: No impact on `bd ready`. Tracks origin and provides context.
+**Effect**: No impact on `beads ready`. Tracks origin and provides context.
 
 ### When to Use
 
@@ -454,7 +454,7 @@ Context: Issues discovered as side effect of refactoring
 ### Creating discovered-from Dependencies
 
 ```bash
-bd dep add original-work-id discovered-issue-id --type discovered-from
+beads dep add original-work-id discovered-issue-id --type discovered-from
 ```
 
 **Direction matters**: `to_id` was discovered while working on `from_id`.
@@ -610,7 +610,7 @@ Reason: "I'm planning these tasks from the epic"
 Everything blocks everything else in strict sequential order.
 ```
 
-**Problem**: No parallel work possible; `bd ready` shows only one issue.
+**Problem**: No parallel work possible; `beads ready` shows only one issue.
 
 **Right**: Only use `blocks` for actual technical dependencies. Allow parallel work where possible.
 
@@ -619,7 +619,7 @@ Everything blocks everything else in strict sequential order.
 **Wrong**:
 
 ```bash
-bd dep add api-endpoint database-schema
+beads dep add api-endpoint database-schema
 
 Meaning: api-endpoint blocks database-schema
 ```
@@ -629,7 +629,7 @@ Meaning: api-endpoint blocks database-schema
 **Right**:
 
 ```bash
-bd dep add database-schema api-endpoint
+beads dep add database-schema api-endpoint
 
 Meaning: database-schema blocks api-endpoint
 ```
@@ -699,7 +699,7 @@ Nested hierarchy with phase ordering.
 
 ## Visualization
 
-When you run `bd show issue-id` on an issue, you see:
+When you run `beads show issue-id` on an issue, you see:
 
 ```
 Issue: feature-10
@@ -727,7 +727,7 @@ This shows the full dependency context for an issue.
 **Four dependency types, four different purposes:**
 
 1. **blocks**: Sequential work, prerequisites, hard blockers
-   - Affects bd ready
+   - Affects beads ready
    - Use for technical dependencies only
 
 2. **related**: Context, similar work, soft connections

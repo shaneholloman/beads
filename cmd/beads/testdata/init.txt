@@ -1,0 +1,15 @@
+# Test beads init command
+beads init --prefix test
+stdout 'initialized successfully'
+exists .beads/beads.db
+exists .beads/config.json
+exists .beads/.gitignore
+grep '^\*\.db$' .beads/.gitignore
+grep '^\*\.db-journal$' .beads/.gitignore
+grep '^\*\.db-wal$' .beads/.gitignore
+grep '^\*\.db-shm$' .beads/.gitignore
+grep '^daemon\.log$' .beads/.gitignore
+grep '^daemon\.pid$' .beads/.gitignore
+grep '^beads\.sock$' .beads/.gitignore
+grep '^!\*\.jsonl$' .beads/.gitignore
+grep '^!config\.json$' .beads/.gitignore

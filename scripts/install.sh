@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Beads (bd) installation script
+# Beads (beads) installation script
 # Usage: curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
 #
 # ⚠️ IMPORTANT: This script must be EXECUTED, never SOURCED
@@ -69,7 +69,7 @@ detect_platform() {
 
 # Download and install from GitHub releases
 install_from_release() {
-    log_info "Installing bd from GitHub releases..."
+    log_info "Installing beads from GitHub releases..."
 
     local platform=$1
     local tmp_dir
@@ -140,12 +140,12 @@ install_from_release() {
     # Install binary
     log_info "Installing to $install_dir..."
     if [[ -w "$install_dir" ]]; then
-        mv bd "$install_dir/"
+        mv beads "$install_dir/"
     else
-        sudo mv bd "$install_dir/"
+        sudo mv beads "$install_dir/"
     fi
 
-    log_success "bd installed to $install_dir/bd"
+    log_success "beads installed to $install_dir/beads"
 
     # Check if install_dir is in PATH
     if [[ ":$PATH:" != *":$install_dir:"* ]]; then
@@ -191,10 +191,10 @@ check_go() {
 
 # Install using go install (fallback)
 install_with_go() {
-    log_info "Installing bd using 'go install'..."
+    log_info "Installing beads using 'go install'..."
 
-    if go install github.com/shaneholloman/beads/cmd/bd@latest; then
-        log_success "bd installed successfully via go install"
+    if go install github.com/shaneholloman/beads/cmd/beads@latest; then
+        log_success "beads installed successfully via go install"
 
         # Record where we expect the binary to have been installed
         # Prefer GOBIN if set, otherwise GOPATH/bin
@@ -205,7 +205,7 @@ install_with_go() {
         else
             bin_dir="$(go env GOPATH)/bin"
         fi
-        LAST_INSTALL_PATH="$bin_dir/bd"
+        LAST_INSTALL_PATH="$bin_dir/beads"
 
         # Check if GOPATH/bin (or GOBIN) is in PATH
         if [[ ":$PATH:" != *":$bin_dir:"* ]]; then
@@ -225,7 +225,7 @@ install_with_go() {
 
 # Build from source (last resort)
 build_from_source() {
-    log_info "Building bd from source..."
+    log_info "Building beads from source..."
 
     local tmp_dir
     tmp_dir=$(mktemp -d)
@@ -237,7 +237,7 @@ build_from_source() {
         cd beads
         log_info "Building binary..."
 
-        if go build -o bd ./cmd/bd; then
+        if go build -o beads ./cmd/beads; then
             # Determine install location
             local install_dir
             if [[ -w /usr/local/bin ]]; then
@@ -249,15 +249,15 @@ build_from_source() {
 
             log_info "Installing to $install_dir..."
             if [[ -w "$install_dir" ]]; then
-                mv bd "$install_dir/"
+                mv beads "$install_dir/"
             else
-                sudo mv bd "$install_dir/"
+                sudo mv beads "$install_dir/"
             fi
 
-            log_success "bd installed to $install_dir/bd"
+            log_success "beads installed to $install_dir/beads"
 
             # Record where we installed the binary when building from source
-            LAST_INSTALL_PATH="$install_dir/bd"
+            LAST_INSTALL_PATH="$install_dir/beads"
 
             # Check if install_dir is in PATH
             if [[ ":$PATH:" != *":$install_dir:"* ]]; then
@@ -289,28 +289,28 @@ build_from_source() {
 
 # Verify installation
 verify_installation() {
-    # If multiple 'bd' binaries exist on PATH, warn the user before verification
-    warn_if_multiple_bd || true
+    # If multiple 'beads' binaries exist on PATH, warn the user before verification
+    warn_if_multiple_beads || true
 
-    if command -v bd &> /dev/null; then
-        log_success "bd is installed and ready!"
+    if command -v beads &> /dev/null; then
+        log_success "beads is installed and ready!"
         echo ""
-        bd version 2>/dev/null || echo "bd (development build)"
+        beads version 2>/dev/null || echo "beads (development build)"
         echo ""
         echo "Get started:"
         echo "  cd your-project"
-        echo "  bd init"
-        echo "  bd quickstart"
+        echo "  beads init"
+        echo "  beads quickstart"
         echo ""
         return 0
     else
-        log_error "bd was installed but is not in PATH"
+        log_error "beads was installed but is not in PATH"
         return 1
     fi
 }
 
-# Returns a list of full paths to 'bd' found in PATH (earlier entries first)
-get_bd_paths_in_path() {
+# Returns a list of full paths to 'beads' found in PATH (earlier entries first)
+get_beads_paths_in_path() {
     local IFS=':'
     local -a entries
     read -ra entries <<< "$PATH"
@@ -318,12 +318,12 @@ get_bd_paths_in_path() {
     local p
     for p in "${entries[@]}"; do
         [ -z "$p" ] && continue
-        if [ -x "$p/bd" ]; then
+        if [ -x "$p/beads" ]; then
             # Resolve symlink if possible
             if command -v readlink >/dev/null 2>&1; then
-                resolved=$(readlink -f "$p/bd" 2>/dev/null || printf '%s' "$p/bd")
+                resolved=$(readlink -f "$p/beads" 2>/dev/null || printf '%s' "$p/beads")
             else
-                resolved="$p/bd"
+                resolved="$p/beads"
             fi
             # avoid duplicates
             skip=0
@@ -341,16 +341,16 @@ get_bd_paths_in_path() {
     done
 }
 
-warn_if_multiple_bd() {
-    mapfile -t bd_paths < <(get_bd_paths_in_path)
-    if [ "${#bd_paths[@]}" -le 1 ]; then
+warn_if_multiple_beads() {
+    mapfile -t beads_paths < <(get_beads_paths_in_path)
+    if [ "${#beads_paths[@]}" -le 1 ]; then
         return 0
     fi
 
-    log_warning "Multiple 'bd' executables found on your PATH. An older copy may be executed instead of the one we installed."
-    echo "Found the following 'bd' executables (entries earlier in PATH take precedence):"
+    log_warning "Multiple 'beads' executables found on your PATH. An older copy may be executed instead of the one we installed."
+    echo "Found the following 'beads' executables (entries earlier in PATH take precedence):"
     local i=1
-    for p in "${bd_paths[@]}"; do
+    for p in "${beads_paths[@]}"; do
         local ver
         if [ -x "$p" ]; then
             ver=$("$p" version 2>/dev/null || true)
@@ -364,24 +364,24 @@ warn_if_multiple_bd() {
         echo ""
         echo "We installed to: $LAST_INSTALL_PATH"
         # Compare first PATH entry vs installed path
-        first="${bd_paths[0]}"
+        first="${beads_paths[0]}"
         if [ "$first" != "$LAST_INSTALL_PATH" ]; then
-            log_warning "The 'bd' executable that appears first in your PATH is different from the one we installed. To make the newly installed 'bd' the one you get when running 'bd', either:"
+            log_warning "The 'beads' executable that appears first in your PATH is different from the one we installed. To make the newly installed 'beads' the one you get when running 'beads', either:"
             echo "  - Remove or rename the older $first from your PATH, or"
             echo "  - Reorder your PATH so that $(dirname "$LAST_INSTALL_PATH") appears before $(dirname "$first")"
-            echo "After updating PATH, restart your shell and run 'bd version' to confirm."
+            echo "After updating PATH, restart your shell and run 'beads version' to confirm."
         else
-            echo "The installed 'bd' is first in your PATH.";
+            echo "The installed 'beads' is first in your PATH.";
         fi
     else
-        log_warning "We couldn't determine where we installed 'bd' during this run.";
+        log_warning "We couldn't determine where we installed 'beads' during this run.";
     fi
 }
 
 # Main installation flow
 main() {
     echo ""
-    echo "🔗 Beads (bd) Installer"
+    echo "🔗 Beads (beads) Installer"
     echo ""
 
     log_info "Detecting platform..."
@@ -411,7 +411,7 @@ main() {
     if ! check_go; then
         log_warning "Go is not installed"
         echo ""
-        echo "bd requires Go 1.24 or later to build from source. You can:"
+        echo "beads requires Go 1.24 or later to build from source. You can:"
         echo "  1. Install Go from https://go.dev/dl/"
         echo "  2. Use your package manager:"
         echo "     - macOS: brew install go"
@@ -432,11 +432,11 @@ main() {
     echo ""
     echo "Manual installation:"
     echo "  1. Download from https://github.com/shaneholloman/beads/releases/latest"
-    echo "  2. Extract and move 'bd' to your PATH"
+    echo "  2. Extract and move 'beads' to your PATH"
     echo ""
     echo "Or install from source:"
     echo "  1. Install Go from https://go.dev/dl/"
-    echo "  2. Run: go install github.com/shaneholloman/beads/cmd/bd@latest"
+    echo "  2. Run: go install github.com/shaneholloman/beads/cmd/beads@latest"
     echo ""
     exit 1
 }

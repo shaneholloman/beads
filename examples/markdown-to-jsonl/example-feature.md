@@ -12,7 +12,7 @@ This is a critical feature for the application. The authentication should be sec
 
 **Dependencies:**
 
-- blocks: bd-5 (database schema must be ready first)
+- blocks: beads-5 (database schema must be ready first)
 
 ## Login Flow
 
@@ -50,4 +50,4 @@ Handle user sessions securely:
 - Session timeout after 30 days
 - Logout functionality
 
-Related to bd-10 (API endpoints) and discovered-from: bd-2 (security audit).
+Related to beads-10 (API endpoints) and discovered-from: beads-2 (security audit).

@@ -19,8 +19,8 @@ Default threshold: 300 seconds (5 minutes)
 
 ## Usage
 
-- **List stale issues**: `bd stale`
-- **Custom threshold**: `bd stale --threshold 600` (10 minutes)
-- **Auto-release**: `bd stale --release` (automatically release all stale issues)
+- **List stale issues**: `beads stale`
+- **Custom threshold**: `beads stale --threshold 600` (10 minutes)
+- **Auto-release**: `beads stale --release` (automatically release all stale issues)
 
 Useful for parallel execution systems where workers may crash or get stopped.

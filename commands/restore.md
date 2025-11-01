@@ -15,7 +15,7 @@ When an issue is compacted, the git commit hash is saved. This command:
 
 ## Usage
 
-`bd restore bd-42`
+`beads restore beads-42`
 
 This is **read-only** - it does not modify the database or git state.
 

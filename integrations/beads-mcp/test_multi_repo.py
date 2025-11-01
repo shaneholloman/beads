@@ -16,7 +16,7 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from beads_mcp.bd_daemon_client import BdDaemonClient
+from beads_mcp.beads_daemon_client import BeadsDaemonClient
 from beads_mcp.models import CreateIssueParams, ListIssuesParams
 
 
@@ -35,20 +35,20 @@ async def main():
         print(f"  repo1: {repo1}")
         print(f"  repo2: {repo2}\n")
         
-        # Initialize bd in both repos
+        # Initialize beads in both repos
         print("Initializing beads in both repos...")
-        subprocess.run(["bd", "init", "--prefix", "r1"], cwd=repo1, check=True, capture_output=True)
-        subprocess.run(["bd", "init", "--prefix", "r2"], cwd=repo2, check=True, capture_output=True)
+        subprocess.run(["beads", "init", "--prefix", "r1"], cwd=repo1, check=True, capture_output=True)
+        subprocess.run(["beads", "init", "--prefix", "r2"], cwd=repo2, check=True, capture_output=True)
         print("✅ Initialized\n")
         
         # Find or start daemon in beads project
         beads_project = Path(__file__).parent.parent.parent
-        beads_socket = beads_project / ".beads" / "bd.sock"
+        beads_socket = beads_project / ".beads" / "beads.sock"
         
         print("Checking daemon status...")
         if not beads_socket.exists():
             print("Starting daemon in beads project...")
-            subprocess.run(["bd", "daemon", "start"], cwd=beads_project, check=True, capture_output=True)
+            subprocess.run(["beads", "daemon", "start"], cwd=beads_project, check=True, capture_output=True)
             await asyncio.sleep(1)  # Give daemon time to start
             print("✅ Daemon started\n")
         else:
@@ -56,8 +56,8 @@ async def main():
         
         # Create daemon clients for each repo, pointing to beads project socket
         print("Creating daemon clients...")
-        client1 = BdDaemonClient(socket_path=str(beads_socket), working_dir=str(repo1))
-        client2 = BdDaemonClient(socket_path=str(beads_socket), working_dir=str(repo2))
+        client1 = BeadsDaemonClient(socket_path=str(beads_socket), working_dir=str(repo1))
+        client2 = BeadsDaemonClient(socket_path=str(beads_socket), working_dir=str(repo2))
         print("✅ Clients created\n")
         
         # Test 1: Create issues in both repos concurrently

@@ -1,5 +1,5 @@
 {
-  description = "beads (bd) - An issue tracker designed for AI-supervised coding workflows";
+  description = "beads (beads) - An issue tracker designed for AI-supervised coding workflows";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -29,7 +29,7 @@
 
           apps.default = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/bd";
+            program = "${self.packages.${system}.default}/bin/beads";
           };
         }
       );

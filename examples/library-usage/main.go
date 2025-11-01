@@ -19,7 +19,7 @@ func main() {
 	// Find the Beads database (looks for .beads/*.db in current/parent dirs)
 	dbPath := beads.FindDatabasePath()
 	if dbPath == "" {
-		log.Fatal("No Beads database found. Run 'bd init' first.")
+		log.Fatal("No Beads database found. Run 'beads init' first.")
 	}
 
 	fmt.Printf("Using database: %s\n\n", dbPath)
@@ -68,17 +68,17 @@ func main() {
 	fmt.Println("\n=== Adding Dependency ===")
 	dep := &beads.Dependency{
 		IssueID:     newIssue.ID,
-		DependsOnID: "bd-1", // Assumes bd-1 exists
+		DependsOnID: "beads-1", // Assumes beads-1 exists
 		Type:        beads.DepDiscoveredFrom,
 		CreatedAt:   time.Now(),
 		CreatedBy:   "library-example",
 	}
 
 	if err := store.AddDependency(ctx, dep, "library-example"); err != nil {
-		// Don't fail if bd-1 doesn't exist
-		fmt.Printf("Note: Could not add dependency (bd-1 may not exist): %v\n", err)
+		// Don't fail if beads-1 doesn't exist
+		fmt.Printf("Note: Could not add dependency (beads-1 may not exist): %v\n", err)
 	} else {
-		fmt.Printf("Added dependency: %s discovered-from bd-1\n", newIssue.ID)
+		fmt.Printf("Added dependency: %s discovered-from beads-1\n", newIssue.ID)
 	}
 
 	// Example 4: Add a label

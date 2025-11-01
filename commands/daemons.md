@@ -1,25 +1,25 @@
-# bd daemons - Daemon Management
+# beads daemons - Daemon Management
 
-Manage bd daemon processes across all repositories and worktrees.
+Manage beads daemon processes across all repositories and worktrees.
 
 ## Synopsis
 
 ```bash
-bd daemons <subcommand> [flags]
+beads daemons <subcommand> [flags]
 ```
 
 ## Description
 
-The `bd daemons` command provides tools for discovering, monitoring, and managing multiple bd daemon processes across your system. This is useful when working with multiple repositories or git worktrees.
+The `beads daemons` command provides tools for discovering, monitoring, and managing multiple beads daemon processes across your system. This is useful when working with multiple repositories or git worktrees.
 
 ## Subcommands
 
 ### list
 
-List all running bd daemons with metadata.
+List all running beads daemons with metadata.
 
 ```bash
-bd daemons list [--search DIRS] [--json] [--no-cleanup]
+beads daemons list [--search DIRS] [--json] [--no-cleanup]
 ```
 
 **Flags:**
@@ -31,16 +31,16 @@ bd daemons list [--search DIRS] [--json] [--no-cleanup]
 **Example:**
 
 ```bash
-bd daemons list
-bd daemons list --search /Users/me/projects --json
+beads daemons list
+beads daemons list --search /Users/me/projects --json
 ```
 
 ### health
 
-Check health of all bd daemons and report issues.
+Check health of all beads daemons and report issues.
 
 ```bash
-bd daemons health [--search DIRS] [--json]
+beads daemons health [--search DIRS] [--json]
 ```
 
 Reports:
@@ -57,8 +57,8 @@ Reports:
 **Example:**
 
 ```bash
-bd daemons health
-bd daemons health --json
+beads daemons health
+beads daemons health --json
 ```
 
 ### stop
@@ -66,7 +66,7 @@ bd daemons health --json
 Stop a specific daemon gracefully.
 
 ```bash
-bd daemons stop <workspace-path|pid> [--json]
+beads daemons stop <workspace-path|pid> [--json]
 ```
 
 **Arguments:**
@@ -80,9 +80,9 @@ bd daemons stop <workspace-path|pid> [--json]
 **Example:**
 
 ```bash
-bd daemons stop /Users/me/projects/myapp
-bd daemons stop 12345
-bd daemons stop /Users/me/projects/myapp --json
+beads daemons stop /Users/me/projects/myapp
+beads daemons stop 12345
+beads daemons stop /Users/me/projects/myapp --json
 ```
 
 ### logs
@@ -90,7 +90,7 @@ bd daemons stop /Users/me/projects/myapp --json
 View logs for a specific daemon.
 
 ```bash
-bd daemons logs <workspace-path|pid> [-f] [-n LINES] [--json]
+beads daemons logs <workspace-path|pid> [-f] [-n LINES] [--json]
 ```
 
 **Arguments:**
@@ -106,18 +106,18 @@ bd daemons logs <workspace-path|pid> [-f] [-n LINES] [--json]
 **Example:**
 
 ```bash
-bd daemons logs /Users/me/projects/myapp
-bd daemons logs 12345 -n 100
-bd daemons logs /Users/me/projects/myapp -f
-bd daemons logs 12345 --json
+beads daemons logs /Users/me/projects/myapp
+beads daemons logs 12345 -n 100
+beads daemons logs /Users/me/projects/myapp -f
+beads daemons logs 12345 --json
 ```
 
 ### killall
 
-Stop all running bd daemons.
+Stop all running beads daemons.
 
 ```bash
-bd daemons killall [--search DIRS] [--force] [--json]
+beads daemons killall [--search DIRS] [--force] [--json]
 ```
 
 Uses escalating shutdown strategy:
@@ -135,21 +135,21 @@ Uses escalating shutdown strategy:
 **Example:**
 
 ```bash
-bd daemons killall
-bd daemons killall --force
-bd daemons killall --json
+beads daemons killall
+beads daemons killall --force
+beads daemons killall --json
 ```
 
 ## Common Use Cases
 
 ### Version Upgrade
 
-After upgrading bd, restart all daemons to use the new version:
+After upgrading beads, restart all daemons to use the new version:
 
 ```bash
-bd daemons health  # Check for version mismatches
-bd daemons killall # Stop all old daemons
-# Daemons will auto-start with new version on next bd command
+beads daemons health  # Check for version mismatches
+beads daemons killall # Stop all old daemons
+# Daemons will auto-start with new version on next beads command
 ```
 
 ### Debugging
@@ -157,9 +157,9 @@ bd daemons killall # Stop all old daemons
 Check daemon status and view logs:
 
 ```bash
-bd daemons list
-bd daemons health
-bd daemons logs /path/to/workspace -n 100
+beads daemons list
+beads daemons health
+beads daemons logs /path/to/workspace -n 100
 ```
 
 ### Cleanup
@@ -167,8 +167,8 @@ bd daemons logs /path/to/workspace -n 100
 Remove stale daemon sockets:
 
 ```bash
-bd daemons list  # Auto-cleanup happens by default
-bd daemons list --no-cleanup  # Skip cleanup
+beads daemons list  # Auto-cleanup happens by default
+beads daemons list --no-cleanup  # Skip cleanup
 ```
 
 ### Multi-Workspace Management
@@ -176,8 +176,8 @@ bd daemons list --no-cleanup  # Skip cleanup
 Discover daemons in specific directories:
 
 ```bash
-bd daemons list --search /Users/me/projects
-bd daemons health --search /Users/me/work
+beads daemons list --search /Users/me/projects
+beads daemons health --search /Users/me/work
 ```
 
 ## Troubleshooting
@@ -187,7 +187,7 @@ bd daemons health --search /Users/me/work
 If you see stale sockets (dead process but socket file exists):
 
 ```bash
-bd daemons list  # Auto-cleanup removes stale sockets
+beads daemons list  # Auto-cleanup removes stale sockets
 ```
 
 ### Version Mismatch
@@ -195,9 +195,9 @@ bd daemons list  # Auto-cleanup removes stale sockets
 If daemon version != CLI version:
 
 ```bash
-bd daemons health  # Identify mismatched daemons
-bd daemons killall # Stop all daemons
-# Next bd command will auto-start new version
+beads daemons health  # Identify mismatched daemons
+beads daemons killall # Stop all daemons
+# Next beads command will auto-start new version
 ```
 
 ### Daemon Won't Stop
@@ -205,7 +205,7 @@ bd daemons killall # Stop all daemons
 If graceful shutdown fails:
 
 ```bash
-bd daemons killall --force  # Force kill with SIGKILL
+beads daemons killall --force  # Force kill with SIGKILL
 ```
 
 ### Can't Find Daemon
@@ -213,17 +213,17 @@ bd daemons killall --force  # Force kill with SIGKILL
 If daemon isn't discovered:
 
 ```bash
-bd daemons list --search /path/to/workspace
+beads daemons list --search /path/to/workspace
 ```
 
 Or check the socket manually:
 
 ```bash
-ls -la /path/to/workspace/.beads/bd.sock
+ls -la /path/to/workspace/.beads/beads.sock
 ```
 
 ## See Also
 
-- [bd daemon](daemon.md) - Start a daemon manually
+- [beads daemon](daemon.md) - Start a daemon manually
 - [AGENTS.md](../AGENTS.md) - Agent workflow guide
 - [README.md](../README.md) - Main documentation

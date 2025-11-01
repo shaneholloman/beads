@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple AI agent workflow using bd (Beads issue tracker).
+Simple AI agent workflow using beads (Beads issue tracker).
 
 This demonstrates how an agent can:
 1. Find ready work
@@ -17,14 +17,14 @@ from typing import Optional
 
 
 class BeadsAgent:
-    """Simple agent that manages tasks using bd."""
+    """Simple agent that manages tasks using beads."""
 
     def __init__(self):
         self.current_task = None
 
-    def run_bd(self, *args) -> dict:
-        """Run bd command and parse JSON output."""
-        cmd = ["bd"] + list(args) + ["--json"]
+    def run_beads(self, *args) -> dict:
+        """Run beads command and parse JSON output."""
+        cmd = ["beads"] + list(args) + ["--json"]
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
 
         if result.stdout.strip():
@@ -33,7 +33,7 @@ class BeadsAgent:
 
     def find_ready_work(self) -> Optional[dict]:
         """Find the highest priority ready work."""
-        ready = self.run_bd("ready", "--limit", "1")
+        ready = self.run_beads("ready", "--limit", "1")
 
         if isinstance(ready, list) and len(ready) > 0:
             return ready[0]
@@ -42,7 +42,7 @@ class BeadsAgent:
     def claim_task(self, issue_id: str) -> dict:
         """Claim a task by setting status to in_progress."""
         print(f"📋 Claiming task: {issue_id}")
-        return self.run_bd("update", issue_id, "--status", "in_progress")
+        return self.run_beads("update", issue_id, "--status", "in_progress")
 
     def create_issue(self, title: str, description: str = "",
                      priority: int = 2, issue_type: str = "task") -> dict:
@@ -51,20 +51,20 @@ class BeadsAgent:
         args = ["create", title, "-p", str(priority), "-t", issue_type]
         if description:
             args.extend(["-d", description])
-        return self.run_bd(*args)
+        return self.run_beads(*args)
 
     def link_discovery(self, discovered_id: str, parent_id: str):
         """Link a discovered issue back to its parent."""
         print(f"🔗 Linking {discovered_id} ← discovered-from ← {parent_id}")
         subprocess.run(
-            ["bd", "dep", "add", discovered_id, parent_id, "--type", "discovered-from"],
+            ["beads", "dep", "add", discovered_id, parent_id, "--type", "discovered-from"],
             check=True
         )
 
     def complete_task(self, issue_id: str, reason: str = "Completed"):
         """Mark task as complete."""
         print(f"✅ Completing task: {issue_id} - {reason}")
-        return self.run_bd("close", issue_id, "--reason", reason)
+        return self.run_beads("close", issue_id, "--reason", reason)
 
     def simulate_work(self, issue: dict) -> bool:
         """Simulate doing work on an issue.
@@ -136,8 +136,8 @@ def main():
         agent = BeadsAgent()
         agent.run()
     except subprocess.CalledProcessError as e:
-        print(f"Error running bd: {e}", file=sys.stderr)
-        print(f"Make sure bd is installed: go install github.com/shaneholloman/beads/cmd/bd@latest")
+        print(f"Error running beads: {e}", file=sys.stderr)
+        print(f"Make sure beads is installed: go install github.com/shaneholloman/beads/cmd/beads@latest")
         sys.exit(1)
     except KeyboardInterrupt:
         print("\n\n👋 Agent interrupted by user")

@@ -1,17 +1,17 @@
 ---
-name: bd-issue-tracking
-description: Track complex, multi-session work with dependency graphs using bd (beads) issue tracker. Use when work spans multiple sessions, has complex dependencies, or requires persistent context across compaction cycles. For simple single-session linear tasks, TodoWrite remains appropriate.
+name: beads-issue-tracking
+description: Track complex, multi-session work with dependency graphs using beads (beads) issue tracker. Use when work spans multiple sessions, has complex dependencies, or requires persistent context across compaction cycles. For simple single-session linear tasks, TodoWrite remains appropriate.
 ---
 
-# bd Issue Tracking
+# beads Issue Tracking
 
 ## Overview
 
-bd is a graph-based issue tracker for persistent memory across sessions. Use for multi-session work with complex dependencies; use TodoWrite for simple single-session tasks.
+beads is a graph-based issue tracker for persistent memory across sessions. Use for multi-session work with complex dependencies; use TodoWrite for simple single-session tasks.
 
-## When to Use bd vs TodoWrite
+## When to Use beads vs TodoWrite
 
-### Use bd when
+### Use beads when
 
 - **Multi-session work** - Tasks spanning multiple compaction cycles or days
 - **Complex dependencies** - Work with blockers, prerequisites, or hierarchical structure
@@ -26,18 +26,18 @@ bd is a graph-based issue tracker for persistent memory across sessions. Use for
 - **Immediate context** - All information already in conversation
 - **Simple tracking** - Just need a checklist to show progress
 
-**Key insight**: If resuming work after 2 weeks would be difficult without bd, use bd. If the work can be picked up from a markdown skim, TodoWrite is sufficient.
+**Key insight**: If resuming work after 2 weeks would be difficult without beads, use beads. If the work can be picked up from a markdown skim, TodoWrite is sufficient.
 
-### Test Yourself: bd or TodoWrite?
+### Test Yourself: beads or TodoWrite?
 
 Ask these questions to decide:
 
-**Choose bd if:**
+**Choose beads if:**
 
-- ❓ "Will I need this context in 2 weeks?" → Yes = bd
-- ❓ "Could conversation history get compacted?" → Yes = bd
-- ❓ "Does this have blockers/dependencies?" → Yes = bd
-- ❓ "Is this fuzzy/exploratory work?" → Yes = bd
+- ❓ "Will I need this context in 2 weeks?" → Yes = beads
+- ❓ "Could conversation history get compacted?" → Yes = beads
+- ❓ "Does this have blockers/dependencies?" → Yes = beads
+- ❓ "Is this fuzzy/exploratory work?" → Yes = beads
 
 **Choose TodoWrite if:**
 
@@ -45,13 +45,13 @@ Ask these questions to decide:
 - ❓ "Is this just a task list for me right now?" → Yes = TodoWrite
 - ❓ "Is this linear with no branching?" → Yes = TodoWrite
 
-**When in doubt**: Use bd. Better to have persistent memory you don't need than to lose context you needed.
+**When in doubt**: Use beads. Better to have persistent memory you don't need than to lose context you needed.
 
 **For detailed decision criteria and examples, read:** [references/boundaries.md](references/boundaries.md)
 
 ## Surviving Compaction Events
 
-**Critical**: Compaction events delete conversation history but preserve beads. After compaction, bd state is your only persistent memory.
+**Critical**: Compaction events delete conversation history but preserve beads. After compaction, beads state is your only persistent memory.
 
 **What survives compaction:**
 
@@ -78,7 +78,7 @@ notes field format:
 - KEY DECISIONS: Important context or user guidance
 ```
 
-**After compaction:** `bd show <issue-id>` reconstructs full context from notes field.
+**After compaction:** `beads show <issue-id>` reconstructs full context from notes field.
 
 ### Notes Quality Self-Check
 
@@ -117,28 +117,28 @@ Working on auth. Made some progress. More to do.
 
 ## Session Start Protocol
 
-**bd is available when:**
+**beads is available when:**
 
 - Project has a `.beads/` directory (project-local database), OR
 - `~/.beads/` exists (global fallback database for any directory)
 
-**At session start, always check for bd availability and run ready check.**
+**At session start, always check for beads availability and run ready check.**
 
 ### Session Start Checklist
 
-Copy this checklist when starting any session where bd is available:
+Copy this checklist when starting any session where beads is available:
 
 ```
 Session Start:
-- [ ] Run bd ready --json to see available work
-- [ ] Run bd list --status in_progress --json for active work
-- [ ] If in_progress exists: bd show <issue-id> to read notes
+- [ ] Run beads ready --json to see available work
+- [ ] Run beads list --status in_progress --json for active work
+- [ ] If in_progress exists: beads show <issue-id> to read notes
 - [ ] Report context to user: "X items ready: [summary]"
 - [ ] If using global ~/.beads, mention this in report
-- [ ] If nothing ready: bd blocked --json to check blockers
+- [ ] If nothing ready: beads blocked --json to check blockers
 ```
 
-**Pattern**: Always check both `bd ready` AND `bd list --status in_progress`. Read notes field first to understand where previous session left off.
+**Pattern**: Always check both `beads ready` AND `beads list --status in_progress`. Read notes field first to understand where previous session left off.
 
 **Report format**:
 
@@ -149,7 +149,7 @@ This establishes immediate shared context about available and active work withou
 
 **For detailed collaborative handoff process, read:** [references/workflows.md](references/workflows.md#session-handoff)
 
-**Note**: bd auto-discovers the database:
+**Note**: beads auto-discovers the database:
 
 - Uses `.beads/*.db` in current project if exists
 - Falls back to `~/.beads/default.db` otherwise
@@ -157,10 +157,10 @@ This establishes immediate shared context about available and active work withou
 
 ### When No Work is Ready
 
-If `bd ready` returns empty but issues exist:
+If `beads ready` returns empty but issues exist:
 
 ```bash
-bd blocked --json
+beads blocked --json
 ```
 
 Report blockers and suggest next steps.
@@ -169,7 +169,7 @@ Report blockers and suggest next steps.
 
 ## Progress Checkpointing
 
-Update bd notes at these checkpoints (don't wait for session end):
+Update beads notes at these checkpoints (don't wait for session end):
 
 **Critical triggers:**
 
@@ -182,8 +182,8 @@ Update bd notes at these checkpoints (don't wait for session end):
 
 **Proactive monitoring during session:**
 
-- At 70% token usage: "We're at 70% token usage - good time to checkpoint bd notes?"
-- At 85% token usage: "Approaching token limit (85%) - checkpointing current state to bd"
+- At 70% token usage: "We're at 70% token usage - good time to checkpoint beads notes?"
+- At 85% token usage: "Approaching token limit (85%) - checkpointing current state to beads"
 - At 90% token usage: Automatically checkpoint without asking
 
 **Current token usage**: Check `<system-warning>Token usage:` messages to monitor proactively.
@@ -207,7 +207,7 @@ Progress Checkpoint:
 
 ### Database Selection
 
-bd automatically selects the appropriate database:
+beads automatically selects the appropriate database:
 
 - **Project-local** (`.beads/` in project): Used for project-specific work
 - **Global fallback** (`~/.beads/`): Used when no project-local database exists
@@ -218,11 +218,11 @@ bd automatically selects the appropriate database:
 
 - Accessing a specific database outside current directory
 - Working with multiple databases (e.g., project database + reference database)
-- Example: `bd --db /path/to/reference/terms.db list`
+- Example: `beads --db /path/to/reference/terms.db list`
 
 **Database discovery rules:**
 
-- bd looks for `.beads/*.db` in current working directory
+- beads looks for `.beads/*.db` in current working directory
 - If not found, uses `~/.beads/default.db`
 - Shell cwd can reset between commands - use absolute paths with --db when operating on non-local databases
 
@@ -230,67 +230,67 @@ bd automatically selects the appropriate database:
 
 ## Core Operations
 
-All bd commands support `--json` flag for structured output when needed for programmatic parsing.
+All beads commands support `--json` flag for structured output when needed for programmatic parsing.
 
 ### Essential Operations
 
 **Check ready work:**
 
 ```bash
-bd ready
-bd ready --json              # For structured output
-bd ready --priority 0        # Filter by priority
-bd ready --assignee alice    # Filter by assignee
+beads ready
+beads ready --json              # For structured output
+beads ready --priority 0        # Filter by priority
+beads ready --assignee alice    # Filter by assignee
 ```
 
 **Create new issue:**
 
 ```bash
-bd create "Fix login bug"
-bd create "Add OAuth" -p 0 -t feature
-bd create "Write tests" -d "Unit tests for auth module" --assignee alice
-bd create "Research caching" --design "Evaluate Redis vs Memcached"
+beads create "Fix login bug"
+beads create "Add OAuth" -p 0 -t feature
+beads create "Write tests" -d "Unit tests for auth module" --assignee alice
+beads create "Research caching" --design "Evaluate Redis vs Memcached"
 ```
 
 **Update issue status:**
 
 ```bash
-bd update issue-123 --status in_progress
-bd update issue-123 --priority 0
-bd update issue-123 --assignee bob
-bd update issue-123 --design "Decided to use Redis for persistence support"
+beads update issue-123 --status in_progress
+beads update issue-123 --priority 0
+beads update issue-123 --assignee bob
+beads update issue-123 --design "Decided to use Redis for persistence support"
 ```
 
 **Close completed work:**
 
 ```bash
-bd close issue-123
-bd close issue-123 --reason "Implemented in PR #42"
-bd close issue-1 issue-2 issue-3 --reason "Bulk close related work"
+beads close issue-123
+beads close issue-123 --reason "Implemented in PR #42"
+beads close issue-1 issue-2 issue-3 --reason "Bulk close related work"
 ```
 
 **Show issue details:**
 
 ```bash
-bd show issue-123
-bd show issue-123 --json
+beads show issue-123
+beads show issue-123 --json
 ```
 
 **List issues:**
 
 ```bash
-bd list
-bd list --status open
-bd list --priority 0
-bd list --type bug
-bd list --assignee alice
+beads list
+beads list --status open
+beads list --priority 0
+beads list --type bug
+beads list --assignee alice
 ```
 
 **For complete CLI reference with all flags and examples, read:** [references/cli-reference.md](references/cli-reference.md)
 
 ## Field Usage Reference
 
-Quick guide for when and how to use each bd field:
+Quick guide for when and how to use each beads field:
 
 | Field | Purpose | When to Set | Update Frequency |
 |-------|---------|-------------|------------------|
@@ -321,8 +321,8 @@ Quick guide for when and how to use each bd field:
 
 ```bash
 # When encountering new work during a task:
-bd create "Found: auth doesn't handle profile permissions"
-bd dep add current-task-id new-issue-id --type discovered-from
+beads create "Found: auth doesn't handle profile permissions"
+beads dep add current-task-id new-issue-id --type discovered-from
 
 # Continue with original task - issue persists for later
 ```
@@ -334,23 +334,23 @@ bd dep add current-task-id new-issue-id --type discovered-from
 **Mark issues in_progress when starting work:**
 
 ```bash
-bd update issue-123 --status in_progress
+beads update issue-123 --status in_progress
 ```
 
 **Update throughout work:**
 
 ```bash
 # Add design notes as implementation progresses
-bd update issue-123 --design "Using JWT with RS256 algorithm"
+beads update issue-123 --design "Using JWT with RS256 algorithm"
 
 # Update acceptance criteria if requirements clarify
-bd update issue-123 --acceptance "- JWT validation works\n- Tests pass\n- Error handling returns 401"
+beads update issue-123 --acceptance "- JWT validation works\n- Tests pass\n- Error handling returns 401"
 ```
 
 **Close when complete:**
 
 ```bash
-bd close issue-123 --reason "Implemented JWT validation with tests passing"
+beads close issue-123 --reason "Implemented JWT validation with tests passing"
 ```
 
 **Important**: Closed issues remain in database - they're not deleted, just marked complete for project history.
@@ -362,33 +362,33 @@ For complex multi-step work, structure issues with dependencies before starting:
 **Create parent epic:**
 
 ```bash
-bd create "Implement user authentication" -t epic -d "OAuth integration with JWT tokens"
+beads create "Implement user authentication" -t epic -d "OAuth integration with JWT tokens"
 ```
 
 **Create subtasks:**
 
 ```bash
-bd create "Set up OAuth credentials" -t task
-bd create "Implement authorization flow" -t task
-bd create "Add token refresh" -t task
+beads create "Set up OAuth credentials" -t task
+beads create "Implement authorization flow" -t task
+beads create "Add token refresh" -t task
 ```
 
 **Link with dependencies:**
 
 ```bash
 # parent-child for epic structure
-bd dep add auth-epic auth-setup --type parent-child
-bd dep add auth-epic auth-flow --type parent-child
+beads dep add auth-epic auth-setup --type parent-child
+beads dep add auth-epic auth-flow --type parent-child
 
 # blocks for ordering
-bd dep add auth-setup auth-flow
+beads dep add auth-setup auth-flow
 ```
 
 **For detailed dependency patterns and types, read:** [references/dependencies.md](references/dependencies.md)
 
 ## Dependency Types Reference
 
-bd supports four dependency types:
+beads supports four dependency types:
 
 1. **blocks** - Hard blocker (issue A blocks issue B from starting)
 2. **related** - Soft link (issues are related but not blocking)
@@ -439,7 +439,7 @@ bd supports four dependency types:
 **Corresponding bead notes:**
 
 ```
-bd update issue-123 --notes "COMPLETED: Login endpoint with bcrypt password
+beads update issue-123 --notes "COMPLETED: Login endpoint with bcrypt password
 hashing (12 rounds). KEY DECISION: Using JWT tokens (not sessions) for stateless
 auth - simplifies horizontal scaling. IN PROGRESS: Session middleware implementation.
 NEXT: Need user input on token expiry time (1hr vs 24hr trade-off)."
@@ -458,10 +458,10 @@ NEXT: Need user input on token expiry time (1hr vs 24hr trade-off)."
 **What you see**:
 
 ```bash
-$ bd ready
-# Returns: bd-42 "Research analytics platform expansion proposal" (in_progress)
+$ beads ready
+# Returns: beads-42 "Research analytics platform expansion proposal" (in_progress)
 
-$ bd show bd-42
+$ beads show beads-42
 Notes: "COMPLETED: Reviewed current stack (Mixpanel, Amplitude)
 IN PROGRESS: Drafting cost-benefit analysis section
 NEXT: Need user input on budget constraints before finalizing recommendations"
@@ -479,35 +479,35 @@ NEXT: Need user input on budget constraints before finalizing recommendations"
    ```
 
 3. Work on tasks, mark TodoWrite items completed
-4. At milestone, update bd notes:
+4. At milestone, update beads notes:
 
    ```bash
-   bd update bd-42 --notes "COMPLETED: Cost-benefit analysis drafted.
+   beads update beads-42 --notes "COMPLETED: Cost-benefit analysis drafted.
    KEY DECISION: User confirmed $50k budget cap - ruled out enterprise options.
    IN PROGRESS: Finalizing recommendations (Posthog + custom ETL).
    NEXT: Get user review of draft before closing issue."
    ```
 
-**Outcome**: TodoWrite disappears at session end, but bd notes preserve context for next session.
+**Outcome**: TodoWrite disappears at session end, but beads notes preserve context for next session.
 
 ### Pattern 2: Side Quest Handling
 
 During main task, discover a problem:
 
-1. Create issue: `bd create "Found: inventory system needs refactoring"`
-2. Link using discovered-from: `bd dep add main-task new-issue --type discovered-from`
+1. Create issue: `beads create "Found: inventory system needs refactoring"`
+2. Link using discovered-from: `beads dep add main-task new-issue --type discovered-from`
 3. Assess: blocker or can defer?
-4. If blocker: `bd update main-task --status blocked`, work on new issue
+4. If blocker: `beads update main-task --status blocked`, work on new issue
 5. If deferrable: note in issue, continue main task
 
 ### Pattern 3: Multi-Session Project Resume
 
 Starting work after time away:
 
-1. Run `bd ready` to see available work
-2. Run `bd blocked` to understand what's stuck
-3. Run `bd list --status closed --limit 10` to see recent completions
-4. Run `bd show issue-id` on issue to work on
+1. Run `beads ready` to see available work
+2. Run `beads blocked` to understand what's stuck
+3. Run `beads list --status closed --limit 10` to see recent completions
+4. Run `beads show issue-id` on issue to work on
 5. Update status and begin work
 
 **For complete workflow walkthroughs with checklists, read:** [references/workflows.md](references/workflows.md)
@@ -552,17 +552,17 @@ Creating Issue:
 
 ## Alternative Use Cases
 
-bd is primarily for work tracking, but can also serve as queryable database for static reference data (glossaries, terminology) with adaptations.
+beads is primarily for work tracking, but can also serve as queryable database for static reference data (glossaries, terminology) with adaptations.
 
-**For guidance on using bd for reference databases and static data, read:** [references/static-data.md](references/static-data.md)
+**For guidance on using beads for reference databases and static data, read:** [references/static-data.md](references/static-data.md)
 
 ## Statistics and Monitoring
 
 **Check project health:**
 
 ```bash
-bd stats
-bd stats --json
+beads stats
+beads stats --json
 ```
 
 Returns: total issues, open, in_progress, closed, blocked, ready, avg lead time
@@ -570,8 +570,8 @@ Returns: total issues, open, in_progress, closed, blocked, ready, avg lead time
 **Find blocked work:**
 
 ```bash
-bd blocked
-bd blocked --json
+beads blocked
+beads blocked --json
 ```
 
 Use stats to:
@@ -585,98 +585,98 @@ Use stats to:
 ### Issue Types
 
 ```bash
-bd create "Title" -t task        # Standard work item (default)
-bd create "Title" -t bug         # Defect or problem
-bd create "Title" -t feature     # New functionality
-bd create "Title" -t epic        # Large work with subtasks
-bd create "Title" -t chore       # Maintenance or cleanup
+beads create "Title" -t task        # Standard work item (default)
+beads create "Title" -t bug         # Defect or problem
+beads create "Title" -t feature     # New functionality
+beads create "Title" -t epic        # Large work with subtasks
+beads create "Title" -t chore       # Maintenance or cleanup
 ```
 
 ### Priority Levels
 
 ```bash
-bd create "Title" -p 0    # Highest priority (critical)
-bd create "Title" -p 1    # High priority
-bd create "Title" -p 2    # Normal priority (default)
-bd create "Title" -p 3    # Low priority
+beads create "Title" -p 0    # Highest priority (critical)
+beads create "Title" -p 1    # High priority
+beads create "Title" -p 2    # Normal priority (default)
+beads create "Title" -p 3    # Low priority
 ```
 
 ### Bulk Operations
 
 ```bash
 # Close multiple issues at once
-bd close issue-1 issue-2 issue-3 --reason "Completed in sprint 5"
+beads close issue-1 issue-2 issue-3 --reason "Completed in sprint 5"
 
 # Create multiple issues from markdown file
-bd create --file issues.md
+beads create --file issues.md
 ```
 
 ### Dependency Visualization
 
 ```bash
 # Show full dependency tree for an issue
-bd dep tree issue-123
+beads dep tree issue-123
 
 # Check for circular dependencies
-bd dep cycles
+beads dep cycles
 ```
 
 ### Built-in Help
 
 ```bash
 # Quick start guide (comprehensive built-in reference)
-bd quickstart
+beads quickstart
 
 # Command-specific help
-bd create --help
-bd dep --help
+beads create --help
+beads dep --help
 ```
 
 ## JSON Output
 
-All bd commands support `--json` flag for structured output:
+All beads commands support `--json` flag for structured output:
 
 ```bash
-bd ready --json
-bd show issue-123 --json
-bd list --status open --json
-bd stats --json
+beads ready --json
+beads show issue-123 --json
+beads list --status open --json
+beads stats --json
 ```
 
 Use JSON output when you need to parse results programmatically or extract specific fields.
 
 ## Troubleshooting
 
-**If bd command not found:**
+**If beads command not found:**
 
-- Check installation: `bd version`
-- Verify PATH includes bd binary location
+- Check installation: `beads version`
+- Verify PATH includes beads binary location
 
 **If issues seem lost:**
 
-- Use `bd list` to see all issues
-- Filter by status: `bd list --status closed`
+- Use `beads list` to see all issues
+- Filter by status: `beads list --status closed`
 - Closed issues remain in database permanently
 
-**If bd show can't find issue by name:**
+**If beads show can't find issue by name:**
 
-- `bd show` requires issue IDs, not issue titles
-- Workaround: `bd list | grep -i "search term"` to find ID first
-- Then: `bd show issue-id` with the discovered ID
+- `beads show` requires issue IDs, not issue titles
+- Workaround: `beads list | grep -i "search term"` to find ID first
+- Then: `beads show issue-id` with the discovered ID
 - For glossaries/reference databases where names matter more than IDs, consider using markdown format alongside the database
 
 **If dependencies seem wrong:**
 
-- Use `bd show issue-id` to see full dependency tree
-- Use `bd dep tree issue-id` for visualization
-- Dependencies are directional: `bd dep add from-id to-id` means from-id blocks to-id
+- Use `beads show issue-id` to see full dependency tree
+- Use `beads dep tree issue-id` for visualization
+- Dependencies are directional: `beads dep add from-id to-id` means from-id blocks to-id
 - See [references/dependencies.md](references/dependencies.md#common-mistakes)
 
 **If database seems out of sync:**
 
-- bd auto-syncs JSONL after each operation (5s debounce)
-- bd auto-imports JSONL when newer than DB (after git pull)
-- Manual operations: `bd export`, `bd import`
+- beads auto-syncs JSONL after each operation (5s debounce)
+- beads auto-imports JSONL when newer than DB (after git pull)
+- Manual operations: `beads export`, `beads import`
 
 ## Reference Files
 
@@ -684,9 +684,9 @@ Detailed information organized by topic:
 
 | Reference | Read When |
 |-----------|-----------|
-| [references/boundaries.md](references/boundaries.md) | Need detailed decision criteria for bd vs TodoWrite, or integration patterns |
+| [references/boundaries.md](references/boundaries.md) | Need detailed decision criteria for beads vs TodoWrite, or integration patterns |
 | [references/cli-reference.md](references/cli-reference.md) | Need complete command reference, flag details, or examples |
 | [references/workflows.md](references/workflows.md) | Need step-by-step workflows with checklists for common scenarios |
 | [references/dependencies.md](references/dependencies.md) | Need deep understanding of dependency types or relationship patterns |
 | [references/issue-creation.md](references/issue-creation.md) | Need guidance on when to ask vs create issues, issue quality, or design vs acceptance criteria |
-| [references/static-data.md](references/static-data.md) | Want to use bd for reference databases, glossaries, or static data instead of work tracking |
+| [references/static-data.md](references/static-data.md) | Want to use beads for reference databases, glossaries, or static data instead of work tracking |

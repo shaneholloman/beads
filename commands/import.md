@@ -7,9 +7,9 @@ Import issues from JSON Lines format (one JSON object per line).
 
 ## Usage
 
-- **From stdin**: `bd import` (reads from stdin)
-- **From file**: `bd import -i issues.jsonl`
-- **Preview**: `bd import -i issues.jsonl --dry-run`
+- **From stdin**: `beads import` (reads from stdin)
+- **From file**: `beads import -i issues.jsonl`
+- **Preview**: `beads import -i issues.jsonl --dry-run`
 
 ## Behavior
 
@@ -22,7 +22,7 @@ Import issues from JSON Lines format (one JSON object per line).
 Use `--dry-run` to see what will change before importing:
 
 ```bash
-bd import -i issues.jsonl --dry-run
+beads import -i issues.jsonl --dry-run
 # Shows: new issues, updates, exact matches
 ```
 

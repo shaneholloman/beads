@@ -9,9 +9,9 @@ View or add comments to a beads issue.
 
 To view all comments on an issue:
 
-- $1: Issue ID (e.g., bd-123)
+- $1: Issue ID (e.g., beads-123)
 
-Use the beads CLI `bd comments <issue-id>` to list all comments. Show them to the user with timestamps and authors.
+Use the beads CLI `beads comments <issue-id>` to list all comments. Show them to the user with timestamps and authors.
 
 ## Add Comment
 
@@ -21,7 +21,7 @@ To add a comment:
 - $2: Issue ID
 - $3: Comment text (or use -f flag for file input)
 
-Use `bd comments add <issue-id> "comment text"` to add a comment. Confirm the comment was added successfully.
+Use `beads comments add <issue-id> "comment text"` to add a comment. Confirm the comment was added successfully.
 
 Comments are useful for:
 

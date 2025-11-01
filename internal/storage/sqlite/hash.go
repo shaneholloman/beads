@@ -52,7 +52,7 @@ func (s *SQLiteStorage) ClearAllExportHashes(ctx context.Context) error {
 }
 
 // GetJSONLFileHash retrieves the stored hash of the JSONL file.
-// Returns empty string if no hash is stored (bd-160).
+// Returns empty string if no hash is stored (beads-160).
 func (s *SQLiteStorage) GetJSONLFileHash(ctx context.Context) (string, error) {
 	var hash string
 	err := s.db.QueryRowContext(ctx, `
@@ -69,7 +69,7 @@ func (s *SQLiteStorage) GetJSONLFileHash(ctx context.Context) (string, error) {
 	return hash, nil
 }
 
-// SetJSONLFileHash stores the hash of the JSONL file after export (bd-160).
+// SetJSONLFileHash stores the hash of the JSONL file after export (beads-160).
 func (s *SQLiteStorage) SetJSONLFileHash(ctx context.Context, fileHash string) error {
 	_, err := s.db.ExecContext(ctx, `
 		INSERT INTO metadata (key, value)

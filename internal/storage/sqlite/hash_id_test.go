@@ -18,7 +18,7 @@ func TestHashIDGeneration(t *testing.T) {
 	ctx := context.Background()
 
 	// Set up database with prefix
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("Failed to set prefix: %v", err)
 	}
 
@@ -35,14 +35,14 @@ func TestHashIDGeneration(t *testing.T) {
 		t.Fatalf("Failed to create issue: %v", err)
 	}
 
-	// Verify hash ID format: bd-<4-8 hex chars> with adaptive length (bd-ea2a13)
+	// Verify hash ID format: beads-<4-8 hex chars> with adaptive length (beads-ea2a13)
 	// For empty/small database, should use 4 chars
-	if len(issue.ID) < 7 || len(issue.ID) > 11 { // "bd-" (3) + 4-8 hex chars = 7-11
+	if len(issue.ID) < 7 || len(issue.ID) > 11 { // "beads-" (3) + 4-8 hex chars = 7-11
 		t.Errorf("Expected ID length 7-11, got %d: %s", len(issue.ID), issue.ID)
 	}
 
-	if issue.ID[:3] != "bd-" {
-		t.Errorf("Expected ID to start with 'bd-', got: %s", issue.ID)
+	if issue.ID[:3] != "beads-" {
+		t.Errorf("Expected ID to start with 'beads-', got: %s", issue.ID)
 	}
 
 	// Verify we can retrieve the issue
@@ -58,7 +58,7 @@ func TestHashIDGeneration(t *testing.T) {
 
 func TestHashIDDeterministic(t *testing.T) {
 	// Same inputs should produce same hash (with same nonce)
-	prefix := "bd"
+	prefix := "beads"
 	title := "Test Issue"
 	description := "Test description"
 	actor := "test-actor"
@@ -82,7 +82,7 @@ func TestHashIDCollisionHandling(t *testing.T) {
 	ctx := context.Background()
 
 	// Set up database with prefix
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("Failed to set prefix: %v", err)
 	}
 
@@ -141,7 +141,7 @@ func TestHashIDBatchCreation(t *testing.T) {
 	ctx := context.Background()
 
 	// Set up database with prefix
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		t.Fatalf("Failed to set prefix: %v", err)
 	}
 
@@ -186,8 +186,8 @@ func TestHashIDBatchCreation(t *testing.T) {
 		if len(issue.ID) < 7 || len(issue.ID) > 11 {
 			t.Errorf("Expected ID length 7-11, got %d: %s", len(issue.ID), issue.ID)
 		}
-		if issue.ID[:3] != "bd-" {
-			t.Errorf("Expected ID to start with 'bd-', got: %s", issue.ID)
+		if issue.ID[:3] != "beads-" {
+			t.Errorf("Expected ID to start with 'beads-', got: %s", issue.ID)
 		}
 	}
 }

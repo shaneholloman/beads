@@ -102,7 +102,7 @@ func TestComputeAdaptiveLength(t *testing.T) {
 }
 
 func TestGenerateHashID_VariableLengths(t *testing.T) {
-	prefix := "bd"
+	prefix := "beads"
 	title := "Test issue"
 	description := "Test description"
 	creator := "test@example.com"
@@ -123,7 +123,7 @@ func TestGenerateHashID_VariableLengths(t *testing.T) {
 		t.Run(fmt.Sprintf("length_%d", tt.length), func(t *testing.T) {
 			id := generateHashID(prefix, title, description, creator, timestamp, tt.length, 0)
 
-			// Format: "bd-xxxx" where xxxx is the hash
+			// Format: "beads-xxxx" where xxxx is the hash
 			if !strings.HasPrefix(id, prefix+"-") {
 				t.Errorf("ID should start with %s-, got %s", prefix, id)
 			}

@@ -129,7 +129,7 @@ func (m *MemoryStorage) GetAllIssues() []*types.Issue {
 	return issues
 }
 
-// extractPrefixAndNumber extracts prefix and number from issue ID like "bd-123" -> ("bd", 123)
+// extractPrefixAndNumber extracts prefix and number from issue ID like "beads-123" -> ("beads", 123)
 func extractPrefixAndNumber(id string) (string, int) {
 	parts := strings.SplitN(id, "-", 2)
 	if len(parts) != 2 {
@@ -162,7 +162,7 @@ func (m *MemoryStorage) CreateIssue(ctx context.Context, issue *types.Issue, act
 	if issue.ID == "" {
 		prefix := m.config["issue_prefix"]
 		if prefix == "" {
-			prefix = "bd" // Default fallback
+			prefix = "beads" // Default fallback
 		}
 
 		// Get next ID
@@ -206,7 +206,7 @@ func (m *MemoryStorage) CreateIssues(ctx context.Context, issues []*types.Issue,
 	now := time.Now()
 	prefix := m.config["issue_prefix"]
 	if prefix == "" {
-		prefix = "bd"
+		prefix = "beads"
 	}
 
 	// Track IDs in this batch to detect duplicates within batch
@@ -943,7 +943,7 @@ func (m *MemoryStorage) UnderlyingConn(ctx context.Context) (*sql.Conn, error) {
 	return nil, fmt.Errorf("UnderlyingConn not available in memory storage")
 }
 
-// REMOVED (bd-c7af): SyncAllCounters - no longer needed with hash IDs
+// REMOVED (beads-c7af): SyncAllCounters - no longer needed with hash IDs
 
 // MarkIssueDirty marks an issue as dirty for export
 func (m *MemoryStorage) MarkIssueDirty(ctx context.Context, issueID string) error {

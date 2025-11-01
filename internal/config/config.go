@@ -23,7 +23,7 @@ func Initialize() error {
 
 	// Add config search paths (in order of precedence)
 	// 1. Walk up from CWD to find project .beads/ directory
-	//    This allows commands to work from subdirectories
+	//    This allows commands to work from subeadsirectories
 	cwd, err := os.Getwd()
 	if err == nil {
 		// Walk up parent directories to find .beads/config.yaml
@@ -46,9 +46,9 @@ func Initialize() error {
 		v.AddConfigPath(filepath.Join(cwd, ".beads"))
 	}
 
-	// 2. User config directory (~/.config/bd/)
+	// 2. User config directory (~/.config/beads/)
 	if configDir, err := os.UserConfigDir(); err == nil {
-		v.AddConfigPath(filepath.Join(configDir, "bd"))
+		v.AddConfigPath(filepath.Join(configDir, "beads"))
 	}
 
 	// 3. Home directory (~/.beads/)
@@ -58,11 +58,11 @@ func Initialize() error {
 
 	// Automatic environment variable binding
 	// Environment variables take precedence over config file
-	// E.g., BD_JSON, BD_NO_DAEMON, BD_ACTOR, BD_DB
+	// E.g., BEADS_JSON, BEADS_NO_DAEMON, BEADS_ACTOR, BEADS_DB
 	v.SetEnvPrefix("BD")
 
 	// Replace hyphens and dots with underscores for env var mapping
-	// This allows BD_NO_DAEMON to map to "no-daemon" config key
+	// This allows BEADS_NO_DAEMON to map to "no-daemon" config key
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	v.AutomaticEnv()
 
@@ -76,7 +76,7 @@ func Initialize() error {
 	v.SetDefault("actor", "")
 	v.SetDefault("issue-prefix", "")
 
-	// Additional environment variables (not prefixed with BD_)
+	// Additional environment variables (not prefixed with BEADS_)
 	// These are bound explicitly for backward compatibility
 	_ = v.BindEnv("flush-debounce", "BEADS_FLUSH_DEBOUNCE")
 	_ = v.BindEnv("auto-start-daemon", "BEADS_AUTO_START_DAEMON")

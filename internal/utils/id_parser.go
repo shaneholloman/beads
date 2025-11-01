@@ -11,12 +11,12 @@ import (
 )
 
 // ParseIssueID ensures an issue ID has the configured prefix.
-// If the input already has the prefix (e.g., "bd-a3f8e9"), returns it as-is.
+// If the input already has the prefix (e.g., "beads-a3f8e9"), returns it as-is.
 // If the input lacks the prefix (e.g., "a3f8e9"), adds the configured prefix.
-// Works with hierarchical IDs too: "a3f8e9.1.2" → "bd-a3f8e9.1.2"
+// Works with hierarchical IDs too: "a3f8e9.1.2" → "beads-a3f8e9.1.2"
 func ParseIssueID(input string, prefix string) string {
 	if prefix == "" {
-		prefix = "bd-"
+		prefix = "beads-"
 	}
 
 	if strings.HasPrefix(input, prefix) {
@@ -28,10 +28,10 @@ func ParseIssueID(input string, prefix string) string {
 
 // ResolvePartialID resolves a potentially partial issue ID to a full ID.
 // Supports:
-// - Full IDs: "bd-a3f8e9" or "a3f8e9" → "bd-a3f8e9"
-// - Without hyphen: "bda3f8e9" or "wya3f8e9" → "bd-a3f8e9"
-// - Partial IDs: "a3f8" → "bd-a3f8e9" (if unique match)
-// - Hierarchical: "a3f8e9.1" → "bd-a3f8e9.1"
+// - Full IDs: "beads-a3f8e9" or "a3f8e9" → "beads-a3f8e9"
+// - Without hyphen: "beadsa3f8e9" or "wya3f8e9" → "beads-a3f8e9"
+// - Partial IDs: "a3f8" → "beads-a3f8e9" (if unique match)
+// - Hierarchical: "a3f8e9.1" → "beads-a3f8e9.1"
 //
 // Returns an error if:
 // - No issue found matching the ID
@@ -40,7 +40,7 @@ func ResolvePartialID(ctx context.Context, store storage.Storage, input string) 
 	// Get the configured prefix
 	prefix, err := store.GetConfig(ctx, "issue_prefix")
 	if err != nil || prefix == "" {
-		prefix = "bd"
+		prefix = "beads"
 	}
 
 	// Ensure prefix has hyphen for ID format
@@ -50,16 +50,16 @@ func ResolvePartialID(ctx context.Context, store storage.Storage, input string) 
 	}
 
 	// Normalize input:
-	// 1. If it has the full prefix with hyphen (bd-a3f8e9), use as-is
+	// 1. If it has the full prefix with hyphen (beads-a3f8e9), use as-is
 	// 2. Otherwise, add prefix with hyphen (handles both bare hashes and prefix-without-hyphen cases)
 
 	var normalizedID string
 
 	if strings.HasPrefix(input, prefixWithHyphen) {
-		// Already has prefix with hyphen: "bd-a3f8e9"
+		// Already has prefix with hyphen: "beads-a3f8e9"
 		normalizedID = input
 	} else {
-		// Bare hash or prefix without hyphen: "a3f8e9", "07b8c8", "bda3f8e9" → all get prefix with hyphen added
+		// Bare hash or prefix without hyphen: "a3f8e9", "07b8c8", "beadsa3f8e9" → all get prefix with hyphen added
 		normalizedID = prefixWithHyphen + input
 	}
 

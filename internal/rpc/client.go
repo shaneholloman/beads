@@ -10,8 +10,8 @@ import (
 )
 
 // ClientVersion is the version of this RPC client
-// This should match the bd CLI version for proper compatibility checks
-// It's set dynamically by main.go from cmd/bd/version.go before making RPC calls
+// This should match the beads CLI version for proper compatibility checks
+// It's set dynamically by main.go from cmd/beads/version.go before making RPC calls
 var ClientVersion = "0.0.0" // Placeholder; overridden at startup
 
 // Client represents an RPC client that connects to the daemon

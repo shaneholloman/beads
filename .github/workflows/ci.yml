@@ -24,7 +24,7 @@ jobs:
           git config --global user.email "ci@beads.test"
 
       - name: Build
-        run: go build -v ./cmd/bd
+        run: go build -v ./cmd/beads
 
       - name: Test
         run: go test -v -race -coverprofile=coverage.out ./...
@@ -66,7 +66,7 @@ jobs:
           git config --global user.email "ci@beads.test"
 
       - name: Build
-        run: go build -v ./cmd/bd
+        run: go build -v ./cmd/beads
 
       - name: Test
         run: go test -v ./...

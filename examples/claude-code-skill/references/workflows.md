@@ -1,13 +1,13 @@
 # Workflows and Checklists
 
-Detailed step-by-step workflows for common bd usage patterns with checklists.
+Detailed step-by-step workflows for common beads usage patterns with checklists.
 
 ## Contents
 
-- [Session Start Workflow](#session-start) - Check bd ready, establish context
+- [Session Start Workflow](#session-start) - Check beads ready, establish context
 - [Compaction Survival](#compaction-survival) - Recovering after compaction events
 - [Discovery and Issue Creation](#discovery) - Proactive issue creation during work
-- [Status Maintenance](#status-maintenance) - Keeping bd status current
+- [Status Maintenance](#status-maintenance) - Keeping beads status current
 - [Epic Planning](#epic-planning) - Structuring complex work with dependencies
 - [Side Quest Handling](#side-quests) - Discovery during main task, assessing blocker vs deferrable, resuming
 - [Multi-Session Resume](#resume) - Returning after days/weeks away
@@ -23,7 +23,7 @@ Detailed step-by-step workflows for common bd usage patterns with checklists.
 
 ## Session Start Workflow {#session-start}
 
-**bd is available when**:
+**beads is available when**:
 
 - Project has `.beads/` directory (project-local), OR
 - `~/.beads/` exists (global fallback for any directory)
@@ -31,33 +31,33 @@ Detailed step-by-step workflows for common bd usage patterns with checklists.
 **Automatic checklist at session start:**
 
 ```
-Session Start (when bd is available):
-- [ ] Run bd ready --json
+Session Start (when beads is available):
+- [ ] Run beads ready --json
 - [ ] Report: "X items ready to work on: [summary]"
 - [ ] If using global ~/.beads, note this in report
-- [ ] If none ready, check bd blocked --json
+- [ ] If none ready, check beads blocked --json
 - [ ] Suggest next action based on findings
 ```
 
-**Pattern**: Always run `bd ready` when starting work where bd is available. Report status immediately to establish shared context.
+**Pattern**: Always run `beads ready` when starting work where beads is available. Report status immediately to establish shared context.
 
-**Database selection**: bd auto-discovers which database to use (project-local `.beads/` takes precedence over global `~/.beads/`).
+**Database selection**: beads auto-discovers which database to use (project-local `.beads/` takes precedence over global `~/.beads/`).
 
 ---
 
 ## Compaction Survival {#compaction-survival}
 
-**Critical**: After compaction events, conversation history is deleted but bd state persists. Beads are your only memory.
+**Critical**: After compaction events, conversation history is deleted but beads state persists. Beads are your only memory.
 
 **Post-compaction recovery checklist:**
 
 ```
 After Compaction:
-- [ ] Run bd list --status in_progress to see active work
-- [ ] Run bd show <issue-id> for each in_progress issue
+- [ ] Run beads list --status in_progress to see active work
+- [ ] Run beads show <issue-id> for each in_progress issue
 - [ ] Read notes field to understand: COMPLETED, IN PROGRESS, BLOCKERS, KEY DECISIONS
-- [ ] Check dependencies: bd dep tree <issue-id> for context
-- [ ] If notes insufficient, check bd list --status open for related issues
+- [ ] Check dependencies: beads dep tree <issue-id> for context
+- [ ] If notes insufficient, check beads list --status open for related issues
 - [ ] Reconstruct TodoWrite list from notes if needed
 ```
 
@@ -68,7 +68,7 @@ After Compaction:
 **Good note (enables recovery):**
 
 ```
-bd update issue-42 --notes "COMPLETED: User authentication - added JWT token
+beads update issue-42 --notes "COMPLETED: User authentication - added JWT token
 generation with 1hr expiry, implemented refresh token endpoint using rotating
 tokens pattern. IN PROGRESS: Password reset flow. Email service integration
 working. NEXT: Need to add rate limiting to reset endpoint (currently unlimited
@@ -79,7 +79,7 @@ recommendations, tech lead concerned about response time but benchmarks show <10
 **Bad note (insufficient for recovery):**
 
 ```
-bd update issue-42 --notes "Working on auth feature. Made some progress.
+beads update issue-42 --notes "Working on auth feature. Made some progress.
 More to do later."
 ```
 
@@ -90,7 +90,7 @@ The good note contains:
 - Next concrete step (not just "continue")
 - Key context (team concerns, technical decisions with rationale)
 
-**After compaction**: `bd show issue-42` reconstructs the full context needed to continue work.
+**After compaction**: `beads show issue-42` reconstructs the full context needed to continue work.
 
 ---
 
@@ -102,8 +102,8 @@ The good note contains:
 Discovery Workflow:
 - [ ] Notice bug, improvement, or follow-up work
 - [ ] Assess: Can defer or is blocker?
-- [ ] Create issue with bd create "Issue title"
-- [ ] Add discovered-from dependency: bd dep add current-id new-id --type discovered-from
+- [ ] Create issue with beads create "Issue title"
+- [ ] Add discovered-from dependency: beads dep add current-id new-id --type discovered-from
 - [ ] If blocker: pause and switch; if not: continue current work
 - [ ] Issue persists for future sessions
 ```
@@ -135,10 +135,10 @@ Issue Lifecycle:
 - [ ] During: Update acceptance criteria if requirements clarify
 - [ ] During: Add dependencies if blockers discovered
 - [ ] Complete: Close with summary of what was done
-- [ ] After: Check bd ready to see what unblocked
+- [ ] After: Check beads ready to see what unblocked
 ```
 
-**Pattern**: Keep bd status current so project state is always accurate.
+**Pattern**: Keep beads status current so project state is always accurate.
 
 **Status transitions**:
 
@@ -160,30 +160,30 @@ Epic Planning Workflow:
 - [ ] Create each child task
 - [ ] Add parent-child dependencies from epic to each child
 - [ ] Add blocks dependencies between children if needed
-- [ ] Use bd ready to work through tasks in dependency order
+- [ ] Use beads ready to work through tasks in dependency order
 ```
 
 **Example**: OAuth Integration Epic
 
 ```bash
 1. Create epic:
-   bd create "Implement OAuth integration" -t epic -d "OAuth with Google and GitHub"
+   beads create "Implement OAuth integration" -t epic -d "OAuth with Google and GitHub"
      design: "Support Google and GitHub providers"
 
 2. Create child tasks:
-   bd create "Set up OAuth client credentials" -t task
-   bd create "Implement authorization code flow" -t task
-   bd create "Add token storage and refresh" -t task
-   bd create "Create login/logout endpoints" -t task
+   beads create "Set up OAuth client credentials" -t task
+   beads create "Implement authorization code flow" -t task
+   beads create "Add token storage and refresh" -t task
+   beads create "Create login/logout endpoints" -t task
 
 3. Link children to parent:
-   bd dep add oauth-epic oauth-setup --type parent-child
-   bd dep add oauth-epic oauth-flow --type parent-child
-   bd dep add oauth-epic oauth-storage --type parent-child
-   bd dep add oauth-epic oauth-endpoints --type parent-child
+   beads dep add oauth-epic oauth-setup --type parent-child
+   beads dep add oauth-epic oauth-flow --type parent-child
+   beads dep add oauth-epic oauth-storage --type parent-child
+   beads dep add oauth-epic oauth-endpoints --type parent-child
 
 4. Add blocks between children:
-   bd dep add oauth-setup oauth-flow
+   beads dep add oauth-setup oauth-flow
    # Setup blocks flow implementation
 ```
 
@@ -229,8 +229,8 @@ Actions:
 
 ```
 Resume Workflow:
-- [ ] Run bd ready to see available work
-- [ ] Run bd stats for project overview
+- [ ] Run beads ready to see available work
+- [ ] Run beads stats for project overview
 - [ ] List recent closed issues for context
 - [ ] Show details on issue to work on
 - [ ] Review design notes and acceptance criteria
@@ -238,7 +238,7 @@ Resume Workflow:
 - [ ] Begin work with full context
 ```
 
-**Why this works**: bd preserves design decisions, acceptance criteria, and dependency context. No scrolling conversation history or reconstructing from markdown.
+**Why this works**: beads preserves design decisions, acceptance criteria, and dependency context. No scrolling conversation history or reconstructing from markdown.
 
 ---
 
@@ -252,8 +252,8 @@ This workflow enables smooth work resumption by updating beads notes when stoppi
 
 ```
 Session Start with in_progress issues:
-- [ ] Run bd list --status in_progress
-- [ ] For each in_progress issue: bd show <issue-id>
+- [ ] Run beads list --status in_progress
+- [ ] For each in_progress issue: beads show <issue-id>
 - [ ] Read notes field to understand: COMPLETED, IN PROGRESS, NEXT
 - [ ] Report to user with context from notes field
 - [ ] Example: "workspace-mcp-server-2 is in_progress. Last session:
@@ -274,7 +274,7 @@ Session End Handoff:
 - [ ] Prompt user: "We just completed X and started Y on <issue-id>.
        Should I update the beads notes for next session?"
 - [ ] If yes, suggest command:
-       bd update <issue-id> --notes "COMPLETED: X. IN PROGRESS: Y. NEXT: Z"
+       beads update <issue-id> --notes "COMPLETED: X. IN PROGRESS: Y. NEXT: Z"
 - [ ] User reviews and confirms
 - [ ] Claude executes the update
 - [ ] Notes saved for next session's resumption
@@ -316,7 +316,7 @@ Session End Checklist:
   - [ ] Craft note with COMPLETED/IN_PROGRESS/NEXT
   - [ ] Include blocker if stuck
   - [ ] Include key decisions if relevant
-  - [ ] Suggest bd update command
+  - [ ] Suggest beads update command
 - [ ] Execute approved update
 - [ ] Confirm: "Saved handoff notes for next session"
 ```
@@ -338,7 +338,7 @@ User Tips:
 **At End of Session 1:**
 
 ```bash
-bd update workspace-mcp-server-2 --notes "COMPLETED: Set up skeleton with Docs
+beads update workspace-mcp-server-2 --notes "COMPLETED: Set up skeleton with Docs
 API connection verified. Markdown parsing logic 80% done (handles *, _ modifiers).
 IN PROGRESS: Testing edge cases for nested formatting. NEXT: Implement
 batchUpdate call structure for text insertion. REFERENCE: Reference pattern at
@@ -348,7 +348,7 @@ docs/markdown-to-docs-reference.md. No blockers, moving well."
 **At Start of Session 2:**
 
 ```bash
-bd show workspace-mcp-server-2
+beads show workspace-mcp-server-2
 # Output includes notes field showing exactly where we left off
 # Claude reports: "Markdown→Docs feature is 80% parsed. We were testing
 # edge cases and need to implement batchUpdate next. Want to continue?"
@@ -364,8 +364,8 @@ Session resumes instantly with full context, no history scrolling needed.
 
 ```
 Unblocking Workflow:
-- [ ] Run bd blocked --json to see what's stuck
-- [ ] Show details on blocked issues: bd show issue-id
+- [ ] Run beads blocked --json to see what's stuck
+- [ ] Show details on blocked issues: beads show issue-id
 - [ ] Identify blocker issues
 - [ ] Choose: work on blocker, or reassess dependency
 - [ ] If reassess: remove incorrect dependency
@@ -373,19 +373,19 @@ Unblocking Workflow:
 - [ ] Blocked issues automatically become ready when blockers close
 ```
 
-**Pattern**: bd automatically maintains ready state based on dependencies. Closing a blocker makes blocked work ready.
+**Pattern**: beads automatically maintains ready state based on dependencies. Closing a blocker makes blocked work ready.
 
 **Example**:
 
 ```
-Situation: bd ready shows nothing
+Situation: beads ready shows nothing
 
 Actions:
-1. bd blocked shows: "api-endpoint blocked by db-schema"
+1. beads blocked shows: "api-endpoint blocked by db-schema"
 2. Show db-schema: "Create user table schema"
 3. Work on db-schema issue
 4. Close db-schema when done
-5. bd ready now shows: "api-endpoint" (automatically unblocked)
+5. beads ready now shows: "api-endpoint" (automatically unblocked)
 ```
 
 ---
@@ -396,16 +396,16 @@ Actions:
 
 ```
 Hybrid Workflow:
-- [ ] Check bd for high-level context
-- [ ] Choose bd issue to work on
-- [ ] Mark bd issue in_progress
+- [ ] Check beads for high-level context
+- [ ] Choose beads issue to work on
+- [ ] Mark beads issue in_progress
 - [ ] Create TodoWrite from acceptance criteria for execution
 - [ ] Work through TodoWrite items
-- [ ] Update bd design notes as you learn
-- [ ] When TodoWrite complete, close bd issue
+- [ ] Update beads design notes as you learn
+- [ ] When TodoWrite complete, close beads issue
 ```
 
-**Why hybrid**: bd provides persistent structure, TodoWrite provides visible progress.
+**Why hybrid**: beads provides persistent structure, TodoWrite provides visible progress.
 
 ---
 
@@ -440,7 +440,7 @@ Research or investigation work:
 1. Create issues for each refactoring step
 2. Add blocks dependencies for correct order
 3. Work through in dependency order
-4. bd ready automatically shows next step
+4. beads ready automatically shows next step
 5. Each completion unblocks next work
 ```
 
@@ -463,7 +463,7 @@ Research or investigation work:
 
 ```
 - [ ] Check for .beads/ directory
-- [ ] If exists: bd ready
+- [ ] If exists: beads ready
 - [ ] Report status to user
 - [ ] Get user input on what to work on
 - [ ] Show issue details
@@ -488,7 +488,7 @@ Research or investigation work:
 - [ ] Implementation done
 - [ ] Tests passing
 - [ ] Close issue with summary
-- [ ] Check bd ready for unblocked work
+- [ ] Check beads ready for unblocked work
 - [ ] Report completion and next available work
 ```
 
@@ -507,7 +507,7 @@ Research or investigation work:
 
 ## Decision Points
 
-**Should I create a bd issue or use TodoWrite?**
+**Should I create a beads issue or use TodoWrite?**
 → See [boundaries.md](boundaries.md) for decision matrix
 
 **Should I ask user before creating issue?**
@@ -528,35 +528,35 @@ Research or investigation work:
 
 **"I can't find any ready work"**
 
-1. Run bd blocked
+1. Run beads blocked
 2. Identify what's blocking progress
 3. Either work on blockers or create new work
 
 **"I created an issue but it's not showing in ready"**
 
-1. Run bd show on the issue
+1. Run beads show on the issue
 2. Check dependencies field
 3. If blocked, resolve blocker first
 4. If incorrectly blocked, remove dependency
 
 **"Work is more complex than expected"**
 
-1. Transition from TodoWrite to bd mid-session
-2. Create bd issue with current context
+1. Transition from TodoWrite to beads mid-session
+2. Create beads issue with current context
 3. Note: "Discovered complexity during implementation"
 4. Add dependencies as discovered
-5. Continue with bd tracking
+5. Continue with beads tracking
 
 **"I closed an issue but work isn't done"**
 
-1. Reopen with bd update status=open
+1. Reopen with beads update status=open
 2. Or create new issue linking to closed one
 3. Note what's still needed
 4. Closed issues can't be reopened in some systems, so create new if needed
 
 **"Too many issues, can't find what matters"**
 
-1. Use bd list with filters (priority, issue_type)
-2. Use bd ready to focus on unblocked work
+1. Use beads list with filters (priority, issue_type)
+2. Use beads ready to focus on unblocked work
 3. Consider closing old issues that no longer matter
 4. Use labels for organization

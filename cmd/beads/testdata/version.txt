@@ -1,0 +1,3 @@
+# Test beads version command
+beads version
+stdout 'beads version'

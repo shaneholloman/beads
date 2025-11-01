@@ -1,6 +1,6 @@
 # Bash Agent Example
 
-A bash script demonstrating how an AI agent can use bd to manage tasks autonomously.
+A bash script demonstrating how an AI agent can use beads to manage tasks autonomously.
 
 ## Features
 
@@ -14,9 +14,9 @@ A bash script demonstrating how an AI agent can use bd to manage tasks autonomou
 ## Prerequisites
 
 - bash 4.0+
-- bd installed: `go install github.com/shaneholloman/beads/cmd/bd@latest`
+- beads installed: `go install github.com/shaneholloman/beads/cmd/beads@latest`
 - jq for JSON parsing: `brew install jq` (macOS) or `apt install jq` (Linux)
-- A beads database initialized: `bd init`
+- A beads database initialized: `beads init`
 
 ## Usage
 
@@ -58,15 +58,15 @@ Open: 5  In Progress: 0  Closed: 2
   Iteration 1/10
 ═══════════════════════════════════════════════════
 ℹ Looking for ready work...
-ℹ Claiming task: bd-3
+ℹ Claiming task: beads-3
 ✔ Task claimed
-ℹ Working on: Fix authentication bug (bd-3)
+ℹ Working on: Fix authentication bug (beads-3)
   Priority: 1
 ⚠ Discovered issue while working!
-✔ Created issue: bd-8
-✔ Linked bd-8 ← discovered-from ← bd-3
-ℹ Completing task: bd-3
-✔ Task completed: bd-3
+✔ Created issue: beads-8
+✔ Linked beads-8 ← discovered-from ← beads-3
+ℹ Completing task: beads-3
+✔ Task completed: beads-3
 ```
 
 ## Use Cases
@@ -103,13 +103,13 @@ if [[ $((RANDOM % 2)) -eq 0 ]]; then  # 50% chance
 if [[ $((RANDOM % 10)) -lt 3 ]]; then  # 30% chance
 
 # Add assignee filtering
-bd ready --json --assignee "bot" --limit 1
+beads ready --json --assignee "bot" --limit 1
 
 # Add priority filtering
-bd ready --json --priority 1 --limit 1
+beads ready --json --priority 1 --limit 1
 
 # Add custom labels
-bd create "New task" -l "automated,agent-discovered"
+beads create "New task" -l "automated,agent-discovered"
 ```
 
 ## Integration with Real Agents

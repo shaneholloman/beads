@@ -60,7 +60,7 @@ func ImportIssues(ctx context.Context, dbPath string, store storage.Storage, iss
 		MismatchPrefixes: make(map[string]int),
 	}
 
-	// Compute content hashes for all incoming issues (bd-95)
+	// Compute content hashes for all incoming issues (beads-95)
 	for _, issue := range issues {
 		if issue.ContentHash == "" {
 			issue.ContentHash = issue.ComputeContentHash()
@@ -76,7 +76,7 @@ func ImportIssues(ctx context.Context, dbPath string, store storage.Storage, iss
 		defer func() { _ = sqliteStore.Close() }()
 	}
 
-	// Clear export_hashes before import to prevent staleness (bd-160)
+	// Clear export_hashes before import to prevent staleness (beads-160)
 	// Import operations may add/update issues, so export_hashes entries become invalid
 	if !opts.DryRun {
 		if err := sqliteStore.ClearAllExportHashes(ctx); err != nil {
@@ -211,9 +211,9 @@ func detectUpdates(ctx context.Context, sqliteStore *sqlite.SQLiteStorage, issue
 	// So same ID + different fields = normal update operation, not a collision
 	// The collisionResult.Collisions list represents issues that *may* be updated
 	// Note: We don't pre-count updates here - upsertIssues will count them after
-	// checking timestamps to ensure we only update when incoming is newer (bd-e55c)
+	// checking timestamps to ensure we only update when incoming is newer (beads-e55c)
 
-	// Phase 4: Renames removed - obsolete with hash IDs (bd-8e05)
+	// Phase 4: Renames removed - obsolete with hash IDs (beads-8e05)
 	// Hash-based IDs are content-addressed, so renames don't occur
 
 	if opts.DryRun {
@@ -265,16 +265,16 @@ func handleRename(ctx context.Context, s *sqlite.SQLiteStorage, existing *types.
 			// The rename is already complete in the database
 			return deletedID, nil
 		}
-		// REMOVED (bd-8e05): Sequential ID collision handling during rename
+		// REMOVED (beads-8e05): Sequential ID collision handling during rename
 		// With hash-based IDs, rename collisions should not occur
 		return "", fmt.Errorf("rename collision handling removed - should not occur with hash IDs")
 
-		/* OLD CODE REMOVED (bd-8e05)
+		/* OLD CODE REMOVED (beads-8e05)
 		// Different content - this is a collision during rename
 		// Allocate a new ID for the incoming issue instead of using the desired ID
 		prefix, err := s.GetConfig(ctx, "issue_prefix")
 		if err != nil || prefix == "" {
-			prefix = "bd"
+			prefix = "beads"
 		}
 
 		oldID := existing.ID
@@ -358,7 +358,7 @@ func handleRename(ctx context.Context, s *sqlite.SQLiteStorage, existing *types.
 		return "", fmt.Errorf("failed to create renamed issue %s: %w", incoming.ID, err)
 	}
 
-	// Reference updates removed - obsolete with hash IDs (bd-8e05)
+	// Reference updates removed - obsolete with hash IDs (beads-8e05)
 	// Hash-based IDs are deterministic, so no reference rewriting needed
 
 	return oldID, nil
@@ -425,7 +425,7 @@ func upsertIssues(ctx context.Context, sqliteStore *sqlite.SQLiteStorage, issues
 			// The update should have been detected earlier by detectUpdates
 			// If we reach here, it means collision wasn't resolved - treat as update
 			if !opts.SkipUpdate {
-				// Check timestamps - only update if incoming is newer (bd-e55c)
+				// Check timestamps - only update if incoming is newer (beads-e55c)
 				if !incoming.UpdatedAt.After(existingWithID.UpdatedAt) {
 					// Local version is newer or same - skip update
 					result.Unchanged++
@@ -481,7 +481,7 @@ func upsertIssues(ctx context.Context, sqliteStore *sqlite.SQLiteStorage, issues
 		result.Created += len(newIssues)
 	}
 
-	// REMOVED (bd-c7af): Counter sync after import - no longer needed with hash IDs
+	// REMOVED (beads-c7af): Counter sync after import - no longer needed with hash IDs
 
 	return nil
 }

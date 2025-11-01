@@ -14,12 +14,12 @@ import (
 )
 
 func setupTestServer(t *testing.T) (*Server, *Client, func()) {
-	tmpDir, err := os.MkdirTemp("", "bd-rpc-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-rpc-test-*")
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0750); err != nil {
 		os.RemoveAll(tmpDir)
@@ -27,7 +27,7 @@ func setupTestServer(t *testing.T) (*Server, *Client, func()) {
 	}
 
 	dbPath := filepath.Join(beadsDir, "test.db")
-	socketPath := filepath.Join(beadsDir, "bd.sock")
+	socketPath := filepath.Join(beadsDir, "beads.sock")
 
 	// Ensure socket doesn't exist from previous failed test
 	os.Remove(socketPath)
@@ -38,9 +38,9 @@ func setupTestServer(t *testing.T) (*Server, *Client, func()) {
 		t.Fatalf("Failed to create store: %v", err)
 	}
 
-	// CRITICAL (bd-166): Set issue_prefix to prevent "database not initialized" errors
+	// CRITICAL (beads-166): Set issue_prefix to prevent "database not initialized" errors
 	ctx := context.Background()
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		store.Close()
 		os.RemoveAll(tmpDir)
 		t.Fatalf("Failed to set issue_prefix: %v", err)
@@ -127,12 +127,12 @@ func setupTestServer(t *testing.T) (*Server, *Client, func()) {
 //
 //nolint:unparam // beadsDir is not used by callers but part of test isolation setup
 func setupTestServerIsolated(t *testing.T) (tmpDir, beadsDir, dbPath, socketPath string, cleanup func()) {
-	tmpDir, err := os.MkdirTemp("", "bd-rpc-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-rpc-test-*")
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir = filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0750); err != nil {
 		os.RemoveAll(tmpDir)
@@ -140,7 +140,7 @@ func setupTestServerIsolated(t *testing.T) (tmpDir, beadsDir, dbPath, socketPath
 	}
 
 	dbPath = filepath.Join(beadsDir, "test.db")
-	socketPath = filepath.Join(beadsDir, "bd.sock")
+	socketPath = filepath.Join(beadsDir, "beads.sock")
 
 	// Ensure socket doesn't exist from previous failed test
 	os.Remove(socketPath)
@@ -314,14 +314,14 @@ func TestListIssues(t *testing.T) {
 }
 
 func TestSocketCleanup(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "bd-rpc-cleanup-test-*")
+	tmpDir, err := os.MkdirTemp("", "beads-rpc-cleanup-test-*")
 	if err != nil {
 		t.Fatalf("Failed to create temp dir: %v", err)
 	}
 	defer os.RemoveAll(tmpDir)
 
 	dbPath := filepath.Join(tmpDir, "test.db")
-	socketPath := filepath.Join(tmpDir, "bd.sock")
+	socketPath := filepath.Join(tmpDir, "beads.sock")
 
 	store, err := sqlitestorage.New(dbPath)
 	if err != nil {
@@ -418,13 +418,13 @@ func TestDatabaseHandshake(t *testing.T) {
 	origDir, _ := os.Getwd()
 
 	// Create two separate databases and daemons
-	tmpDir1, err := os.MkdirTemp("", "bd-test-db1-*")
+	tmpDir1, err := os.MkdirTemp("", "beads-test-db1-*")
 	if err != nil {
 		t.Fatalf("Failed to create temp dir 1: %v", err)
 	}
 	defer os.RemoveAll(tmpDir1)
 
-	tmpDir2, err := os.MkdirTemp("", "bd-test-db2-*")
+	tmpDir2, err := os.MkdirTemp("", "beads-test-db2-*")
 	if err != nil {
 		t.Fatalf("Failed to create temp dir 2: %v", err)
 	}
@@ -434,7 +434,7 @@ func TestDatabaseHandshake(t *testing.T) {
 	beadsDir1 := filepath.Join(tmpDir1, ".beads")
 	os.MkdirAll(beadsDir1, 0750)
 	dbPath1 := filepath.Join(beadsDir1, "db1.db")
-	socketPath1 := filepath.Join(beadsDir1, "bd.sock")
+	socketPath1 := filepath.Join(beadsDir1, "beads.sock")
 	store1 := newTestStore(t, dbPath1)
 	defer store1.Close()
 
@@ -449,7 +449,7 @@ func TestDatabaseHandshake(t *testing.T) {
 	beadsDir2 := filepath.Join(tmpDir2, ".beads")
 	os.MkdirAll(beadsDir2, 0750)
 	dbPath2 := filepath.Join(beadsDir2, "db2.db")
-	socketPath2 := filepath.Join(beadsDir2, "bd.sock")
+	socketPath2 := filepath.Join(beadsDir2, "beads.sock")
 	store2 := newTestStore(t, dbPath2)
 	defer store2.Close()
 

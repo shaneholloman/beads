@@ -1,4 +1,4 @@
-# Installing bd
+# Installing beads
 
 Complete installation guide for all platforms.
 
@@ -8,7 +8,7 @@ Complete installation guide for all platforms.
 
 ```bash
 brew tap shaneholloman/beads
-brew install bd
+brew install beads
 ```
 
 **Why Homebrew?**
@@ -39,13 +39,13 @@ The installer will:
 
 ```bash
 brew tap shaneholloman/beads
-brew install bd
+brew install beads
 ```
 
 **Via go install**:
 
 ```bash
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 **From source**:
@@ -53,8 +53,8 @@ go install github.com/shaneholloman/beads/cmd/bd@latest
 ```bash
 git clone https://github.com/shaneholloman/beads
 cd beads
-go build -o bd ./cmd/bd
-sudo mv bd /usr/local/bin/
+go build -o beads ./cmd/beads
+sudo mv beads /usr/local/bin/
 ```
 
 ### Linux
@@ -63,7 +63,7 @@ sudo mv bd /usr/local/bin/
 
 ```bash
 brew tap shaneholloman/beads
-brew install bd
+brew install beads
 ```
 
 **Arch Linux** (AUR):
@@ -80,7 +80,7 @@ Thanks to [@v4rgas](https://github.com/v4rgas) for maintaining the AUR package!
 **Via go install**:
 
 ```bash
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 **From source**:
@@ -88,8 +88,8 @@ go install github.com/shaneholloman/beads/cmd/bd@latest
 ```bash
 git clone https://github.com/shaneholloman/beads
 cd beads
-go build -o bd ./cmd/bd
-sudo mv bd /usr/local/bin/
+go build -o beads ./cmd/beads
+sudo mv beads /usr/local/bin/
 ```
 
 ### Windows 11
@@ -110,7 +110,7 @@ irm https://raw.githubusercontent.com/shaneholloman/beads/main/install.ps1 | iex
 **Via go install**:
 
 ```pwsh
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 **From source**:
@@ -118,21 +118,21 @@ go install github.com/shaneholloman/beads/cmd/bd@latest
 ```pwsh
 git clone https://github.com/shaneholloman/beads
 cd beads
-go build -o bd.exe ./cmd/bd
-Move-Item bd.exe $env:USERPROFILE\AppData\Local\Microsoft\WindowsApps\
+go build -o beads.exe ./cmd/beads
+Move-Item beads.exe $env:USERPROFILE\AppData\Local\Microsoft\WindowsApps\
 ```
 
 **Verify installation**:
 
 ```pwsh
-bd version
+beads version
 ```
 
 **Windows notes:**
 
-- The background daemon listens on a loopback TCP endpoint recorded in `.beads\bd.sock`
+- The background daemon listens on a loopback TCP endpoint recorded in `.beads\beads.sock`
 - Keep that metadata file intact
-- Allow `bd.exe` loopback traffic through any host firewall
+- Allow `beads.exe` loopback traffic through any host firewall
 
 ## IDE and Editor Integrations
 
@@ -142,7 +142,7 @@ For Claude Code users, the beads plugin provides slash commands and MCP tools.
 
 **Prerequisites:**
 
-1. First, install the bd CLI (see above)
+1. First, install the beads CLI (see above)
 2. Then install the plugin:
 
 ```bash
@@ -154,8 +154,8 @@ For Claude Code users, the beads plugin provides slash commands and MCP tools.
 
 The plugin includes:
 
-- Slash commands: `/bd-ready`, `/bd-create`, `/bd-show`, `/bd-update`, `/bd-close`, etc.
-- Full MCP server with all bd tools
+- Slash commands: `/beads-ready`, `/beads-create`, `/beads-show`, `/beads-update`, `/beads-close`, etc.
+- Full MCP server with all beads tools
 - Task agent for autonomous execution
 
 See [plugin.md](./plugin.md) for complete plugin documentation.
@@ -201,7 +201,7 @@ Add to your MCP settings:
 
 **What you get:**
 
-- Full bd functionality exposed via MCP protocol
+- Full beads functionality exposed via MCP protocol
 - Tools for creating, updating, listing, and closing issues
 - Ready work detection and dependency management
 - All without requiring Bash commands
@@ -210,45 +210,45 @@ See [integrations/beads-mcp/README.md](../integrations/beads-mcp/README.md) for 
 
 ## Verifying Installation
 
-After installing, verify bd is working:
+After installing, verify beads is working:
 
 ```bash
-bd version
-bd help
+beads version
+beads help
 ```
 
 ## Troubleshooting Installation
 
-### `bd: command not found`
+### `beads: command not found`
 
-bd is not in your PATH. Either:
+beads is not in your PATH. Either:
 
 ```bash
 # Check if installed
-go list -f {{.Target}} github.com/shaneholloman/beads/cmd/bd
+go list -f {{.Target}} github.com/shaneholloman/beads/cmd/beads
 
 # Add Go bin to PATH (add to ~/.bashrc or ~/.zshrc)
 export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Or reinstall
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
-### `zsh: killed bd` or crashes on macOS
+### `zsh: killed beads` or crashes on macOS
 
-Some users report crashes when running `bd init` or other commands on macOS. This is typically caused by CGO/SQLite compatibility issues.
+Some users report crashes when running `beads init` or other commands on macOS. This is typically caused by CGO/SQLite compatibility issues.
 
 **Workaround:**
 
 ```bash
 # Build with CGO enabled
-CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/bd@latest
+CGO_ENABLED=1 go install github.com/shaneholloman/beads/cmd/beads@latest
 
 # Or if building from source
 git clone https://github.com/shaneholloman/beads
 cd beads
-CGO_ENABLED=1 go build -o bd ./cmd/bd
-sudo mv bd /usr/local/bin/
+CGO_ENABLED=1 go build -o beads ./cmd/beads
+sudo mv beads /usr/local/bin/
 ```
 
 If you installed via Homebrew, this shouldn't be necessary as the formula already enables CGO. If you're still seeing crashes with the Homebrew version, please [file an issue](https://github.com/shaneholloman/beads/issues).
@@ -257,23 +257,23 @@ If you installed via Homebrew, this shouldn't be necessary as the formula alread
 
 After installation:
 
-1. **Initialize a project**: `cd your-project && bd init`
-2. **Configure your agent**: Add bd instructions to `AGENTS.md` (see [README.md](../README.md#quick-start))
-3. **Learn the basics**: Run `bd quickstart` for an interactive tutorial
+1. **Initialize a project**: `cd your-project && beads init`
+2. **Configure your agent**: Add beads instructions to `AGENTS.md` (see [README.md](../README.md#quick-start))
+3. **Learn the basics**: Run `beads quickstart` for an interactive tutorial
 4. **Explore examples**: Check out the [examples/](../examples) directory
 
-## Updating bd
+## Updating beads
 
 ### Homebrew
 
 ```bash
-brew upgrade bd
+brew upgrade beads
 ```
 
 ### go install
 
 ```bash
-go install github.com/shaneholloman/beads/cmd/bd@latest
+go install github.com/shaneholloman/beads/cmd/beads@latest
 ```
 
 ### From source
@@ -281,6 +281,6 @@ go install github.com/shaneholloman/beads/cmd/bd@latest
 ```bash
 cd beads
 git pull
-go build -o bd ./cmd/bd
-sudo mv bd /usr/local/bin/
+go build -o beads ./cmd/beads
+sudo mv beads /usr/local/bin/
 ```

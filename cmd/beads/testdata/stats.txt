@@ -1,0 +1,18 @@
+# Test beads stats command
+beads init --prefix test
+
+# Create issues
+beads create 'First issue'
+cp stdout first.txt
+exec sh -c 'grep -oE "test-[a-f0-9]+" first.txt > first_id.txt'
+
+beads create 'Second issue'
+
+# Close one issue
+exec sh -c 'beads close $(cat first_id.txt)'
+
+# Check stats
+beads stats
+stdout 'Total Issues:'
+stdout 'Open:'
+stdout 'Closed:'

@@ -34,7 +34,7 @@ func TestRegistryBasics(t *testing.T) {
 	// Test 2: Register a daemon
 	entry := RegistryEntry{
 		WorkspacePath: "/test/workspace",
-		SocketPath:    "/test/workspace/.beads/bd.sock",
+		SocketPath:    "/test/workspace/.beads/beads.sock",
 		DatabasePath:  "/test/workspace/.beads/beads.db",
 		PID:           12345,
 		Version:       "0.19.0",
@@ -113,7 +113,7 @@ func TestRegistryMultipleDaemons(t *testing.T) {
 	for i := 1; i <= 3; i++ {
 		entry := RegistryEntry{
 			WorkspacePath: filepath.Join("/test", "workspace", string(rune('a'+i-1))),
-			SocketPath:    filepath.Join("/test", "workspace", string(rune('a'+i-1)), ".beads/bd.sock"),
+			SocketPath:    filepath.Join("/test", "workspace", string(rune('a'+i-1)), ".beads/beads.sock"),
 			DatabasePath:  filepath.Join("/test", "workspace", string(rune('a'+i-1)), ".beads/beads.db"),
 			PID:           10000 + i,
 			Version:       "0.19.0",
@@ -147,7 +147,7 @@ func TestRegistryStaleCleanup(t *testing.T) {
 	// Register a daemon with a PID that doesn't exist
 	staleEntry := RegistryEntry{
 		WorkspacePath: "/test/workspace",
-		SocketPath:    "/test/workspace/.beads/bd.sock",
+		SocketPath:    "/test/workspace/.beads/beads.sock",
 		DatabasePath:  "/test/workspace/.beads/beads.db",
 		PID:           99999, // Unlikely to exist
 		Version:       "0.19.0",

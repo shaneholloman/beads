@@ -1,0 +1,7 @@
+# Test beads list command
+beads init --prefix test
+beads create 'First issue'
+beads create 'Second issue'
+beads list
+stdout 'First issue'
+stdout 'Second issue'

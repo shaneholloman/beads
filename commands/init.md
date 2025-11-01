@@ -13,7 +13,7 @@ After initialization:
 
 1. Show the database location
 2. Show the issue prefix that will be used
-3. Explain the basic workflow (or suggest running `/bd-workflow`)
-4. Suggest creating the first issue with `/bd-create`
+3. Explain the basic workflow (or suggest running `/beads-workflow`)
+4. Suggest creating the first issue with `/beads-create`
 
 If beads is already initialized, inform the user and show project stats using the `stats` tool.

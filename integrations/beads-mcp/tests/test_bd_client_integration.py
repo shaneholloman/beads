@@ -1,4 +1,4 @@
-"""Real integration tests for BdClient using actual bd binary."""
+"""Real integration tests for BeadsClient using actual beads binary."""
 
 import os
 import shutil
@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from beads_mcp.bd_client import BdClient, BdCommandError
+from beads_mcp.beads_client import BeadsClient, BeadsCommandError
 from beads_mcp.models import (
     AddDependencyParams,
     CloseIssueParams,
@@ -21,15 +21,15 @@ from beads_mcp.models import (
 
 
 @pytest.fixture(scope="session")
-def bd_executable():
-    """Verify bd is available in PATH."""
-    bd_path = shutil.which("bd")
-    if not bd_path:
+def beads_executable():
+    """Verify beads is available in PATH."""
+    beads_path = shutil.which("beads")
+    if not beads_path:
         pytest.fail(
-            "bd executable not found in PATH. "
-            "Please install bd or add it to your PATH before running integration tests."
+            "beads executable not found in PATH. "
+            "Please install beads or add it to your PATH before running integration tests."
         )
-    return bd_path
+    return beads_path
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def temp_db():
     """Create a temporary database file."""
     fd, db_path = tempfile.mkstemp(suffix=".db", prefix="beads_test_", dir="/tmp")
     os.close(fd)
-    # Remove the file so bd init can create it
+    # Remove the file so beads init can create it
     os.unlink(db_path)
     yield db_path
     # Cleanup
@@ -46,9 +46,9 @@ def temp_db():
 
 
 @pytest.fixture
-async def bd_client(bd_executable, temp_db):
-    """Create BdClient with temporary database - fully hermetic."""
-    client = BdClient(bd_path=bd_executable, beads_db=temp_db)
+async def beads_client(beads_executable, temp_db):
+    """Create BeadsClient with temporary database - fully hermetic."""
+    client = BeadsClient(beads_path=beads_executable, beads_db=temp_db)
 
     # Initialize database with explicit BEADS_DB - no chdir needed!
     env = os.environ.copy()
@@ -61,7 +61,7 @@ async def bd_client(bd_executable, temp_db):
     # Use temp dir for subprocess to run in (prevents .beads/ discovery)
     with tempfile.TemporaryDirectory(prefix="beads_test_workspace_", dir="/tmp") as temp_dir:
         process = await asyncio.create_subprocess_exec(
-            bd_executable,
+            beads_executable,
             "init",
             "--prefix",
             "test",
@@ -79,8 +79,8 @@ async def bd_client(bd_executable, temp_db):
 
 
 @pytest.mark.asyncio
-async def test_create_and_show_issue(bd_client):
-    """Test creating and showing an issue with real bd."""
+async def test_create_and_show_issue(beads_client):
+    """Test creating and showing an issue with real beads."""
     # Create issue
     params = CreateIssueParams(
         title="Test integration issue",
@@ -88,7 +88,7 @@ async def test_create_and_show_issue(bd_client):
         priority=1,
         issue_type="bug",
     )
-    created = await bd_client.create(params)
+    created = await beads_client.create(params)
 
     assert created.id is not None
     assert created.title == "Test integration issue"
@@ -99,7 +99,7 @@ async def test_create_and_show_issue(bd_client):
 
     # Show issue
     show_params = ShowIssueParams(issue_id=created.id)
-    shown = await bd_client.show(show_params)
+    shown = await beads_client.show(show_params)
 
     assert shown.id == created.id
     assert shown.title == created.title
@@ -107,8 +107,8 @@ async def test_create_and_show_issue(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_list_issues(bd_client):
-    """Test listing issues with real bd."""
+async def test_list_issues(beads_client):
+    """Test listing issues with real beads."""
     # Create multiple issues
     for i in range(3):
         params = CreateIssueParams(
@@ -116,31 +116,31 @@ async def test_list_issues(bd_client):
             priority=i,
             issue_type="task",
         )
-        await bd_client.create(params)
+        await beads_client.create(params)
 
     # List all issues
     params = ListIssuesParams()
-    issues = await bd_client.list_issues(params)
+    issues = await beads_client.list_issues(params)
 
     assert len(issues) >= 3
 
     # List with status filter
     params = ListIssuesParams(status="open")
-    issues = await bd_client.list_issues(params)
+    issues = await beads_client.list_issues(params)
 
     assert all(issue.status == "open" for issue in issues)
 
 
 @pytest.mark.asyncio
-async def test_update_issue(bd_client):
-    """Test updating an issue with real bd."""
+async def test_update_issue(beads_client):
+    """Test updating an issue with real beads."""
     # Create issue
     create_params = CreateIssueParams(
         title="Issue to update",
         priority=2,
         issue_type="feature",
     )
-    created = await bd_client.create(create_params)
+    created = await beads_client.create(create_params)
 
     # Update issue
     update_params = UpdateIssueParams(
@@ -149,7 +149,7 @@ async def test_update_issue(bd_client):
         priority=0,
         title="Updated title",
     )
-    updated = await bd_client.update(update_params)
+    updated = await beads_client.update(update_params)
 
     assert updated.id == created.id
     assert updated.status == "in_progress"
@@ -158,19 +158,19 @@ async def test_update_issue(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_close_issue(bd_client):
-    """Test closing an issue with real bd."""
+async def test_close_issue(beads_client):
+    """Test closing an issue with real beads."""
     # Create issue
     create_params = CreateIssueParams(
         title="Issue to close",
         priority=1,
         issue_type="bug",
     )
-    created = await bd_client.create(create_params)
+    created = await beads_client.create(create_params)
 
     # Close issue
     close_params = CloseIssueParams(issue_id=created.id, reason="Testing complete")
-    closed_issues = await bd_client.close(close_params)
+    closed_issues = await beads_client.close(close_params)
 
     assert len(closed_issues) >= 1
     closed = closed_issues[0]
@@ -180,23 +180,23 @@ async def test_close_issue(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_reopen_issue(bd_client):
-    """Test reopening a closed issue with real bd."""
+async def test_reopen_issue(beads_client):
+    """Test reopening a closed issue with real beads."""
     # Create issue
     create_params = CreateIssueParams(
         title="BG's issue to reopen",
         priority=1,
         issue_type="bug",
     )
-    created = await bd_client.create(create_params)
+    created = await beads_client.create(create_params)
 
     # Close issue
     close_params = CloseIssueParams(issue_id=created.id, reason="Testing complete")
-    await bd_client.close(close_params)
+    await beads_client.close(close_params)
 
     # Reopen issue
     reopen_params = ReopenIssueParams(issue_ids=[created.id])
-    reopened_issues = await bd_client.reopen(reopen_params)
+    reopened_issues = await beads_client.reopen(reopen_params)
 
     assert len(reopened_issues) >= 1
     reopened = reopened_issues[0]
@@ -206,18 +206,18 @@ async def test_reopen_issue(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_reopen_multiple_issues(bd_client):
-    """Test reopening multiple closed issues with real bd."""
+async def test_reopen_multiple_issues(beads_client):
+    """Test reopening multiple closed issues with real beads."""
     # Create and close two issues
-    issue1 = await bd_client.create(CreateIssueParams(title="Issue 1 to reopen", priority=1, issue_type="task"))
-    issue2 = await bd_client.create(CreateIssueParams(title="Issue 2 to reopen", priority=1, issue_type="task"))
+    issue1 = await beads_client.create(CreateIssueParams(title="Issue 1 to reopen", priority=1, issue_type="task"))
+    issue2 = await beads_client.create(CreateIssueParams(title="Issue 2 to reopen", priority=1, issue_type="task"))
 
-    await bd_client.close(CloseIssueParams(issue_id=issue1.id, reason="Done"))
-    await bd_client.close(CloseIssueParams(issue_id=issue2.id, reason="Done"))
+    await beads_client.close(CloseIssueParams(issue_id=issue1.id, reason="Done"))
+    await beads_client.close(CloseIssueParams(issue_id=issue2.id, reason="Done"))
 
     # Reopen both issues
     reopen_params = ReopenIssueParams(issue_ids=[issue1.id, issue2.id])
-    reopened_issues = await bd_client.reopen(reopen_params)
+    reopened_issues = await beads_client.reopen(reopen_params)
 
     assert len(reopened_issues) == 2
     reopened_ids = {issue.id for issue in reopened_issues}
@@ -228,17 +228,17 @@ async def test_reopen_multiple_issues(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_reopen_with_reason(bd_client):
+async def test_reopen_with_reason(beads_client):
     """Test reopening an issue with reason parameter."""
     # Create and close issue
-    created = await bd_client.create(
+    created = await beads_client.create(
         CreateIssueParams(title="Issue to reopen with reason", priority=1, issue_type="bug")
     )
-    await bd_client.close(CloseIssueParams(issue_id=created.id, reason="Done"))
+    await beads_client.close(CloseIssueParams(issue_id=created.id, reason="Done"))
 
     # Reopen with reason
     reopen_params = ReopenIssueParams(issue_ids=[created.id], reason="BG found a regression in production")
-    reopened_issues = await bd_client.reopen(reopen_params)
+    reopened_issues = await beads_client.reopen(reopen_params)
 
     assert len(reopened_issues) >= 1
     reopened = reopened_issues[0]
@@ -248,38 +248,38 @@ async def test_reopen_with_reason(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_add_dependency(bd_client):
-    """Test adding dependencies with real bd."""
+async def test_add_dependency(beads_client):
+    """Test adding dependencies with real beads."""
     # Create two issues
-    issue1 = await bd_client.create(CreateIssueParams(title="Issue 1", priority=1, issue_type="task"))
-    issue2 = await bd_client.create(CreateIssueParams(title="Issue 2", priority=1, issue_type="task"))
+    issue1 = await beads_client.create(CreateIssueParams(title="Issue 1", priority=1, issue_type="task"))
+    issue2 = await beads_client.create(CreateIssueParams(title="Issue 2", priority=1, issue_type="task"))
 
     # Add dependency: issue2 blocks issue1
     params = AddDependencyParams(issue_id=issue1.id, depends_on_id=issue2.id, dep_type="blocks")
-    await bd_client.add_dependency(params)
+    await beads_client.add_dependency(params)
 
     # Verify dependency by showing issue1
     show_params = ShowIssueParams(issue_id=issue1.id)
-    shown = await bd_client.show(show_params)
+    shown = await beads_client.show(show_params)
 
     assert len(shown.dependencies) > 0
     assert any(dep.id == issue2.id for dep in shown.dependencies)
 
 
 @pytest.mark.asyncio
-async def test_ready_work(bd_client):
-    """Test getting ready work with real bd."""
+async def test_ready_work(beads_client):
+    """Test getting ready work with real beads."""
     # Create issue with no dependencies (should be ready)
-    ready_issue = await bd_client.create(CreateIssueParams(title="Ready issue", priority=1, issue_type="task"))
+    ready_issue = await beads_client.create(CreateIssueParams(title="Ready issue", priority=1, issue_type="task"))
 
     # Create blocked issue
-    blocking_issue = await bd_client.create(
+    blocking_issue = await beads_client.create(
         CreateIssueParams(title="Blocking issue", priority=1, issue_type="task")
     )
-    blocked_issue = await bd_client.create(CreateIssueParams(title="Blocked issue", priority=1, issue_type="task"))
+    blocked_issue = await beads_client.create(CreateIssueParams(title="Blocked issue", priority=1, issue_type="task"))
 
     # Add blocking dependency
-    await bd_client.add_dependency(
+    await beads_client.add_dependency(
         AddDependencyParams(
             from_id=blocked_issue.id,
             to_id=blocking_issue.id,
@@ -289,7 +289,7 @@ async def test_ready_work(bd_client):
 
     # Get ready work
     params = ReadyWorkParams(limit=100)
-    ready_issues = await bd_client.ready(params)
+    ready_issues = await beads_client.ready(params)
 
     # ready_issue should be in ready work
     ready_ids = [issue.id for issue in ready_issues]
@@ -300,16 +300,16 @@ async def test_ready_work(bd_client):
 
 
 @pytest.mark.asyncio
-async def test_quickstart(bd_client):
-    """Test quickstart command with real bd."""
-    result = await bd_client.quickstart()
+async def test_quickstart(beads_client):
+    """Test quickstart command with real beads."""
+    result = await beads_client.quickstart()
 
     assert len(result) > 0
-    assert "beads" in result.lower() or "bd" in result.lower()
+    assert "beads" in result.lower() or "beads" in result.lower()
 
 
 @pytest.mark.asyncio
-async def test_create_with_labels(bd_client):
+async def test_create_with_labels(beads_client):
     """Test creating issue with labels."""
     params = CreateIssueParams(
         title="Issue with labels",
@@ -317,16 +317,16 @@ async def test_create_with_labels(bd_client):
         issue_type="feature",
         labels=["urgent", "backend"],
     )
-    created = await bd_client.create(params)
+    created = await beads_client.create(params)
 
-    # Note: bd currently doesn't return labels in JSON output
+    # Note: beads currently doesn't return labels in JSON output
     # This test verifies the command succeeds with labels parameter
     assert created.id is not None
     assert created.title == "Issue with labels"
 
 
 @pytest.mark.asyncio
-async def test_create_with_assignee(bd_client):
+async def test_create_with_assignee(beads_client):
     """Test creating issue with assignee."""
     params = CreateIssueParams(
         title="Assigned issue",
@@ -334,16 +334,16 @@ async def test_create_with_assignee(bd_client):
         issue_type="task",
         assignee="testuser",
     )
-    created = await bd_client.create(params)
+    created = await beads_client.create(params)
 
     assert created.assignee == "testuser"
 
 
 @pytest.mark.asyncio
-async def test_list_with_filters(bd_client):
+async def test_list_with_filters(beads_client):
     """Test listing issues with multiple filters."""
     # Create issues with different attributes
-    await bd_client.create(
+    await beads_client.create(
         CreateIssueParams(
             title="Bug P0",
             priority=0,
@@ -351,7 +351,7 @@ async def test_list_with_filters(bd_client):
             assignee="alice",
         )
     )
-    await bd_client.create(
+    await beads_client.create(
         CreateIssueParams(
             title="Feature P1",
             priority=1,
@@ -362,53 +362,53 @@ async def test_list_with_filters(bd_client):
 
     # Filter by priority
     params = ListIssuesParams(priority=0)
-    issues = await bd_client.list_issues(params)
+    issues = await beads_client.list_issues(params)
     assert all(issue.priority == 0 for issue in issues)
 
     # Filter by type
     params = ListIssuesParams(issue_type="bug")
-    issues = await bd_client.list_issues(params)
+    issues = await beads_client.list_issues(params)
     assert all(issue.issue_type == "bug" for issue in issues)
 
     # Filter by assignee
     params = ListIssuesParams(assignee="alice")
-    issues = await bd_client.list_issues(params)
+    issues = await beads_client.list_issues(params)
     assert all(issue.assignee == "alice" for issue in issues)
 
 
 @pytest.mark.asyncio
-async def test_invalid_issue_id(bd_client):
+async def test_invalid_issue_id(beads_client):
     """Test showing non-existent issue."""
     params = ShowIssueParams(issue_id="test-999")
 
-    with pytest.raises(BdCommandError, match="bd command failed"):
-        await bd_client.show(params)
+    with pytest.raises(BeadsCommandError, match="beads command failed"):
+        await beads_client.show(params)
 
 
 @pytest.mark.asyncio
-async def test_dependency_types(bd_client):
+async def test_dependency_types(beads_client):
     """Test different dependency types."""
-    issue1 = await bd_client.create(CreateIssueParams(title="Issue 1", priority=1, issue_type="task"))
-    issue2 = await bd_client.create(CreateIssueParams(title="Issue 2", priority=1, issue_type="task"))
+    issue1 = await beads_client.create(CreateIssueParams(title="Issue 1", priority=1, issue_type="task"))
+    issue2 = await beads_client.create(CreateIssueParams(title="Issue 2", priority=1, issue_type="task"))
 
     # Test related dependency
     params = AddDependencyParams(issue_id=issue1.id, depends_on_id=issue2.id, dep_type="related")
-    await bd_client.add_dependency(params)
+    await beads_client.add_dependency(params)
 
     # Verify
     show_params = ShowIssueParams(issue_id=issue1.id)
-    shown = await bd_client.show(show_params)
+    shown = await beads_client.show(show_params)
     assert len(shown.dependencies) > 0
 
 
 @pytest.mark.asyncio
-async def test_init_creates_beads_directory(bd_executable):
+async def test_init_creates_beads_directory(beads_executable):
     """Test that init creates .beads directory in current working directory.
 
     This is a critical test for the bug where init was using --db flag
     and creating the database in the wrong location.
     """
-    from beads_mcp.bd_client import BdClient
+    from beads_mcp.beads_client import BeadsClient
     from beads_mcp.models import InitParams
 
     # Create a temporary directory to test in
@@ -420,7 +420,7 @@ async def test_init_creates_beads_directory(bd_executable):
         assert not beads_dir.exists()
 
         # Create client WITHOUT beads_db set and WITH working_dir set to temp_dir
-        client = BdClient(bd_path=bd_executable, beads_db=None, working_dir=temp_dir)
+        client = BeadsClient(beads_path=beads_executable, beads_db=None, working_dir=temp_dir)
 
         # Initialize with custom prefix (no need to chdir!)
         params = InitParams(prefix="test")

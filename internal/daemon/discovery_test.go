@@ -17,7 +17,7 @@ func TestDiscoverDaemon(t *testing.T) {
 
 	// Start daemon
 	dbPath := filepath.Join(workspace, "test.db")
-	socketPath := filepath.Join(workspace, "bd.sock")
+	socketPath := filepath.Join(workspace, "beads.sock")
 	store, err := sqlite.New(dbPath)
 	if err != nil {
 		t.Fatalf("failed to create storage: %v", err)
@@ -55,7 +55,7 @@ func TestFindDaemonByWorkspace(t *testing.T) {
 
 	// Start daemon
 	dbPath := filepath.Join(workspace, "test.db")
-	socketPath := filepath.Join(workspace, "bd.sock")
+	socketPath := filepath.Join(workspace, "beads.sock")
 	store, err := sqlite.New(dbPath)
 	if err != nil {
 		t.Fatalf("failed to create storage: %v", err)
@@ -225,7 +225,7 @@ func TestDiscoverDaemons_Legacy(t *testing.T) {
 
 	// Start a test daemon
 	dbPath := filepath.Join(beadsDir, "test.db")
-	socketPath := filepath.Join(beadsDir, "bd.sock")
+	socketPath := filepath.Join(beadsDir, "beads.sock")
 	store, err := sqlite.New(dbPath)
 	if err != nil {
 		t.Fatalf("failed to create storage: %v", err)

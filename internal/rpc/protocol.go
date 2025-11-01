@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// Operation constants for all bd commands
+// Operation constants for all beads commands
 const (
 	OpPing        = "ping"
 	OpStatus      = "status"

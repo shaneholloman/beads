@@ -15,11 +15,11 @@ func TestGetReadyWork(t *testing.T) {
 	ctx := context.Background()
 
 	// Create issues:
-	// bd-1: open, no dependencies → READY
-	// bd-2: open, depends on bd-1 (open) → BLOCKED
-	// bd-3: open, no dependencies → READY
-	// bd-4: closed, no dependencies → NOT READY (closed)
-	// bd-5: open, depends on bd-4 (closed) → READY (blocker is closed)
+	// beads-1: open, no dependencies → READY
+	// beads-2: open, depends on beads-1 (open) → BLOCKED
+	// beads-3: open, no dependencies → READY
+	// beads-4: closed, no dependencies → NOT READY (closed)
+	// beads-5: open, depends on beads-4 (closed) → READY (blocker is closed)
 
 	issue1 := &types.Issue{Title: "Ready 1", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Blocked", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -44,7 +44,7 @@ func TestGetReadyWork(t *testing.T) {
 		t.Fatalf("GetReadyWork failed: %v", err)
 	}
 
-	// Should have 3 ready issues: bd-1, bd-3, bd-5
+	// Should have 3 ready issues: beads-1, beads-3, beads-5
 	if len(ready) != 3 {
 		t.Fatalf("Expected 3 ready issues, got %d", len(ready))
 	}
@@ -225,9 +225,9 @@ func TestGetBlockedIssues(t *testing.T) {
 	ctx := context.Background()
 
 	// Create issues:
-	// bd-1: open, no dependencies → not blocked
-	// bd-2: open, depends on bd-1 (open) → blocked by bd-1
-	// bd-3: open, depends on bd-1 and bd-2 (both open) → blocked by 2 issues
+	// beads-1: open, no dependencies → not blocked
+	// beads-2: open, depends on beads-1 (open) → blocked by beads-1
+	// beads-3: open, depends on beads-1 and beads-2 (both open) → blocked by 2 issues
 
 	issue1 := &types.Issue{Title: "Foundation", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Blocked by 1", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -760,10 +760,10 @@ func TestGetReadyWorkIncludesInProgress(t *testing.T) {
 	ctx := context.Background()
 
 	// Create issues:
-	// bd-1: open, no dependencies → READY
-	// bd-2: in_progress, no dependencies → READY (bd-165)
-	// bd-3: in_progress, depends on open issue → BLOCKED
-	// bd-4: closed, no dependencies → NOT READY (closed)
+	// beads-1: open, no dependencies → READY
+	// beads-2: in_progress, no dependencies → READY (beads-165)
+	// beads-3: in_progress, depends on open issue → BLOCKED
+	// beads-4: closed, no dependencies → NOT READY (closed)
 
 	issue1 := &types.Issue{Title: "Open Ready", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "In Progress Ready", Status: types.StatusInProgress, Priority: 2, IssueType: types.TypeEpic}
@@ -791,7 +791,7 @@ func TestGetReadyWorkIncludesInProgress(t *testing.T) {
 
 	// Should have 3 ready issues:
 	// - issue1 (open, no blockers)
-	// - issue2 (in_progress, no blockers) ← this is the key test case for bd-165
+	// - issue2 (in_progress, no blockers) ← this is the key test case for beads-165
 	// - issue4 (open blocker, but itself has no blockers so it's ready to work on)
 	if len(ready) != 3 {
 		t.Logf("Ready issues:")
@@ -811,7 +811,7 @@ func TestGetReadyWorkIncludesInProgress(t *testing.T) {
 		t.Errorf("Expected %s (open, no blockers) to be ready", issue1.ID)
 	}
 	if !readyIDs[issue2.ID] {
-		t.Errorf("Expected %s (in_progress, no blockers) to be ready - this is bd-165!", issue2.ID)
+		t.Errorf("Expected %s (in_progress, no blockers) to be ready - this is beads-165!", issue2.ID)
 	}
 	if !readyIDs[issue4.ID] {
 		t.Errorf("Expected %s (open blocker, but itself unblocked) to be ready", issue4.ID)

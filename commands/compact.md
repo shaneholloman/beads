@@ -12,11 +12,11 @@ Reduce database size by summarizing closed issues no longer actively referenced.
 
 ## Usage
 
-- **Preview candidates**: `bd compact --dry-run`
-- **Compact all eligible**: `bd compact --all`
-- **Compact specific issue**: `bd compact --id bd-42`
-- **Force compact**: `bd compact --id bd-42 --force` (bypass age checks)
-- **View statistics**: `bd compact --stats`
+- **Preview candidates**: `beads compact --dry-run`
+- **Compact all eligible**: `beads compact --all`
+- **Compact specific issue**: `beads compact --id beads-42`
+- **Force compact**: `beads compact --id beads-42 --force` (bypass age checks)
+- **View statistics**: `beads compact --stats`
 
 ## Options
 
@@ -26,6 +26,6 @@ Reduce database size by summarizing closed issues no longer actively referenced.
 
 ## Important
 
-This is **permanent graceful decay** - original content is discarded. Use `bd restore <id>` to view full history from git if needed.
+This is **permanent graceful decay** - original content is discarded. Use `beads restore <id>` to view full history from git if needed.
 
 Useful for long-running projects to keep database size manageable.

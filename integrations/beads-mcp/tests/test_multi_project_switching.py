@@ -92,7 +92,7 @@ class TestConcurrentMultiProject:
             """Call ready with workspace context set."""
             token = current_workspace.set(workspace)
             try:
-                with patch("beads_mcp.tools.create_bd_client", side_effect=lambda **kwargs: get_mock(kwargs["working_dir"])):
+                with patch("beads_mcp.tools.create_beads_client", side_effect=lambeadsa **kwargs: get_mock(kwargs["working_dir"])):
                     return await beads_ready_work()
             finally:
                 current_workspace.reset(token)
@@ -127,7 +127,7 @@ class TestConcurrentMultiProject:
             """Call ready with workspace context set."""
             token = current_workspace.set(workspace)
             try:
-                with patch("beads_mcp.tools.create_bd_client", side_effect=lambda **kwargs: get_mock(kwargs["working_dir"])):
+                with patch("beads_mcp.tools.create_beads_client", side_effect=lambeadsa **kwargs: get_mock(kwargs["working_dir"])):
                     return await beads_ready_work()
             finally:
                 current_workspace.reset(token)
@@ -167,7 +167,7 @@ class TestConcurrentMultiProject:
                     time.sleep(0.01)  # Simulate slow creation
                     return get_mock(kwargs["working_dir"])
                 
-                with patch("beads_mcp.tools.create_bd_client", side_effect=slow_create):
+                with patch("beads_mcp.tools.create_beads_client", side_effect=slow_create):
                     return await beads_ready_work()
             finally:
                 current_workspace.reset(token)
@@ -306,7 +306,7 @@ class TestCrossProjectIsolation:
         async def list_from_project(workspace: str):
             token = current_workspace.set(workspace)
             try:
-                with patch("beads_mcp.tools.create_bd_client", side_effect=create_client_with_data):
+                with patch("beads_mcp.tools.create_beads_client", side_effect=create_client_with_data):
                     return await beads_list_issues()
             finally:
                 current_workspace.reset(token)
@@ -329,7 +329,7 @@ class TestCrossProjectIsolation:
             """Random call to project."""
             token = current_workspace.set(workspace)
             try:
-                with patch("beads_mcp.tools.create_bd_client", side_effect=lambda **kwargs: get_mock(kwargs["working_dir"])):
+                with patch("beads_mcp.tools.create_beads_client", side_effect=lambeadsa **kwargs: get_mock(kwargs["working_dir"])):
                     # Alternate between ready and list calls
                     if call_id % 2 == 0:
                         return await beads_ready_work()
@@ -409,7 +409,7 @@ class TestContextVarBehavior:
         
         try:
             # ContextVar not set, should use env
-            with patch("beads_mcp.tools.create_bd_client") as mock_create:
+            with patch("beads_mcp.tools.create_beads_client") as mock_create:
                 mock_client = AsyncMock()
                 mock_client.ready = AsyncMock(return_value=[])
                 mock_create.return_value = mock_client
@@ -436,7 +436,7 @@ class TestEdgeCases:
         
         # No ContextVar set, no env var
         with pytest.raises(Exception) as exc_info:
-            with patch("beads_mcp.tools.create_bd_client") as mock_create:
+            with patch("beads_mcp.tools.create_beads_client") as mock_create:
                 await beads_ready_work()
         
         assert "No workspace set" in str(exc_info.value)

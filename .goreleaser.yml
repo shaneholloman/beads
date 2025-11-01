@@ -9,9 +9,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: bd
-    main: ./cmd/bd
-    binary: bd
+  - id: beads
+    main: ./cmd/beads
+    binary: beads
     env:
       - CGO_ENABLED=0
     goos:
@@ -27,7 +27,7 @@ builds:
       - -X main.Build={{.ShortCommit}}
 
 archives:
-  - id: bd-archive
+  - id: beads-archive
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:

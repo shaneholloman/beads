@@ -1,10 +1,10 @@
-# Extending bd with Custom Tables
+# Extending beads with Custom Tables
 
-bd is designed to be extended by applications that need more than basic issue tracking. The recommended pattern is to add your own tables to the same SQLite database that bd uses.
+beads is designed to be extended by applications that need more than basic issue tracking. The recommended pattern is to add your own tables to the same SQLite database that beads uses.
 
 ## Philosophy
 
-**bd is focused** - It tracks issues, dependencies, and ready work. That's it.
+**beads is focused** - It tracks issues, dependencies, and ready work. That's it.
 
 **Your application adds orchestration** - Execution state, agent assignments, retry logic, etc.
 
@@ -95,14 +95,14 @@ func InitializeMyAppSchema(dbPath string) error {
 }
 ```
 
-### 2. Use bd for Issue Management
+### 2. Use beads for Issue Management
 
 ```go
 import (
     "github.com/shaneholloman/beads"
 )
 
-// Open bd's storage
+// Open beads's storage
 store, err := beads.NewSQLiteStorage(dbPath)
 if err != nil {
     log.Fatal(err)
@@ -113,7 +113,7 @@ if err := InitializeMyAppSchema(dbPath); err != nil {
     log.Fatal(err)
 }
 
-// Use bd to find ready work
+// Use beads to find ready work
 readyIssues, err := store.GetReadyWork(ctx, beads.WorkFilter{Limit: 10})
 if err != nil {
     log.Fatal(err)
@@ -136,7 +136,7 @@ for _, issue := range readyIssues {
 ### 3. Query Across Layers
 
 ```go
-// Complex query joining bd's issues with your execution data
+// Complex query joining beads's issues with your execution data
 query := `
 SELECT
     i.id,
@@ -162,7 +162,7 @@ rows, err := db.Query(query)
 
 ## Real-World Example: VC Orchestrator
 
-Here's how the VC (VibeCoder) orchestrator extends bd using `UnderlyingDB()`:
+Here's how the VC (VibeCoder) orchestrator extends beads using `UnderlyingDB()`:
 
 ```go
 package vc
@@ -174,12 +174,12 @@ import (
 )
 
 type VCStorage struct {
-    beads.Storage  // Embed bd's storage
+    beads.Storage  // Embed beads's storage
     db *sql.DB     // Cache the underlying DB
 }
 
 func NewVCStorage(dbPath string) (*VCStorage, error) {
-    // Open bd's storage
+    // Open beads's storage
     store, err := beads.NewSQLiteStorage(dbPath)
     if err != nil {
         return nil, err
@@ -265,11 +265,11 @@ func (vc *VCStorage) ClaimReadyWork(agentName string) (*ExecutorInstance, error)
 
 **Key benefits of this approach:**
 
-- ✔ VC extends bd without forking or modifying it
+- ✔ VC extends beads without forking or modifying it
 - ✔ Single database = simple JOINs across layers
 - ✔ Foreign keys ensure referential integrity
-- ✔ bd handles issue tracking, VC handles orchestration
-- ✔ Can use bd's CLI alongside VC's custom operations
+- ✔ beads handles issue tracking, VC handles orchestration
+- ✔ Can use beads's CLI alongside VC's custom operations
 
 ## Best Practices
 
@@ -321,7 +321,7 @@ CREATE INDEX idx_executions_status_priority
 ON myapp_executions(status, issue_id);
 ```
 
-### 4. Don't Duplicate bd's Data
+### 4. Don't Duplicate beads's Data
 
 Don't copy fields from `issues` into your tables. Instead, join:
 
@@ -430,13 +430,13 @@ ORDER BY created_at DESC;
 
 ## Programmatic Access
 
-Use bd's `--json` flags for scripting:
+Use beads's `--json` flags for scripting:
 
 ```bash
 #!/bin/bash
 
 # Find ready work
-READY=$(bd ready --limit 1 --json)
+READY=$(beads ready --limit 1 --json)
 ISSUE_ID=$(echo $READY | jq -r '.[0].id')
 
 if [ "$ISSUE_ID" = "null" ]; then
@@ -450,14 +450,14 @@ INSERT INTO myapp_executions (issue_id, agent_id, status, started_at)
 VALUES ('$ISSUE_ID', 'agent-1', 'running', datetime('now'));
 SQL
 
-# Claim issue in bd
-bd update $ISSUE_ID --status in_progress
+# Claim issue in beads
+beads update $ISSUE_ID --status in_progress
 
 # Execute work...
 echo "Working on $ISSUE_ID"
 
 # Mark complete
-bd close $ISSUE_ID --reason "Completed by agent-1"
+beads close $ISSUE_ID --reason "Completed by agent-1"
 sqlite3 .beads/myapp.db <<SQL
 UPDATE myapp_executions
 SET status = 'completed', completed_at = datetime('now')
@@ -469,7 +469,7 @@ SQL
 
 ### Using UnderlyingDB() (Recommended)
 
-The recommended way to extend bd is using the `UnderlyingDB()` method on the storage instance. This gives you access to the same database connection that bd uses, ensuring consistency and avoiding connection overhead:
+The recommended way to extend beads is using the `UnderlyingDB()` method on the storage instance. This gives you access to the same database connection that beads uses, ensuring consistency and avoiding connection overhead:
 
 ```go
 import (
@@ -478,7 +478,7 @@ import (
     _ "modernc.org/sqlite"
 )
 
-// Open bd's storage
+// Open beads's storage
 store, err := beads.NewSQLiteStorage(".beads/issues.db")
 if err != nil {
     log.Fatal(err)
@@ -504,7 +504,7 @@ if _, err := db.Exec(schema); err != nil {
     log.Fatal(err)
 }
 
-// Query bd's tables
+// Query beads's tables
 var title string
 var priority int
 err = db.QueryRow(`
@@ -530,13 +530,13 @@ rows, err := db.Query(`
 
 **WARNING: NEVER** close the database connection returned by `UnderlyingDB()`. The storage instance owns this connection.
 
-**WARNING: DO NOT** modify database pool settings (SetMaxOpenConns, SetConnMaxIdleTime) or SQLite PRAGMAs (WAL mode, journal settings) as this affects bd's core operations.
+**WARNING: DO NOT** modify database pool settings (SetMaxOpenConns, SetConnMaxIdleTime) or SQLite PRAGMAs (WAL mode, journal settings) as this affects beads's core operations.
 
-**WARNING: Keep transactions short** - Long write transactions will block bd's core operations. Use read transactions when possible.
+**WARNING: Keep transactions short** - Long write transactions will block beads's core operations. Use read transactions when possible.
 
 **WARNING: Expect errors after Close()** - Once you call `store.Close()`, operations on the underlying DB will fail. Use context cancellation to coordinate shutdown.
 
-✔ **DO** use foreign keys to reference bd's tables for referential integrity.
+✔ **DO** use foreign keys to reference beads's tables for referential integrity.
 
 ✔ **DO** namespace your tables with your app name (e.g., `myapp_executions`).
 
@@ -547,7 +547,7 @@ rows, err := db.Query(`
 **Use `UnderlyingDB()`:**
 
 - ✔ When you want to share the storage connection
-- ✔ When you need tables in the same database as bd
+- ✔ When you need tables in the same database as beads
 - ✔ When you want automatic lifecycle management
 - ✔ For most extension use cases (like VC)
 
@@ -569,10 +569,10 @@ import (
     "github.com/shaneholloman/beads"
 )
 
-// Auto-discover bd's database path
+// Auto-discover beads's database path
 dbPath := beads.FindDatabasePath()
 if dbPath == "" {
-    log.Fatal("No bd database found. Run 'bd init' first.")
+    log.Fatal("No beads database found. Run 'beads init' first.")
 }
 
 // Open your own connection to the same database
@@ -586,7 +586,7 @@ defer db.Close()
 db.SetMaxOpenConns(10)
 db.SetConnMaxIdleTime(time.Minute)
 
-// Query bd's tables
+// Query beads's tables
 var title string
 var priority int
 err = db.QueryRow(`
@@ -609,7 +609,7 @@ import (
     "github.com/shaneholloman/beads/internal/types"
 )
 
-// Open bd's storage
+// Open beads's storage
 store, err := sqlite.New(".beads/issues.db")
 if err != nil {
     log.Fatal(err)
@@ -635,7 +635,7 @@ if err := store.CreateIssues(ctx, issues, "import"); err != nil {
     log.Fatal(err)
 }
 
-// REMOVED (bd-c7af): SyncAllCounters - no longer needed with hash IDs
+// REMOVED (beads-c7af): SyncAllCounters - no longer needed with hash IDs
 ```
 
 ### Performance Comparison
@@ -650,7 +650,7 @@ if err := store.CreateIssues(ctx, issues, "import"); err != nil {
 
 **Use `CreateIssue` (single issue):**
 
-- Interactive CLI commands (`bd create`)
+- Interactive CLI commands (`beads create`)
 - Single issue creation in your app
 - User-facing operations
 
@@ -672,7 +672,7 @@ func ImportFromExternal(externalIssues []ExternalIssue) error {
     }
     ctx := context.Background()
     
-    // Convert external format to bd format
+    // Convert external format to beads format
     issues := make([]*types.Issue, 0, len(externalIssues))
     for _, ext := range externalIssues {
         issue := &types.Issue{
@@ -698,7 +698,7 @@ func ImportFromExternal(externalIssues []ExternalIssue) error {
         return fmt.Errorf("batch create failed: %w", err)
     }
     
-    // REMOVED (bd-c7af): SyncAllCounters - no longer needed with hash IDs
+    // REMOVED (beads-c7af): SyncAllCounters - no longer needed with hash IDs
     
     return nil
 }
@@ -706,7 +706,7 @@ func ImportFromExternal(externalIssues []ExternalIssue) error {
 
 ## Summary
 
-The key insight: **bd is a focused issue tracker, not a framework**.
+The key insight: **beads is a focused issue tracker, not a framework**.
 
 By extending the database:
 
@@ -719,6 +719,6 @@ This pattern scales from simple scripts to complex orchestrators like VC.
 
 ## See Also
 
-- [README.md](../README.md) - Complete bd documentation
-- Run `bd quickstart` - Interactive tutorial
+- [README.md](../README.md) - Complete beads documentation
+- Run `beads quickstart` - Interactive tutorial
 - Check out VC's implementation at `github.com/shaneholloman/vc` for a real-world example

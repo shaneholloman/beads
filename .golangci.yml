@@ -63,11 +63,11 @@ issues:
         - gosec
       text: "G302.*0700|G301.*0750"
     # G306: Git hooks must be executable (0700)
-    - path: cmd/bd/init\.go
+    - path: cmd/beads/init\.go
       linters:
         - gosec
       text: "G306.*0700"
-    # G204: Safe subprocess launches (git show, bd daemon)
+    # G204: Safe subprocess launches (git show, beads daemon)
     - linters:
         - gosec
       text: 'G204.*git.*show|G204.*daemon'

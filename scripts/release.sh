@@ -77,13 +77,13 @@ echo ""
 # Step 1: Kill daemons
 echo -e "${YELLOW}Step 1/8: Killing running daemons...${NC}"
 if [ "$DRY_RUN" = true ]; then
-    echo "[DRY RUN] Would run: pkill -f 'bd.*daemon'"
+    echo "[DRY RUN] Would run: pkill -f 'beads.*daemon'"
 else
-    pkill -f "bd.*daemon" 2>/dev/null || true
+    pkill -f "beads.*daemon" 2>/dev/null || true
     sleep 1
-    if pgrep -lf "bd.*daemon" > /dev/null 2>&1; then
+    if pgrep -lf "beads.*daemon" > /dev/null 2>&1; then
         echo -e "${RED}✗ Daemons still running${NC}"
-        pgrep -lf "bd.*daemon"
+        pgrep -lf "beads.*daemon"
         exit 1
     fi
 fi
@@ -121,13 +121,13 @@ echo -e "${GREEN}✓ Version bumped and committed${NC}\n"
 # Step 4: Rebuild local binary
 echo -e "${YELLOW}Step 4/8: Rebuilding local binary...${NC}"
 if [ "$DRY_RUN" = true ]; then
-    echo "[DRY RUN] Would run: go build -o bd ./cmd/bd"
+    echo "[DRY RUN] Would run: go build -o beads ./cmd/beads"
 else
-    if ! go build -o bd ./cmd/bd; then
+    if ! go build -o beads ./cmd/beads; then
         echo -e "${RED}✗ Build failed${NC}"
         exit 1
     fi
-    BUILT_VERSION=$(./bd version 2>/dev/null | head -1)
+    BUILT_VERSION=$(./beads version 2>/dev/null | head -1)
     echo "Built version: $BUILT_VERSION"
 fi
 echo -e "${GREEN}✓ Binary rebuilt${NC}\n"
@@ -185,16 +185,16 @@ echo -e "${GREEN}✓ Homebrew formula updated${NC}\n"
 echo -e "${YELLOW}Step 8/8: Upgrading local Homebrew installation...${NC}"
 if [ "$DRY_RUN" = true ]; then
     echo "[DRY RUN] Would run: brew update"
-    echo "[DRY RUN] Would run: brew upgrade bd"
+    echo "[DRY RUN] Would run: brew upgrade beads"
 else
     brew update
     
-    # Check if bd is installed via brew
-    if brew list bd >/dev/null 2>&1; then
-        brew upgrade bd || brew reinstall bd
+    # Check if beads is installed via brew
+    if brew list beads >/dev/null 2>&1; then
+        brew upgrade beads || brew reinstall beads
     else
-        echo -e "${YELLOW}⚠ bd not installed via Homebrew, skipping upgrade${NC}"
-        echo "To install: brew install shaneholloman/beads/bd"
+        echo -e "${YELLOW}⚠ beads not installed via Homebrew, skipping upgrade${NC}"
+        echo "To install: brew install shaneholloman/beads/beads"
     fi
 fi
 echo -e "${GREEN}✓ Local installation upgraded${NC}\n"
@@ -205,7 +205,7 @@ echo -e "${GREEN}✓ Release Complete!${NC}\n"
 
 if [ "$DRY_RUN" = false ]; then
     echo "Verification:"
-    echo "  Installed version: $(bd version 2>/dev/null | head -1 || echo 'Error getting version')"
+    echo "  Installed version: $(beads version 2>/dev/null | head -1 || echo 'Error getting version')"
     echo ""
     echo "Next steps:"
     echo "  • GitHub Actions is building release binaries"

@@ -5,8 +5,8 @@
 MCP servers don't receive working directory context from AI clients (Claude Code/Amp), causing database routing issues:
 
 1. MCP server process starts with its own CWD
-2. `bd` uses tree-walking to discover databases based on CWD
-3. Without correct CWD, `bd` discovers wrong database or falls back to `~/.beads`
+2. `beads` uses tree-walking to discover databases based on CWD
+3. Without correct CWD, `beads` discovers wrong database or falls back to `~/.beads`
 4. Result: Issues get misrouted across repositories
 
 ## Current Implementation (Partial Solution)
@@ -17,7 +17,7 @@ We've added two new MCP tools to allow explicit context management:
 
 #### `set_context`
 
-Sets the workspace root directory for all bd operations.
+Sets the workspace root directory for all beads operations.
 
 **Parameters:**
 
@@ -91,14 +91,14 @@ AI clients would need to:
 1. Call `set_context` at session start with workspace root
 2. MCP protocol would need to support persistent session state
 
-**Option 3: Daemon with RPC (Future - Path 1.5 from bd-105)**
+**Option 3: Daemon with RPC (Future - Path 1.5 from beads-105)**
 
 - Add `cwd` parameter to daemon RPC protocol
 - Daemon performs tree-walking per request
 - MCP server passes workspace_root via RPC
 - Benefits: Centralized routing, supports multiple contexts per daemon
 
-**Option 4: Advanced Routing Daemon (Future - Path 2 from bd-105)**
+**Option 4: Advanced Routing Daemon (Future - Path 2 from beads-105)**
 For >50 repos:
 
 - Dedicated routing daemon with repo→DB mappings
@@ -120,6 +120,6 @@ uv run pytest tests/test_mcp_server_integration.py -v
 
 ## Future Work
 
-See [bd-105](https://github.com/shaneholloman/beads/issues/105) for full architectural analysis and roadmap.
+See [beads-105](https://github.com/shaneholloman/beads/issues/105) for full architectural analysis and roadmap.
 
 Priority: P0/P1 - Active data corruption risk in multi-repo setups.

@@ -181,7 +181,7 @@ func TestGetEventsEmpty(t *testing.T) {
 	ctx := context.Background()
 
 	// Get events for non-existent issue
-	events, err := store.GetEvents(ctx, "bd-999", 0)
+	events, err := store.GetEvents(ctx, "beads-999", 0)
 	if err != nil {
 		t.Fatalf("GetEvents failed: %v", err)
 	}

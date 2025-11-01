@@ -53,7 +53,7 @@ func TestRequestSerialization(t *testing.T) {
 func TestResponseSerialization(t *testing.T) {
 	resp := Response{
 		Success: true,
-		Data:    json.RawMessage(`{"id":"bd-1","title":"Test"}`),
+		Data:    json.RawMessage(`{"id":"beads-1","title":"Test"}`),
 	}
 
 	respJSON, err := json.Marshal(resp)
@@ -146,7 +146,7 @@ func TestAllOperations(t *testing.T) {
 func TestUpdateArgsWithNilValues(t *testing.T) {
 	title := "New Title"
 	args := UpdateArgs{
-		ID:    "bd-1",
+		ID:    "beads-1",
 		Title: &title,
 	}
 

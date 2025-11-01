@@ -42,7 +42,7 @@ func TestPrefixValidation(t *testing.T) {
 		},
 		{
 			name:    "invalid prefix - wrong prefix",
-			issueID: "bd-456",
+			issueID: "beads-456",
 			wantErr: true,
 		},
 		{

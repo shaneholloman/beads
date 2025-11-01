@@ -197,7 +197,7 @@ func TestGetDependents(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Create issues: bd-2 and bd-3 both depend on bd-1
+	// Create issues: beads-2 and beads-3 both depend on beads-1
 	issue1 := &types.Issue{Title: "Foundation", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Feature A", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue3 := &types.Issue{Title: "Feature B", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -236,7 +236,7 @@ func TestGetDependencyTree(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Create a chain: bd-3 → bd-2 → bd-1
+	// Create a chain: beads-3 → beads-2 → beads-1
 	issue1 := &types.Issue{Title: "Level 0", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Level 1", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue3 := &types.Issue{Title: "Level 2", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -283,7 +283,7 @@ func TestGetDependencyTree_TruncationDepth(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Create a long chain: bd-5 → bd-4 → bd-3 → bd-2 → bd-1
+	// Create a long chain: beads-5 → beads-4 → beads-3 → beads-2 → beads-1
 	issues := make([]*types.Issue, 5)
 	for i := 0; i < 5; i++ {
 		issues[i] = &types.Issue{
@@ -377,7 +377,7 @@ func TestGetDependencyTree_MaxDepthOne(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Create a chain: bd-3 → bd-2 → bd-1
+	// Create a chain: beads-3 → beads-2 → beads-1
 	issue1 := &types.Issue{Title: "Level 2", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Level 1", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue3 := &types.Issue{Title: "Root", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -438,7 +438,7 @@ func TestDetectCycles(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Try to create a cycle: bd-1 → bd-2 → bd-3 → bd-1
+	// Try to create a cycle: beads-1 → beads-2 → beads-3 → beads-1
 	// This should be prevented by AddDependency
 	issue1 := &types.Issue{Title: "First", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
 	issue2 := &types.Issue{Title: "Second", Status: types.StatusOpen, Priority: 1, IssueType: types.TypeTask}
@@ -807,9 +807,9 @@ func TestGetDependencyTree_SubstringBug(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Create 10 issues so we have both bd-1 and bd-10 (substring issue)
-	// The bug: when traversing from bd-10, bd-1 gets incorrectly excluded
-	// because "bd-10" contains "bd-1" as a substring
+	// Create 10 issues so we have both beads-1 and beads-10 (substring issue)
+	// The bug: when traversing from beads-10, beads-1 gets incorrectly excluded
+	// because "beads-10" contains "beads-1" as a substring
 	issues := make([]*types.Issue, 10)
 	for i := 0; i < 10; i++ {
 		issues[i] = &types.Issue{
@@ -824,45 +824,45 @@ func TestGetDependencyTree_SubstringBug(t *testing.T) {
 		}
 	}
 
-	// Create chain: bd-10 → bd-9 → bd-8 → bd-2 → bd-1
-	// This tests the substring bug where bd-1 should appear but won't due to substring matching
+	// Create chain: beads-10 → beads-9 → beads-8 → beads-2 → beads-1
+	// This tests the substring bug where beads-1 should appear but won't due to substring matching
 	err := store.AddDependency(ctx, &types.Dependency{
-		IssueID:     issues[9].ID, // bd-10
-		DependsOnID: issues[8].ID, // bd-9
+		IssueID:     issues[9].ID, // beads-10
+		DependsOnID: issues[8].ID, // beads-9
 		Type:        types.DepBlocks,
 	}, "test-user")
 	if err != nil {
-		t.Fatalf("AddDependency bd-10→bd-9 failed: %v", err)
+		t.Fatalf("AddDependency beads-10→beads-9 failed: %v", err)
 	}
 
 	err = store.AddDependency(ctx, &types.Dependency{
-		IssueID:     issues[8].ID, // bd-9
-		DependsOnID: issues[7].ID, // bd-8
+		IssueID:     issues[8].ID, // beads-9
+		DependsOnID: issues[7].ID, // beads-8
 		Type:        types.DepBlocks,
 	}, "test-user")
 	if err != nil {
-		t.Fatalf("AddDependency bd-9→bd-8 failed: %v", err)
+		t.Fatalf("AddDependency beads-9→beads-8 failed: %v", err)
 	}
 
 	err = store.AddDependency(ctx, &types.Dependency{
-		IssueID:     issues[7].ID, // bd-8
-		DependsOnID: issues[1].ID, // bd-2
+		IssueID:     issues[7].ID, // beads-8
+		DependsOnID: issues[1].ID, // beads-2
 		Type:        types.DepBlocks,
 	}, "test-user")
 	if err != nil {
-		t.Fatalf("AddDependency bd-8→bd-2 failed: %v", err)
+		t.Fatalf("AddDependency beads-8→beads-2 failed: %v", err)
 	}
 
 	err = store.AddDependency(ctx, &types.Dependency{
-		IssueID:     issues[1].ID, // bd-2
-		DependsOnID: issues[0].ID, // bd-1
+		IssueID:     issues[1].ID, // beads-2
+		DependsOnID: issues[0].ID, // beads-1
 		Type:        types.DepBlocks,
 	}, "test-user")
 	if err != nil {
-		t.Fatalf("AddDependency bd-2→bd-1 failed: %v", err)
+		t.Fatalf("AddDependency beads-2→beads-1 failed: %v", err)
 	}
 
-	// Get tree starting from bd-10
+	// Get tree starting from beads-10
 	tree, err := store.GetDependencyTree(ctx, issues[9].ID, 10, false, false)
 	if err != nil {
 		t.Fatalf("GetDependencyTree failed: %v", err)
@@ -875,9 +875,9 @@ func TestGetDependencyTree_SubstringBug(t *testing.T) {
 	}
 
 	// Verify all issues in the chain appear in the tree
-	// This is the KEY test: bd-1 should be in the tree
-	// With the substring bug, bd-1 will be missing because "bd-10" contains "bd-1"
-	expectedIssues := []int{9, 8, 7, 1, 0} // bd-10, bd-9, bd-8, bd-2, bd-1
+	// This is the KEY test: beads-1 should be in the tree
+	// With the substring bug, beads-1 will be missing because "beads-10" contains "beads-1"
+	expectedIssues := []int{9, 8, 7, 1, 0} // beads-10, beads-9, beads-8, beads-2, beads-1
 	for _, idx := range expectedIssues {
 		if !treeIDs[issues[idx].ID] {
 			t.Errorf("Expected %s in dependency tree, but it was missing (substring bug)", issues[idx].ID)
@@ -895,11 +895,11 @@ func TestGetDependencyTree_SubstringBug(t *testing.T) {
 		depthMap[node.ID] = node.Depth
 	}
 
-	// Check depths: bd-10(0) → bd-9(1) → bd-8(2) → bd-2(3) → bd-1(4)
+	// Check depths: beads-10(0) → beads-9(1) → beads-8(2) → beads-2(3) → beads-1(4)
 	if depthMap[issues[9].ID] != 0 {
-		t.Errorf("Expected bd-10 at depth 0, got %d", depthMap[issues[9].ID])
+		t.Errorf("Expected beads-10 at depth 0, got %d", depthMap[issues[9].ID])
 	}
 	if depthMap[issues[0].ID] != 4 {
-		t.Errorf("Expected bd-1 at depth 4, got %d", depthMap[issues[0].ID])
+		t.Errorf("Expected beads-1 at depth 4, got %d", depthMap[issues[0].ID])
 	}
 }

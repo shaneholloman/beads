@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Install bd git hooks
+# Install beads git hooks
 #
-# This script copies the bd git hooks to your .git/hooks directory
+# This script copies the beads git hooks to your .git/hooks directory
 # and makes them executable.
 #
 # Usage:
@@ -17,10 +17,10 @@ if [ ! -d .git ]; then
     exit 1
 fi
 
-# Check if we're in a bd workspace
+# Check if we're in a beads workspace
 if [ ! -d .beads ]; then
-    echo "Error: Not in a bd workspace" >&2
-    echo "Run 'bd init' first" >&2
+    echo "Error: Not in a beads workspace" >&2
+    echo "Run 'beads init' first" >&2
     exit 1
 fi
 
@@ -30,7 +30,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Hooks to install
 HOOKS="pre-commit post-merge"
 
-echo "Installing bd git hooks..."
+echo "Installing beads git hooks..."
 
 for hook in $HOOKS; do
     src="$SCRIPT_DIR/$hook"
@@ -58,7 +58,7 @@ echo ""
 echo "✓ Git hooks installed successfully"
 echo ""
 echo "Hooks installed:"
-echo "  pre-commit  - Flushes pending bd changes to JSONL before commit"
+echo "  pre-commit  - Flushes pending beads changes to JSONL before commit"
 echo "  post-merge  - Imports updated JSONL after git pull/merge"
 echo ""
 echo "To uninstall, remove .git/hooks/pre-commit and .git/hooks/post-merge"

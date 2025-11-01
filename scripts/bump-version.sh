@@ -35,7 +35,7 @@ validate_version() {
 
 # Get current version from version.go
 get_current_version() {
-    grep 'Version = ' cmd/bd/version.go | sed 's/.*"\(.*\)".*/\1/'
+    grep 'Version = ' cmd/beads/version.go | sed 's/.*"\(.*\)".*/\1/'
 }
 
 # Update a file with sed (cross-platform compatible)
@@ -77,7 +77,7 @@ main() {
     echo ""
 
     # Check if we're in the repo root
-    if [ ! -f "cmd/bd/version.go" ]; then
+    if [ ! -f "cmd/beads/version.go" ]; then
         echo -e "${RED}Error: Must run from repository root${NC}"
         exit 1
     fi
@@ -92,9 +92,9 @@ main() {
 
     echo "Updating version files..."
 
-    # 1. Update cmd/bd/version.go - use regex to match any version
-    echo "  • cmd/bd/version.go"
-    update_file "cmd/bd/version.go" \
+    # 1. Update cmd/beads/version.go - use regex to match any version
+    echo "  • cmd/beads/version.go"
+    update_file "cmd/beads/version.go" \
         'Version = "[0-9]+\.[0-9]+\.[0-9]+"' \
         "Version = \"$NEW_VERSION\""
 
@@ -125,8 +125,8 @@ main() {
     # 6. Update docs/plugin.md version requirements - use regex
     echo "  • docs/plugin.md"
     update_file "docs/plugin.md" \
-        'Plugin [0-9]+\.[0-9]+\.[0-9]+ requires bd CLI [0-9]+\.[0-9]+\.[0-9]+\+' \
-        "Plugin $NEW_VERSION requires bd CLI $NEW_VERSION+"
+        'Plugin [0-9]+\.[0-9]+\.[0-9]+ requires beads CLI [0-9]+\.[0-9]+\.[0-9]+\+' \
+        "Plugin $NEW_VERSION requires beads CLI $NEW_VERSION+"
 
     echo ""
     echo -e "${GREEN}✓ Version updated to $NEW_VERSION${NC}"
@@ -140,7 +140,7 @@ main() {
     # Verify all versions match
     echo "Verifying version consistency..."
     VERSIONS=(
-        "$(grep 'Version = ' cmd/bd/version.go | sed 's/.*"\(.*\)".*/\1/')"
+        "$(grep 'Version = ' cmd/beads/version.go | sed 's/.*"\(.*\)".*/\1/')"
         "$(jq -r '.version' .claude-plugin/plugin.json)"
         "$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)"
         "$(grep 'version = ' integrations/beads-mcp/pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')"
@@ -168,7 +168,7 @@ main() {
     if [ "$AUTO_COMMIT" = true ]; then
         echo "Creating git commit..."
 
-        git add cmd/bd/version.go \
+        git add cmd/beads/version.go \
                 .claude-plugin/plugin.json \
                 .claude-plugin/marketplace.json \
                 integrations/beads-mcp/pyproject.toml \
@@ -178,7 +178,7 @@ main() {
         git commit -m "chore: Bump version to $NEW_VERSION
 
 Updated all component versions:
-- bd CLI: $CURRENT_VERSION → $NEW_VERSION
+- beads CLI: $CURRENT_VERSION → $NEW_VERSION
 - Plugin: $CURRENT_VERSION → $NEW_VERSION
 - MCP server: $CURRENT_VERSION → $NEW_VERSION
 - Documentation: $CURRENT_VERSION → $NEW_VERSION

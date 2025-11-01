@@ -23,7 +23,7 @@ from beads_mcp.tools import (
 
 @pytest.fixture(autouse=True)
 def mock_client():
-    """Mock the BdClient for all tests."""
+    """Mock the BeadsClient for all tests."""
     from beads_mcp import tools
 
     # Reset client before each test
@@ -37,7 +37,7 @@ def mock_client():
 def sample_issue():
     """Create a sample issue for testing."""
     return Issue(
-        id="bd-1",
+        id="beads-1",
         title="Test issue",
         description="Test description",
         status="open",
@@ -58,7 +58,7 @@ async def test_beads_ready_work(sample_issue):
         issues = await beads_ready_work(limit=10, priority=1)
 
     assert len(issues) == 1
-    assert issues[0].id == "bd-1"
+    assert issues[0].id == "beads-1"
     mock_client.ready.assert_called_once()
 
 
@@ -85,7 +85,7 @@ async def test_beads_list_issues(sample_issue):
         issues = await beads_list_issues(status="open", priority=1)
 
     assert len(issues) == 1
-    assert issues[0].id == "bd-1"
+    assert issues[0].id == "beads-1"
     mock_client.list_issues.assert_called_once()
 
 
@@ -96,9 +96,9 @@ async def test_beads_show_issue(sample_issue):
     mock_client.show = AsyncMock(return_value=sample_issue)
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
-        issue = await beads_show_issue(issue_id="bd-1")
+        issue = await beads_show_issue(issue_id="beads-1")
 
-    assert issue.id == "bd-1"
+    assert issue.id == "beads-1"
     assert issue.title == "Test issue"
     mock_client.show.assert_called_once()
 
@@ -117,7 +117,7 @@ async def test_beads_create_issue(sample_issue):
             issue_type="feature",
         )
 
-    assert issue.id == "bd-1"
+    assert issue.id == "beads-1"
     mock_client.create.assert_called_once()
 
 
@@ -132,7 +132,7 @@ async def test_beads_create_issue_with_labels(sample_issue):
             title="New issue", labels=["bug", "urgent"]
         )
 
-    assert issue.id == "bd-1"
+    assert issue.id == "beads-1"
     mock_client.create.assert_called_once()
 
 
@@ -146,7 +146,7 @@ async def test_beads_update_issue(sample_issue):
     mock_client.update = AsyncMock(return_value=updated_issue)
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
-        issue = await beads_update_issue(issue_id="bd-1", status="in_progress")
+        issue = await beads_update_issue(issue_id="beads-1", status="in_progress")
 
     assert issue.status == "in_progress"
     mock_client.update.assert_called_once()
@@ -162,7 +162,7 @@ async def test_beads_close_issue(sample_issue):
     mock_client.close = AsyncMock(return_value=[closed_issue])
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
-        issues = await beads_close_issue(issue_id="bd-1", reason="Completed")
+        issues = await beads_close_issue(issue_id="beads-1", reason="Completed")
 
     assert len(issues) == 1
     assert issues[0].status == "closed"
@@ -179,7 +179,7 @@ async def test_beads_reopen_issue(sample_issue):
     mock_client.reopen = AsyncMock(return_value=[reopened_issue])
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
-        issues = await beads_reopen_issue(issue_ids=["bd-1"])
+        issues = await beads_reopen_issue(issue_ids=["beads-1"])
 
     assert len(issues) == 1
     assert issues[0].status == "open"
@@ -191,16 +191,16 @@ async def test_beads_reopen_issue(sample_issue):
 async def test_beads_reopen_multiple_issues(sample_issue):
     """Test beads_reopen_issue with multiple issues."""
     reopened_issue1 = sample_issue.model_copy(
-        update={"id": "bd-1", "status": "open", "closed_at": None}
+        update={"id": "beads-1", "status": "open", "closed_at": None}
     )
     reopened_issue2 = sample_issue.model_copy(
-        update={"id": "bd-2", "status": "open", "closed_at": None}
+        update={"id": "beads-2", "status": "open", "closed_at": None}
     )
     mock_client = AsyncMock()
     mock_client.reopen = AsyncMock(return_value=[reopened_issue1, reopened_issue2])
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
-        issues = await beads_reopen_issue(issue_ids=["bd-1", "bd-2"])
+        issues = await beads_reopen_issue(issue_ids=["beads-1", "beads-2"])
 
     assert len(issues) == 2
     assert issues[0].status == "open"
@@ -220,7 +220,7 @@ async def test_beads_reopen_issue_with_reason(sample_issue):
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         issues = await beads_reopen_issue(
-            issue_ids=["bd-1"], reason="Found regression"
+            issue_ids=["beads-1"], reason="Found regression"
         )
 
     assert len(issues) == 1
@@ -237,28 +237,28 @@ async def test_beads_add_dependency_success():
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         result = await beads_add_dependency(
-            issue_id="bd-2", depends_on_id="bd-1", dep_type="blocks"
+            issue_id="beads-2", depends_on_id="beads-1", dep_type="blocks"
         )
 
     assert "Added dependency" in result
-    assert "bd-2" in result
-    assert "bd-1" in result
+    assert "beads-2" in result
+    assert "beads-1" in result
     mock_client.add_dependency.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_beads_add_dependency_error():
     """Test beads_add_dependency tool error handling."""
-    from beads_mcp.bd_client import BdError
+    from beads_mcp.beads_client import BeadsError
 
     mock_client = AsyncMock()
     mock_client.add_dependency = AsyncMock(
-        side_effect=BdError("Dependency already exists")
+        side_effect=BeadsError("Dependency already exists")
     )
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         result = await beads_add_dependency(
-            issue_id="bd-2", depends_on_id="bd-1", dep_type="blocks"
+            issue_id="beads-2", depends_on_id="beads-1", dep_type="blocks"
         )
 
     assert "Error" in result
@@ -290,28 +290,28 @@ async def test_client_lazy_initialization():
     # Verify client is None before first use
     assert tools._client is None
 
-    # Mock BdClient to avoid actual bd calls
+    # Mock BeadsClient to avoid actual beads calls
     mock_client_instance = AsyncMock()
     mock_client_instance.ready = AsyncMock(return_value=[])
 
-    with patch("beads_mcp.tools.BdClient") as MockBdClient:
-        MockBdClient.return_value = mock_client_instance
+    with patch("beads_mcp.tools.BeadsClient") as MockBeadsClient:
+        MockBeadsClient.return_value = mock_client_instance
 
         # First call should initialize client
         await beads_ready_work()
 
-        # Verify BdClient was instantiated
-        MockBdClient.assert_called_once()
+        # Verify BeadsClient was instantiated
+        MockBeadsClient.assert_called_once()
 
         # Verify client is now set
         assert tools._client is not None
 
         # Second call should reuse client
-        MockBdClient.reset_mock()
+        MockBeadsClient.reset_mock()
         await beads_ready_work()
 
-        # Verify BdClient was NOT called again
-        MockBdClient.assert_not_called()
+        # Verify BeadsClient was NOT called again
+        MockBeadsClient.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -348,7 +348,7 @@ async def test_update_issue_multiple_fields(sample_issue):
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         issue = await beads_update_issue(
-            issue_id="bd-1",
+            issue_id="beads-1",
             status="in_progress",
             priority=0,
             title="Updated title",
@@ -371,7 +371,7 @@ async def test_update_issue_routes_closed_to_close(sample_issue):
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         result = await beads_update_issue(
-            issue_id="bd-1",
+            issue_id="beads-1",
             status="closed",
             notes="Task completed"
         )
@@ -395,7 +395,7 @@ async def test_update_issue_routes_open_to_reopen(sample_issue):
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         result = await beads_update_issue(
-            issue_id="bd-1",
+            issue_id="beads-1",
             status="open",
             notes="Needs more work"
         )
@@ -435,7 +435,7 @@ async def test_beads_stats():
 async def test_beads_blocked():
     """Test beads_blocked tool."""
     blocked_issue = BlockedIssue(
-        id="bd-1",
+        id="beads-1",
         title="Blocked issue",
         description="",
         status="blocked",
@@ -444,7 +444,7 @@ async def test_beads_blocked():
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
         blocked_by_count=2,
-        blocked_by=["bd-2", "bd-3"],
+        blocked_by=["beads-2", "beads-3"],
     )
     mock_client = AsyncMock()
     mock_client.blocked = AsyncMock(return_value=[blocked_issue])
@@ -453,7 +453,7 @@ async def test_beads_blocked():
         result = await beads_blocked()
 
     assert len(result) == 1
-    assert result[0].id == "bd-1"
+    assert result[0].id == "beads-1"
     assert result[0].blocked_by_count == 2
     mock_client.blocked.assert_called_once()
 
@@ -461,12 +461,12 @@ async def test_beads_blocked():
 @pytest.mark.asyncio
 async def test_beads_init():
     """Test beads_init tool."""
-    init_output = "bd initialized successfully!"
+    init_output = "beads initialized successfully!"
     mock_client = AsyncMock()
     mock_client.init = AsyncMock(return_value=init_output)
 
     with patch("beads_mcp.tools._get_client", return_value=mock_client):
         result = await beads_init(prefix="test")
 
-    assert "bd initialized successfully!" in result
+    assert "beads initialized successfully!" in result
     mock_client.init.assert_called_once()

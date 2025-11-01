@@ -15,19 +15,19 @@ import (
 func TestHashIDs_MultiCloneConverge(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	bdPath, err := filepath.Abs("./bd")
+	beadsPath, err := filepath.Abs("./beads")
 	if err != nil {
-		t.Fatalf("Failed to get bd path: %v", err)
+		t.Fatalf("Failed to get beads path: %v", err)
 	}
-	if _, err := os.Stat(bdPath); err != nil {
-		t.Fatalf("bd binary not found at %s - run 'go build -o bd ./cmd/bd' first", bdPath)
+	if _, err := os.Stat(beadsPath); err != nil {
+		t.Fatalf("beads binary not found at %s - run 'go build -o beads ./cmd/beads' first", beadsPath)
 	}
 
 	// Setup remote and 3 clones
 	remoteDir := setupBareRepo(t, tmpDir)
-	cloneA := setupClone(t, tmpDir, remoteDir, "A", bdPath)
-	cloneB := setupClone(t, tmpDir, remoteDir, "B", bdPath)
-	cloneC := setupClone(t, tmpDir, remoteDir, "C", bdPath)
+	cloneA := setupClone(t, tmpDir, remoteDir, "A", beadsPath)
+	cloneB := setupClone(t, tmpDir, remoteDir, "B", beadsPath)
+	cloneC := setupClone(t, tmpDir, remoteDir, "C", beadsPath)
 
 	// Each clone creates unique issue (different content = different hash ID)
 	createIssueInClone(t, cloneA, "Issue from clone A")
@@ -36,18 +36,18 @@ func TestHashIDs_MultiCloneConverge(t *testing.T) {
 
 	// Sync in sequence: A -> B -> C
 	t.Log("Clone A syncing")
-	runCmdWithEnv(t, cloneA, map[string]string{"BEADS_NO_DAEMON": "1"}, "./bd", "sync")
+	runCmdWithEnv(t, cloneA, map[string]string{"BEADS_NO_DAEMON": "1"}, "./beads", "sync")
 
 	t.Log("Clone B syncing")
-	runCmdOutputWithEnvAllowError(t, cloneB, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./bd", "sync")
+	runCmdOutputWithEnvAllowError(t, cloneB, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./beads", "sync")
 
 	t.Log("Clone C syncing")
-	runCmdOutputWithEnvAllowError(t, cloneC, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./bd", "sync")
+	runCmdOutputWithEnvAllowError(t, cloneC, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./beads", "sync")
 
 	// Do multiple sync rounds to ensure convergence (issues propagate step-by-step)
 	for round := 0; round < 3; round++ {
 		for _, clone := range []string{cloneA, cloneB, cloneC} {
-			runCmdOutputWithEnvAllowError(t, clone, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./bd", "sync")
+			runCmdOutputWithEnvAllowError(t, clone, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./beads", "sync")
 		}
 	}
 
@@ -79,18 +79,18 @@ func TestHashIDs_MultiCloneConverge(t *testing.T) {
 func TestHashIDs_IdenticalContentDedup(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	bdPath, err := filepath.Abs("./bd")
+	beadsPath, err := filepath.Abs("./beads")
 	if err != nil {
-		t.Fatalf("Failed to get bd path: %v", err)
+		t.Fatalf("Failed to get beads path: %v", err)
 	}
-	if _, err := os.Stat(bdPath); err != nil {
-		t.Fatalf("bd binary not found at %s - run 'go build -o bd ./cmd/bd' first", bdPath)
+	if _, err := os.Stat(beadsPath); err != nil {
+		t.Fatalf("beads binary not found at %s - run 'go build -o beads ./cmd/beads' first", beadsPath)
 	}
 
 	// Setup remote and 2 clones
 	remoteDir := setupBareRepo(t, tmpDir)
-	cloneA := setupClone(t, tmpDir, remoteDir, "A", bdPath)
-	cloneB := setupClone(t, tmpDir, remoteDir, "B", bdPath)
+	cloneA := setupClone(t, tmpDir, remoteDir, "A", beadsPath)
+	cloneB := setupClone(t, tmpDir, remoteDir, "B", beadsPath)
 
 	// Both clones create identical issue (same content = same hash ID)
 	createIssueInClone(t, cloneA, "Identical issue")
@@ -98,15 +98,15 @@ func TestHashIDs_IdenticalContentDedup(t *testing.T) {
 
 	// Sync both
 	t.Log("Clone A syncing")
-	runCmdWithEnv(t, cloneA, map[string]string{"BEADS_NO_DAEMON": "1"}, "./bd", "sync")
+	runCmdWithEnv(t, cloneA, map[string]string{"BEADS_NO_DAEMON": "1"}, "./beads", "sync")
 
 	t.Log("Clone B syncing")
-	runCmdOutputWithEnvAllowError(t, cloneB, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./bd", "sync")
+	runCmdOutputWithEnvAllowError(t, cloneB, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./beads", "sync")
 
 	// Do multiple sync rounds to ensure convergence
 	for round := 0; round < 2; round++ {
 		for _, clone := range []string{cloneA, cloneB} {
-			runCmdOutputWithEnvAllowError(t, clone, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./bd", "sync")
+			runCmdOutputWithEnvAllowError(t, clone, map[string]string{"BEADS_NO_DAEMON": "1"}, true, "./beads", "sync")
 		}
 	}
 
@@ -139,20 +139,20 @@ func setupBareRepo(t *testing.T, tmpDir string) string {
 	return remoteDir
 }
 
-func setupClone(t *testing.T, tmpDir, remoteDir, name, bdPath string) string {
+func setupClone(t *testing.T, tmpDir, remoteDir, name, beadsPath string) string {
 	t.Helper()
 	cloneDir := filepath.Join(tmpDir, "clone-"+strings.ToLower(name))
 	runCmd(t, tmpDir, "git", "clone", remoteDir, cloneDir)
-	copyFile(t, bdPath, filepath.Join(cloneDir, "bd"))
+	copyFile(t, beadsPath, filepath.Join(cloneDir, "beads"))
 
 	if name == "A" {
-		runCmd(t, cloneDir, "./bd", "init", "--quiet", "--prefix", "test")
+		runCmd(t, cloneDir, "./beads", "init", "--quiet", "--prefix", "test")
 		runCmd(t, cloneDir, "git", "add", ".beads")
 		runCmd(t, cloneDir, "git", "commit", "-m", "Initialize beads")
 		runCmd(t, cloneDir, "git", "push", "origin", "main")
 	} else {
 		runCmd(t, cloneDir, "git", "pull", "origin", "main")
-		runCmd(t, cloneDir, "./bd", "init", "--quiet", "--prefix", "test")
+		runCmd(t, cloneDir, "./beads", "init", "--quiet", "--prefix", "test")
 	}
 
 	installGitHooks(t, cloneDir)
@@ -161,7 +161,7 @@ func setupClone(t *testing.T, tmpDir, remoteDir, name, bdPath string) string {
 
 func createIssueInClone(t *testing.T, cloneDir, title string) {
 	t.Helper()
-	runCmdWithEnv(t, cloneDir, map[string]string{"BEADS_NO_DAEMON": "1"}, "./bd", "create", title, "-t", "task", "-p", "1", "--json")
+	runCmdWithEnv(t, cloneDir, map[string]string{"BEADS_NO_DAEMON": "1"}, "./beads", "create", title, "-t", "task", "-p", "1", "--json")
 }
 
 func getTitlesFromClone(t *testing.T, cloneDir string) map[string]bool {
@@ -169,7 +169,7 @@ func getTitlesFromClone(t *testing.T, cloneDir string) map[string]bool {
 	listJSON := runCmdOutputWithEnv(t, cloneDir, map[string]string{
 		"BEADS_NO_DAEMON":   "1",
 		"BD_NO_AUTO_IMPORT": "1",
-	}, "./bd", "list", "--json")
+	}, "./beads", "list", "--json")
 
 	jsonStart := strings.Index(listJSON, "[")
 	if jsonStart == -1 {
@@ -219,12 +219,12 @@ func installGitHooks(t *testing.T, repoDir string) {
 	hooksDir := filepath.Join(repoDir, ".git", "hooks")
 
 	preCommit := `#!/bin/sh
-./bd --no-daemon export -o .beads/issues.jsonl >/dev/null 2>&1 || true
+./beads --no-daemon export -o .beads/issues.jsonl >/dev/null 2>&1 || true
 git add .beads/issues.jsonl >/dev/null 2>&1 || true
 exit 0
 `
 	postMerge := `#!/bin/sh
-./bd --no-daemon import -i .beads/issues.jsonl >/dev/null 2>&1 || true
+./beads --no-daemon import -i .beads/issues.jsonl >/dev/null 2>&1 || true
 exit 0
 `
 	os.WriteFile(filepath.Join(hooksDir, "pre-commit"), []byte(preCommit), 0755)

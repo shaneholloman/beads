@@ -17,7 +17,7 @@ func TestGetNextChildID(t *testing.T) {
 
 	// Create a parent issue with hash ID
 	parent := &types.Issue{
-		ID:          "bd-a3f8e9",
+		ID:          "beads-a3f8e9",
 		Title:       "Parent Epic",
 		Description: "Parent issue",
 		Status:      types.StatusOpen,
@@ -33,7 +33,7 @@ func TestGetNextChildID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetNextChildID failed: %v", err)
 	}
-	expectedID1 := "bd-a3f8e9.1"
+	expectedID1 := "beads-a3f8e9.1"
 	if childID1 != expectedID1 {
 		t.Errorf("expected %s, got %s", expectedID1, childID1)
 	}
@@ -43,7 +43,7 @@ func TestGetNextChildID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetNextChildID failed: %v", err)
 	}
-	expectedID2 := "bd-a3f8e9.2"
+	expectedID2 := "beads-a3f8e9.2"
 	if childID2 != expectedID2 {
 		t.Errorf("expected %s, got %s", expectedID2, childID2)
 	}
@@ -66,7 +66,7 @@ func TestGetNextChildID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetNextChildID failed for nested: %v", err)
 	}
-	expectedNested1 := "bd-a3f8e9.1.1"
+	expectedNested1 := "beads-a3f8e9.1.1"
 	if nestedID1 != expectedNested1 {
 		t.Errorf("expected %s, got %s", expectedNested1, nestedID1)
 	}
@@ -89,7 +89,7 @@ func TestGetNextChildID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetNextChildID failed for depth 3: %v", err)
 	}
-	expectedDeep1 := "bd-a3f8e9.1.1.1"
+	expectedDeep1 := "beads-a3f8e9.1.1.1"
 	if deepID1 != expectedDeep1 {
 		t.Errorf("expected %s, got %s", expectedDeep1, deepID1)
 	}
@@ -112,7 +112,7 @@ func TestGetNextChildID(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected error for depth 4, got nil")
 	}
-	if err != nil && err.Error() != "maximum hierarchy depth (3) exceeded for parent bd-a3f8e9.1.1.1" {
+	if err != nil && err.Error() != "maximum hierarchy depth (3) exceeded for parent beads-a3f8e9.1.1.1" {
 		t.Errorf("unexpected error message: %v", err)
 	}
 }
@@ -125,11 +125,11 @@ func TestGetNextChildID_ParentNotExists(t *testing.T) {
 	ctx := context.Background()
 
 	// Test: Attempt to get child ID for non-existent parent
-	_, err := store.GetNextChildID(ctx, "bd-nonexistent")
+	_, err := store.GetNextChildID(ctx, "beads-nonexistent")
 	if err == nil {
 		t.Errorf("expected error for non-existent parent, got nil")
 	}
-	if err != nil && err.Error() != "parent issue bd-nonexistent does not exist" {
+	if err != nil && err.Error() != "parent issue beads-nonexistent does not exist" {
 		t.Errorf("unexpected error message: %v", err)
 	}
 }
@@ -143,7 +143,7 @@ func TestCreateIssue_HierarchicalID(t *testing.T) {
 
 	// Create parent
 	parent := &types.Issue{
-		ID:          "bd-parent1",
+		ID:          "beads-parent1",
 		Title:       "Parent",
 		Description: "Parent issue",
 		Status:      types.StatusOpen,
@@ -156,7 +156,7 @@ func TestCreateIssue_HierarchicalID(t *testing.T) {
 
 	// Test: Create child with explicit hierarchical ID
 	child := &types.Issue{
-		ID:          "bd-parent1.1",
+		ID:          "beads-parent1.1",
 		Title:       "Child",
 		Description: "Child issue",
 		Status:      types.StatusOpen,
@@ -186,7 +186,7 @@ func TestCreateIssue_HierarchicalID_ParentNotExists(t *testing.T) {
 
 	// Test: Attempt to create child without parent
 	child := &types.Issue{
-		ID:          "bd-nonexistent.1",
+		ID:          "beads-nonexistent.1",
 		Title:       "Child",
 		Description: "Child issue",
 		Status:      types.StatusOpen,
@@ -197,7 +197,7 @@ func TestCreateIssue_HierarchicalID_ParentNotExists(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected error for child without parent, got nil")
 	}
-	if err != nil && err.Error() != "parent issue bd-nonexistent does not exist" {
+	if err != nil && err.Error() != "parent issue beads-nonexistent does not exist" {
 		t.Errorf("unexpected error message: %v", err)
 	}
 }

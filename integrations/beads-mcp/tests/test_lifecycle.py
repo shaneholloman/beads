@@ -102,7 +102,7 @@ async def test_client_registration_on_first_use():
     tools._client_registered = False
     
     # Get client (will create and register it)
-    with patch('beads_mcp.bd_client.create_bd_client') as mock_create:
+    with patch('beads_mcp.beads_client.create_beads_client') as mock_create:
         mock_client = MagicMock()
         mock_create.return_value = mock_client
         

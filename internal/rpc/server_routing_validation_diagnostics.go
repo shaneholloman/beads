@@ -48,11 +48,11 @@ func (s *Server) checkVersionCompatibility(clientVersion string) error {
 		cmp := semver.Compare(serverVer, clientVer)
 		if cmp < 0 {
 			// Daemon is older - needs upgrade
-			return fmt.Errorf("incompatible major versions: client %s, daemon %s. Daemon is older; upgrade and restart daemon: 'bd daemon --stop && bd daemon'",
+			return fmt.Errorf("incompatible major versions: client %s, daemon %s. Daemon is older; upgrade and restart daemon: 'beads daemon --stop && beads daemon'",
 				clientVersion, ServerVersion)
 		}
 		// Daemon is newer - client needs upgrade
-		return fmt.Errorf("incompatible major versions: client %s, daemon %s. Client is older; upgrade the bd CLI to match the daemon's major version",
+		return fmt.Errorf("incompatible major versions: client %s, daemon %s. Client is older; upgrade the beads CLI to match the daemon's major version",
 			clientVersion, ServerVersion)
 	}
 
@@ -60,7 +60,7 @@ func (s *Server) checkVersionCompatibility(clientVersion string) error {
 	cmp := semver.Compare(serverVer, clientVer)
 	if cmp < 0 {
 		// Server is older than client within same major version - may be missing features
-		return fmt.Errorf("version mismatch: daemon %s is older than client %s. Upgrade and restart daemon: 'bd daemon --stop && bd daemon'",
+		return fmt.Errorf("version mismatch: daemon %s is older than client %s. Upgrade and restart daemon: 'beads daemon --stop && beads daemon'",
 			ServerVersion, clientVersion)
 	}
 
@@ -134,7 +134,7 @@ func (s *Server) handleRequest(req *Request) Response {
 		}
 	}
 
-	// Check for stale JSONL and auto-import if needed (bd-160)
+	// Check for stale JSONL and auto-import if needed (beads-160)
 	// Skip for write operations that will trigger export anyway
 	// Skip for import operation itself to avoid recursion
 	if req.Operation != OpPing && req.Operation != OpHealth && req.Operation != OpMetrics &&

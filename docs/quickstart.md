@@ -6,23 +6,23 @@ Get up and running with Beads in 2 minutes.
 
 ```bash
 cd ~/src/beads
-go build -o bd ./cmd/bd
-./bd --help
+go build -o beads ./cmd/beads
+./beads --help
 ```
 
 ## Your First Issues
 
 ```bash
 # Create a few issues
-./bd create "Set up database" -p 1 -t task
-./bd create "Create API" -p 2 -t feature
-./bd create "Add authentication" -p 2 -t feature
+./beads create "Set up database" -p 1 -t task
+./beads create "Create API" -p 2 -t feature
+./beads create "Add authentication" -p 2 -t feature
 
 # List them
-./bd list
+./beads list
 ```
 
-**Note:** Issue IDs are hash-based (e.g., `bd-a1b2`, `bd-f14c`) to prevent collisions when multiple agents/branches work concurrently.
+**Note:** Issue IDs are hash-based (e.g., `beads-a1b2`, `beads-f14c`) to prevent collisions when multiple agents/branches work concurrently.
 
 ## Hierarchical Issues (Epics)
 
@@ -30,56 +30,56 @@ For large features, use hierarchical IDs to organize work:
 
 ```bash
 # Create epic (generates parent hash ID)
-./bd create "Auth System" -t epic -p 1
-# Returns: bd-a3f8e9
+./beads create "Auth System" -t epic -p 1
+# Returns: beads-a3f8e9
 
 # Create child tasks (automatically get .1, .2, .3 suffixes)
-./bd create "Design login UI" -p 1       # bd-a3f8e9.1
-./bd create "Backend validation" -p 1    # bd-a3f8e9.2
-./bd create "Integration tests" -p 1     # bd-a3f8e9.3
+./beads create "Design login UI" -p 1       # beads-a3f8e9.1
+./beads create "Backend validation" -p 1    # beads-a3f8e9.2
+./beads create "Integration tests" -p 1     # beads-a3f8e9.3
 
 # View hierarchy
-./bd dep tree bd-a3f8e9
+./beads dep tree beads-a3f8e9
 ```
 
 Output:
 
 ```
-Dependency tree for bd-a3f8e9:
+Dependency tree for beads-a3f8e9:
 
-→ bd-a3f8e9: Auth System [epic] [P1] (open)
-  → bd-a3f8e9.1: Design login UI [P1] (open)
-  → bd-a3f8e9.2: Backend validation [P1] (open)
-  → bd-a3f8e9.3: Integration tests [P1] (open)
+→ beads-a3f8e9: Auth System [epic] [P1] (open)
+  → beads-a3f8e9.1: Design login UI [P1] (open)
+  → beads-a3f8e9.2: Backend validation [P1] (open)
+  → beads-a3f8e9.3: Integration tests [P1] (open)
 ```
 
 ## Add Dependencies
 
 ```bash
 # API depends on database
-./bd dep add bd-2 bd-1
+./beads dep add beads-2 beads-1
 
 # Auth depends on API
-./bd dep add bd-3 bd-2
+./beads dep add beads-3 beads-2
 
 # View the tree
-./bd dep tree bd-3
+./beads dep tree beads-3
 ```
 
 Output:
 
 ```
-Dependency tree for bd-3:
+Dependency tree for beads-3:
 
-→ bd-3: Add authentication [P2] (open)
-  → bd-2: Create API [P2] (open)
-    → bd-1: Set up database [P1] (open)
+→ beads-3: Add authentication [P2] (open)
+  → beads-2: Create API [P2] (open)
+    → beads-1: Set up database [P1] (open)
 ```
 
 ## Find Ready Work
 
 ```bash
-./bd ready
+./beads ready
 ```
 
 Output:
@@ -87,34 +87,34 @@ Output:
 ```
 Ready work (1 issues with no blockers):
 
-1. [P1] bd-1: Set up database
+1. [P1] beads-1: Set up database
 ```
 
-Only bd-1 is ready because bd-2 and bd-3 are blocked!
+Only beads-1 is ready because beads-2 and beads-3 are blocked!
 
 ## Work the Queue
 
 ```bash
-# Start working on bd-1
-./bd update bd-1 --status in_progress
+# Start working on beads-1
+./beads update beads-1 --status in_progress
 
 # Complete it
-./bd close bd-1 --reason "Database setup complete"
+./beads close beads-1 --reason "Database setup complete"
 
 # Check ready work again
-./bd ready
+./beads ready
 ```
 
-Now bd-2 is ready!
+Now beads-2 is ready!
 
 ## Track Progress
 
 ```bash
 # See blocked issues
-./bd blocked
+./beads blocked
 
 # View statistics
-./bd stats
+./beads stats
 ```
 
 ## Database Location
@@ -124,29 +124,29 @@ By default: `~/.beads/default.db`
 You can use project-specific databases:
 
 ```bash
-./bd --db ./my-project.db create "Task"
+./beads --db ./my-project.db create "Task"
 ```
 
 ## Migrating Databases
 
-After upgrading bd, use `bd migrate` to check for and migrate old database files:
+After upgrading beads, use `beads migrate` to check for and migrate old database files:
 
 ```bash
 # Check for migration opportunities
-./bd migrate --dry-run
+./beads migrate --dry-run
 
 # Migrate old databases to beads.db
-./bd migrate
+./beads migrate
 
 # Migrate and clean up old files
-./bd migrate --cleanup --yes
+./beads migrate --cleanup --yes
 ```
 
 ## Next Steps
 
-- Add labels: `./bd create "Task" -l "backend,urgent"`
-- Filter ready work: `./bd ready --priority 1`
-- Search issues: `./bd list --status open`
-- Detect cycles: `./bd dep cycles`
+- Add labels: `./beads create "Task" -l "backend,urgent"`
+- Filter ready work: `./beads ready --priority 1`
+- Search issues: `./beads list --status open`
+- Detect cycles: `./beads dep cycles`
 
 See [README.md](../README.md) for full documentation.

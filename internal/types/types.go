@@ -1,4 +1,4 @@
-// Package types defines core data structures for the bd issue tracker.
+// Package types defines core data structures for the beads issue tracker.
 package types
 
 import (

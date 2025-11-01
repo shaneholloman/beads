@@ -4,7 +4,7 @@
 
 ## What This Provides
 
-An MCP server that exposes bd functionality to Claude Desktop and other MCP clients, allowing Claude to:
+An MCP server that exposes beads functionality to Claude Desktop and other MCP clients, allowing Claude to:
 
 - Query ready work
 - Create and update issues
@@ -105,12 +105,12 @@ See the [beads-mcp README](../../integrations/beads-mcp/README.md) for:
 ## How It Would Work
 
 1. Install the MCP server for Claude Desktop
-2. Claude gains access to bd commands
+2. Claude gains access to beads commands
 3. During coding sessions, Claude can:
    - Check for ready work: "What should I work on next?"
    - Create issues: "I found a bug, let me track it"
    - Link discoveries: "This is related to the issue we're working on"
-   - Update status: "Marking bd-5 as completed"
+   - Update status: "Marking beads-5 as completed"
 
 ## Example Conversation
 
@@ -121,16 +121,16 @@ Claude: Let me check the ready work queue...
 [Calls beads_ready_work()]
 
 I found 3 ready issues:
-1. bd-12: Fix authentication bug (priority 0, bug)
-2. bd-15: Add dark mode toggle (priority 1, feature)
-3. bd-18: Update documentation (priority 2, task)
+1. beads-12: Fix authentication bug (priority 0, bug)
+2. beads-15: Add dark mode toggle (priority 1, feature)
+3. beads-18: Update documentation (priority 2, task)
 
 Which would you like to work on?
 
-User: Let's do bd-12
+User: Let's do beads-12
 
-Claude: Great! I'll mark bd-12 as in progress.
-[Calls beads_update_issue("bd-12", status="in_progress")]
+Claude: Great! I'll mark beads-12 as in progress.
+[Calls beads_update_issue("beads-12", status="in_progress")]
 
 Let me investigate the authentication code...
 [Works on the issue]
@@ -140,10 +140,10 @@ I found the bug in auth.js:45 - there's a race condition. While fixing this, I n
 User: Yes please
 
 Claude: [Calls beads_create_issue("Add rate limiting to auth endpoints", type="task", priority=1)]
-Created bd-23: Add rate limiting to auth endpoints
+Created beads-23: Add rate limiting to auth endpoints
 
-[Calls beads_add_dependency("bd-23", "bd-12", type="discovered-from")]
-Linked bd-23 as discovered from bd-12
+[Calls beads_add_dependency("beads-23", "beads-12", type="discovered-from")]
+Linked beads-23 as discovered from beads-12
 
 Now I'll complete the auth bug fix...
 ```
@@ -154,7 +154,7 @@ To implement this MCP server:
 
 1. Create a Node.js/TypeScript project
 2. Use the MCP SDK: `npm install @anthropic/mcp-sdk`
-3. Implement tool handlers that call `bd` commands via child_process
+3. Implement tool handlers that call `beads` commands via child_process
 4. Register with Claude Desktop's config
 
 Example skeleton:
@@ -174,7 +174,7 @@ const server = new Server({
 // Register ready work tool
 server.tool("beads_ready_work", async (params) => {
   const { stdout } = await execAsync(
-    `bd ready --json --limit ${params.limit || 10}`
+    `beads ready --json --limit ${params.limit || 10}`
   );
   return JSON.parse(stdout);
 });
@@ -182,7 +182,7 @@ server.tool("beads_ready_work", async (params) => {
 // Register create issue tool
 server.tool("beads_create_issue", async (params) => {
   const { stdout } = await execAsync(
-    `bd create "${params.title}" -d "${params.description}" -p ${params.priority} -t ${params.type} --json`
+    `beads create "${params.title}" -d "${params.description}" -p ${params.priority} -t ${params.type} --json`
   );
   return JSON.parse(stdout);
 });
@@ -212,22 +212,22 @@ npm install -g beads-mcp-server
 # Restart Claude Desktop
 ```
 
-## Alternative: Direct bd Usage
+## Alternative: Direct beads Usage
 
-Until the MCP server is available, you can instruct Claude to use bd directly:
+Until the MCP server is available, you can instruct Claude to use beads directly:
 
 ```markdown
 # In your CLAUDE.md or project instructions:
 
-We use Beads (bd) for issue tracking. Available commands:
+We use Beads (beads) for issue tracking. Available commands:
 
-- `bd ready --json` - Find ready work
-- `bd create "title" -p 1 -t bug --json` - Create issue
-- `bd update bd-1 --status in_progress --json` - Update status
-- `bd dep add bd-2 bd-1 --type discovered-from` - Link issues
-- `bd close bd-1 --reason "Done" --json` - Complete work
+- `beads ready --json` - Find ready work
+- `beads create "title" -p 1 -t bug --json` - Create issue
+- `beads update beads-1 --status in_progress --json` - Update status
+- `beads dep add beads-2 beads-1 --type discovered-from` - Link issues
+- `beads close beads-1 --reason "Done" --json` - Complete work
 
-All commands support --json for parsing. Please use bd to track work during our sessions.
+All commands support --json for parsing. Please use beads to track work during our sessions.
 ```
 
 ## Contributing

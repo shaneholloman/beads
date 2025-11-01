@@ -5,9 +5,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from beads_mcp.bd_client import BdError
-from beads_mcp.bd_daemon_client import (
-    BdDaemonClient,
+from beads_mcp.beads_client import BeadsError
+from beads_mcp.beads_daemon_client import (
+    BeadsDaemonClient,
     DaemonConnectionError,
     DaemonError,
     DaemonNotRunningError,
@@ -18,7 +18,7 @@ from beads_mcp.tools import _get_client, _health_check_client, _reconnect_client
 @pytest.mark.asyncio
 async def test_daemon_client_ping_success():
     """Test successful ping to daemon."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.return_value = {"message": "pong", "version": "0.9.10"}
@@ -33,7 +33,7 @@ async def test_daemon_client_ping_success():
 @pytest.mark.asyncio
 async def test_daemon_client_ping_connection_error():
     """Test ping when daemon connection fails."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.side_effect = DaemonConnectionError("Connection failed")
@@ -45,7 +45,7 @@ async def test_daemon_client_ping_connection_error():
 @pytest.mark.asyncio
 async def test_daemon_client_health_success():
     """Test successful health check to daemon."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.return_value = {
@@ -68,7 +68,7 @@ async def test_daemon_client_health_success():
 @pytest.mark.asyncio
 async def test_daemon_client_health_unhealthy():
     """Test health check when daemon is unhealthy."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, '_send_request', new_callable=AsyncMock) as mock_send:
         mock_send.return_value = {
@@ -85,7 +85,7 @@ async def test_daemon_client_health_unhealthy():
 @pytest.mark.asyncio
 async def test_health_check_client_daemon_client_healthy():
     """Test health check for healthy daemon client."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, 'ping', new_callable=AsyncMock) as mock_ping:
         mock_ping.return_value = {"message": "pong", "version": "0.9.10"}
@@ -99,7 +99,7 @@ async def test_health_check_client_daemon_client_healthy():
 @pytest.mark.asyncio
 async def test_health_check_client_daemon_client_unhealthy():
     """Test health check for unhealthy daemon client."""
-    client = BdDaemonClient(socket_path="/tmp/bd.sock", working_dir="/tmp/test")
+    client = BeadsDaemonClient(socket_path="/tmp/beads.sock", working_dir="/tmp/test")
     
     with patch.object(client, 'ping', new_callable=AsyncMock) as mock_ping:
         mock_ping.side_effect = DaemonConnectionError("Connection failed")
@@ -112,9 +112,9 @@ async def test_health_check_client_daemon_client_unhealthy():
 @pytest.mark.asyncio
 async def test_health_check_client_cli_client():
     """Test health check for CLI client (always returns True)."""
-    from beads_mcp.bd_client import BdClient
+    from beads_mcp.beads_client import BeadsClient
     
-    client = BdClient(bd_path="/usr/bin/bd", beads_db="/tmp/test.db")
+    client = BeadsClient(beads_path="/usr/bin/beads", beads_db="/tmp/test.db")
     
     result = await _health_check_client(client)
     
@@ -125,10 +125,10 @@ async def test_health_check_client_cli_client():
 @pytest.mark.asyncio
 async def test_reconnect_client_success():
     """Test successful reconnection after failure."""
-    from beads_mcp.bd_client import create_bd_client
+    from beads_mcp.beads_client import create_beads_client
     
     with (
-        patch('beads_mcp.tools.create_bd_client') as mock_create,
+        patch('beads_mcp.tools.create_beads_client') as mock_create,
         patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
         patch('beads_mcp.tools._register_client_for_cleanup') as mock_register,
     ):
@@ -150,7 +150,7 @@ async def test_reconnect_client_retry_with_backoff():
     import beads_mcp.tools as tools_module
     
     with (
-        patch.object(tools_module, 'create_bd_client') as mock_create,
+        patch.object(tools_module, 'create_beads_client') as mock_create,
         patch.object(tools_module, '_health_check_client', new_callable=AsyncMock) as mock_health,
         patch.object(tools_module, '_register_client_for_cleanup') as mock_register,
     ):
@@ -187,7 +187,7 @@ async def test_reconnect_client_retry_with_backoff():
 async def test_reconnect_client_max_retries_exceeded():
     """Test reconnection failure after max retries."""
     with (
-        patch('beads_mcp.tools.create_bd_client') as mock_create,
+        patch('beads_mcp.tools.create_beads_client') as mock_create,
         patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
         patch('asyncio.sleep', new_callable=AsyncMock),
     ):
@@ -195,7 +195,7 @@ async def test_reconnect_client_max_retries_exceeded():
         mock_create.return_value = mock_client
         mock_health.return_value = False  # Always fail health check
         
-        with pytest.raises(BdError, match="Failed to connect to daemon after 3 attempts"):
+        with pytest.raises(BeadsError, match="Failed to connect to daemon after 3 attempts"):
             await _reconnect_client("/tmp/test", max_retries=3)
         
         assert mock_create.call_count == 3
@@ -279,7 +279,7 @@ async def test_get_client_creates_new_client_if_not_cached(monkeypatch):
     
     with (
         patch('beads_mcp.tools._canonicalize_path', return_value="/tmp/test"),
-        patch('beads_mcp.tools.create_bd_client', return_value=mock_client) as mock_create,
+        patch('beads_mcp.tools.create_beads_client', return_value=mock_client) as mock_create,
         patch('beads_mcp.tools._register_client_for_cleanup') as mock_register,
     ):
         result = await _get_client()
@@ -299,5 +299,5 @@ async def test_get_client_no_workspace_error():
     tools.current_workspace.set(None)
     
     with patch.dict('os.environ', {}, clear=True):
-        with pytest.raises(BdError, match="No workspace set"):
+        with pytest.raises(BeadsError, match="No workspace set"):
             await _get_client()

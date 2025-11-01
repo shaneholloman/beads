@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 # Configuration
 TAP_REPO="https://github.com/shaneholloman/homebrew-beads"
 TAP_DIR="${TAP_DIR:-/tmp/homebrew-beads}"
-FORMULA_FILE="Formula/bd.rb"
+FORMULA_FILE="Formula/beads.rb"
 
 usage() {
     cat << EOF
@@ -127,7 +127,7 @@ if git diff --staged --quiet; then
     exit 0
 fi
 
-git commit -m "Update bd formula to v${VERSION}"
+git commit -m "Update beads formula to v${VERSION}"
 echo -e "${GREEN}✓ Changes committed${NC}\n"
 
 echo -e "${YELLOW}Step 5: Pushing to GitHub...${NC}"
@@ -147,7 +147,7 @@ echo "Next steps:"
 echo "  1. Verify the formula update at: https://github.com/shaneholloman/homebrew-beads"
 echo "  2. Test locally:"
 echo "     brew update"
-echo "     brew upgrade bd"
-echo "     bd version  # Should show v${VERSION}"
+echo "     brew upgrade beads"
+echo "     beads version  # Should show v${VERSION}"
 echo ""
 echo -e "${GREEN}Done!${NC}"

@@ -1,0 +1,5 @@
+# Test beads quickstart command
+beads quickstart
+stdout 'Dependency-Aware'
+stdout 'beads init'
+stdout 'beads create'

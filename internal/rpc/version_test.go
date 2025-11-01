@@ -313,7 +313,7 @@ func TestVersionCheckMessage(t *testing.T) {
 			serverVersion: "2.0.0",
 			clientVersion: testVersion100,
 			expectError:   true,
-			errorContains: "Client is older; upgrade the bd CLI",
+			errorContains: "Client is older; upgrade the beads CLI",
 		},
 		{
 			name:          "Minor mismatch - daemon older",

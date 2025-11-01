@@ -30,4 +30,4 @@ Manage labels on beads issues. Labels provide flexible cross-cutting metadata be
 - Effort sizing: `quick-win`, `complex`, `spike`
 - Context: `technical-debt`, `documentation`, `performance`
 
-Use `bd label add <issue-id> <label>` to tag issues with contextual metadata.
+Use `beads label add <issue-id> <label>` to tag issues with contextual metadata.

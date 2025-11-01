@@ -56,12 +56,12 @@ func TestRenderTier1Prompt(t *testing.T) {
 	}
 
 	issue := &types.Issue{
-		ID:                 "bd-1",
+		ID:                 "beads-1",
 		Title:              "Fix authentication bug",
 		Description:        "Users can't log in with OAuth",
 		Design:             "Add error handling to OAuth flow",
 		AcceptanceCriteria: "Users can log in successfully",
-		Notes:              "Related to issue bd-2",
+		Notes:              "Related to issue beads-2",
 		Status:             types.StatusClosed,
 	}
 
@@ -82,7 +82,7 @@ func TestRenderTier1Prompt(t *testing.T) {
 	if !strings.Contains(prompt, "Users can log in successfully") {
 		t.Error("prompt should contain acceptance criteria")
 	}
-	if !strings.Contains(prompt, "Related to issue bd-2") {
+	if !strings.Contains(prompt, "Related to issue beads-2") {
 		t.Error("prompt should contain notes")
 	}
 	if !strings.Contains(prompt, "**Summary:**") {
@@ -97,7 +97,7 @@ func TestRenderTier1Prompt_HandlesEmptyFields(t *testing.T) {
 	}
 
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Simple task",
 		Description: "Just a simple task",
 		Status:      types.StatusClosed,
@@ -135,7 +135,7 @@ func TestRenderTier1Prompt_UTF8(t *testing.T) {
 
 	// Test data includes emojis (discouraged) to verify API doesn't corrupt multi-byte UTF-8
 	issue := &types.Issue{
-		ID:          "bd-1",
+		ID:          "beads-1",
 		Title:       "Fix bug with émojis 🎉",
 		Description: "Handle UTF-8: café, 日本語, emoji 🚀",
 		Status:      types.StatusClosed,

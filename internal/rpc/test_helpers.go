@@ -7,7 +7,7 @@ import (
 	"github.com/shaneholloman/beads/internal/storage/sqlite"
 )
 
-// newTestStore creates a SQLite store with issue_prefix configured (bd-166)
+// newTestStore creates a SQLite store with issue_prefix configured (beads-166)
 // This prevents "database not initialized" errors in tests
 func newTestStore(t *testing.T, dbPath string) *sqlite.SQLiteStorage {
 	t.Helper()
@@ -17,9 +17,9 @@ func newTestStore(t *testing.T, dbPath string) *sqlite.SQLiteStorage {
 		t.Fatalf("Failed to create test database: %v", err)
 	}
 
-	// CRITICAL (bd-166): Set issue_prefix to prevent "database not initialized" errors
+	// CRITICAL (beads-166): Set issue_prefix to prevent "database not initialized" errors
 	ctx := context.Background()
-	if err := store.SetConfig(ctx, "issue_prefix", "bd"); err != nil {
+	if err := store.SetConfig(ctx, "issue_prefix", "beads"); err != nil {
 		store.Close()
 		t.Fatalf("Failed to set issue_prefix: %v", err)
 	}

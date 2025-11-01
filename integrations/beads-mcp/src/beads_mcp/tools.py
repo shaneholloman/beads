@@ -7,7 +7,7 @@ from contextvars import ContextVar
 from functools import lru_cache
 from typing import Annotated, TYPE_CHECKING
 
-from .bd_client import create_bd_client, BdClientBase, BdError
+from .beads_client import create_beads_client, BeadsClientBase, BeadsError
 
 if TYPE_CHECKING:
     from typing import List
@@ -33,7 +33,7 @@ from .models import (
 current_workspace: ContextVar[str | None] = ContextVar('workspace', default=None)
 
 # Connection pool for per-project daemon sockets
-_connection_pool: dict[str, BdClientBase] = {}
+_connection_pool: dict[str, BeadsClientBase] = {}
 _pool_lock = asyncio.Lock()
 
 # Version checking state (per-pool client)
@@ -44,7 +44,7 @@ DEFAULT_ISSUE_TYPE: IssueType = "task"
 DEFAULT_DEPENDENCY_TYPE: DependencyType = "blocks"
 
 
-def _register_client_for_cleanup(client: BdClientBase) -> None:
+def _register_client_for_cleanup(client: BeadsClientBase) -> None:
     """Register client with server cleanup system.
     
     This ensures daemon connections are properly closed on server shutdown.
@@ -110,7 +110,7 @@ def _canonicalize_path(path: str) -> str:
     return _resolve_workspace_root(real)
 
 
-async def _health_check_client(client: BdClientBase) -> bool:
+async def _health_check_client(client: BeadsClientBase) -> bool:
     """Check if a client is healthy and responsive.
     
     Args:
@@ -131,7 +131,7 @@ async def _health_check_client(client: BdClientBase) -> bool:
         return False
 
 
-async def _reconnect_client(canonical: str, max_retries: int = 3) -> BdClientBase:
+async def _reconnect_client(canonical: str, max_retries: int = 3) -> BeadsClientBase:
     """Attempt to reconnect to daemon with exponential backoff.
     
     Args:
@@ -142,13 +142,13 @@ async def _reconnect_client(canonical: str, max_retries: int = 3) -> BdClientBas
         New client instance
         
     Raises:
-        BdError: If all reconnection attempts fail
+        BeadsError: If all reconnection attempts fail
     """
     use_daemon = os.environ.get("BEADS_USE_DAEMON", "1") == "1"
     
     for attempt in range(max_retries):
         try:
-            client = create_bd_client(
+            client = create_beads_client(
                 prefer_daemon=use_daemon,
                 working_dir=canonical
             )
@@ -165,14 +165,14 @@ async def _reconnect_client(canonical: str, max_retries: int = 3) -> BdClientBas
                 await asyncio.sleep(backoff)
             continue
     
-    raise BdError(
+    raise BeadsError(
         f"Failed to connect to daemon after {max_retries} attempts. "
         "The daemon may be stopped or unresponsive."
     )
 
 
-async def _get_client() -> BdClientBase:
-    """Get a BdClient instance for the current workspace.
+async def _get_client() -> BeadsClientBase:
+    """Get a BeadsClient instance for the current workspace.
     
     Uses connection pool to manage per-project daemon sockets.
     Workspace is determined by current_workspace ContextVar or BEADS_WORKING_DIR env.
@@ -184,15 +184,15 @@ async def _get_client() -> BdClientBase:
     Uses daemon client if available, falls back to CLI client.
 
     Returns:
-        Configured BdClientBase instance for the current workspace
+        Configured BeadsClientBase instance for the current workspace
 
     Raises:
-        BdError: If no workspace is set, or bd is not installed, or version is incompatible
+        BeadsError: If no workspace is set, or beads is not installed, or version is incompatible
     """
     # Determine workspace from ContextVar or environment
     workspace = current_workspace.get() or os.environ.get("BEADS_WORKING_DIR")
     if not workspace:
-        raise BdError(
+        raise BeadsError(
             "No workspace set. Either provide workspace_root parameter or call set_context() first."
         )
     
@@ -217,7 +217,7 @@ async def _get_client() -> BdClientBase:
             # Create new client for this workspace
             use_daemon = os.environ.get("BEADS_USE_DAEMON", "1") == "1"
             
-            client = create_bd_client(
+            client = create_beads_client(
                 prefer_daemon=use_daemon,
                 working_dir=canonical
             )
@@ -273,7 +273,7 @@ async def beads_list_issues(
 
 
 async def beads_show_issue(
-    issue_id: Annotated[str, "Issue ID (e.g., bd-1)"],
+    issue_id: Annotated[str, "Issue ID (e.g., beads-1)"],
 ) -> Issue:
     """Show detailed information about a specific issue.
 
@@ -294,8 +294,8 @@ async def beads_create_issue(
     issue_type: Annotated[IssueType, "Type: bug, feature, task, epic, or chore"] = DEFAULT_ISSUE_TYPE,
     assignee: Annotated[str | None, "Assignee username"] = None,
     labels: Annotated[list[str] | None, "List of labels"] = None,
-    id: Annotated[str | None, "Explicit issue ID (e.g., bd-42)"] = None,
-    deps: Annotated[list[str] | None, "Dependencies (e.g., ['bd-20', 'blocks:bd-15'])"] = None,
+    id: Annotated[str | None, "Explicit issue ID (e.g., beads-42)"] = None,
+    deps: Annotated[list[str] | None, "Dependencies (e.g., ['beads-20', 'blocks:beads-15'])"] = None,
 ) -> Issue:
     """Create a new issue.
 
@@ -320,7 +320,7 @@ async def beads_create_issue(
 
 
 async def beads_update_issue(
-    issue_id: Annotated[str, "Issue ID (e.g., bd-1)"],
+    issue_id: Annotated[str, "Issue ID (e.g., beads-1)"],
     status: Annotated[IssueStatus | None, "New status (open, in_progress, blocked, closed)"] = None,
     priority: Annotated[int | None, "New priority (0-4)"] = None,
     assignee: Annotated[str | None, "New assignee"] = None,
@@ -368,7 +368,7 @@ async def beads_update_issue(
 
 
 async def beads_close_issue(
-    issue_id: Annotated[str, "Issue ID (e.g., bd-1)"],
+    issue_id: Annotated[str, "Issue ID (e.g., beads-1)"],
     reason: Annotated[str, "Reason for closing"] = "Completed",
 ) -> list[Issue]:
     """Close (complete) an issue.
@@ -381,7 +381,7 @@ async def beads_close_issue(
 
 
 async def beads_reopen_issue(
-    issue_ids: Annotated[list[str], "Issue IDs to reopen (e.g., ['bd-1', 'bd-2'])"],
+    issue_ids: Annotated[list[str], "Issue IDs to reopen (e.g., ['beads-1', 'beads-2'])"],
     reason: Annotated[str | None, "Reason for reopening"] = None,
 ) -> list[Issue]:
     """Reopen one or more closed issues.
@@ -395,8 +395,8 @@ async def beads_reopen_issue(
 
 
 async def beads_add_dependency(
-    issue_id: Annotated[str, "Issue that has the dependency (e.g., bd-2)"],
-    depends_on_id: Annotated[str, "Issue that issue_id depends on (e.g., bd-1)"],
+    issue_id: Annotated[str, "Issue that has the dependency (e.g., beads-2)"],
+    depends_on_id: Annotated[str, "Issue that issue_id depends on (e.g., beads-1)"],
     dep_type: Annotated[
         DependencyType,
         "Dependency type: blocks, related, parent-child, or discovered-from",
@@ -421,14 +421,14 @@ async def beads_add_dependency(
     try:
         await client.add_dependency(params)
         return f"Added dependency: {issue_id} depends on {depends_on_id} ({dep_type})"
-    except BdError as e:
+    except BeadsError as e:
         return f"Error: {str(e)}"
 
 
 async def beads_quickstart() -> str:
-    """Get bd quickstart guide.
+    """Get beads quickstart guide.
 
-    Read this first to understand how to use beads (bd) commands.
+    Read this first to understand how to use beads (beads) commands.
     """
     client = await _get_client()
     return await client.quickstart()
@@ -456,7 +456,7 @@ async def beads_blocked() -> list[BlockedIssue]:
 async def beads_init(
     prefix: Annotated[str | None, "Issue prefix (e.g., 'myproject' for myproject-1, myproject-2)"] = None,
 ) -> str:
-    """Initialize bd in current directory.
+    """Initialize beads in current directory.
 
     Creates .beads/ directory and database file with optional custom prefix.
     """

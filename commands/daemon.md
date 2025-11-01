@@ -7,9 +7,9 @@ Run a per-project background daemon that manages database connections and syncs 
 
 ## Per-Project Daemon (LSP Model)
 
-Each project runs its own daemon at `.beads/bd.sock` for complete database isolation.
+Each project runs its own daemon at `.beads/beads.sock` for complete database isolation.
 
-> On Windows this file stores the daemon's loopback TCP endpoint metadata—leave it in place so bd can reconnect.
+> On Windows this file stores the daemon's loopback TCP endpoint metadata—leave it in place so beads can reconnect.
 
 **Why per-project daemons?**
 
@@ -22,11 +22,11 @@ Each project runs its own daemon at `.beads/bd.sock` for complete database isola
 
 ## Common Operations
 
-- **Start**: `bd daemon` (auto-starts on first `bd` command)
-- **Stop**: `bd daemon --stop`
-- **Status**: `bd daemon --status`
-- **Health**: `bd daemon --health` - shows uptime, cache stats, performance metrics
-- **Metrics**: `bd daemon --metrics` - detailed operational telemetry
+- **Start**: `beads daemon` (auto-starts on first `beads` command)
+- **Stop**: `beads daemon --stop`
+- **Status**: `beads daemon --status`
+- **Health**: `beads daemon --health` - shows uptime, cache stats, performance metrics
+- **Metrics**: `beads daemon --metrics` - detailed operational telemetry
 
 ## Sync Options
 

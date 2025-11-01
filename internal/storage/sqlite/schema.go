@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS dirty_issues (
 
 CREATE INDEX IF NOT EXISTS idx_dirty_issues_marked_at ON dirty_issues(marked_at);
 
--- Tracks content hash of last export for each issue (for timestamp-only dedup, bd-164)
+-- Tracks content hash of last export for each issue (for timestamp-only dedup, beads-164)
 CREATE TABLE IF NOT EXISTS export_hashes (
     issue_id TEXT PRIMARY KEY,
     content_hash TEXT NOT NULL,

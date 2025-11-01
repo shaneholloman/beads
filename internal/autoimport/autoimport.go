@@ -58,7 +58,7 @@ func NewStderrNotifier(debug bool) Notifier {
 type ImportFunc func(ctx context.Context, issues []*types.Issue) (created, updated int, idMapping map[string]string, err error)
 
 // AutoImportIfNewer checks if JSONL is newer than last import and imports if needed
-// dbPath is the full path to the database file (e.g., /path/to/.beads/bd.db)
+// dbPath is the full path to the database file (e.g., /path/to/.beads/beads.db)
 func AutoImportIfNewer(ctx context.Context, store storage.Storage, dbPath string, notify Notifier, importFunc ImportFunc, onChanged func(needsFullExport bool)) error {
 	if notify == nil {
 		notify = NewStderrNotifier(os.Getenv("BD_DEBUG") != "")
@@ -203,7 +203,7 @@ func checkForMergeConflicts(jsonlData []byte, jsonlPath string) error {
 				"To resolve:\n"+
 				"  1. Resolve the merge conflict in your Git client, OR\n"+
 				"  2. Export from database to regenerate clean JSONL:\n"+
-				"     bd export -o %s\n\n"+
+				"     beads export -o %s\n\n"+
 				"After resolving, commit the fixed JSONL file.\n", jsonlPath, jsonlPath)
 		}
 	}

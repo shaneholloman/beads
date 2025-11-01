@@ -17,7 +17,7 @@ import (
 
 // BenchmarkDirectCreate benchmarks direct SQLite create operations
 func BenchmarkDirectCreate(b *testing.B) {
-	tmpDir, err := os.MkdirTemp("", "bd-bench-direct-*")
+	tmpDir, err := os.MkdirTemp("", "beads-bench-direct-*")
 	if err != nil {
 		b.Fatalf("Failed to create temp dir: %v", err)
 	}
@@ -68,7 +68,7 @@ func BenchmarkDaemonCreate(b *testing.B) {
 
 // BenchmarkDirectUpdate benchmarks direct SQLite update operations
 func BenchmarkDirectUpdate(b *testing.B) {
-	tmpDir, err := os.MkdirTemp("", "bd-bench-direct-update-*")
+	tmpDir, err := os.MkdirTemp("", "beads-bench-direct-update-*")
 	if err != nil {
 		b.Fatalf("Failed to create temp dir: %v", err)
 	}
@@ -142,7 +142,7 @@ func BenchmarkDaemonUpdate(b *testing.B) {
 
 // BenchmarkDirectList benchmarks direct SQLite list operations
 func BenchmarkDirectList(b *testing.B) {
-	tmpDir, err := os.MkdirTemp("", "bd-bench-direct-list-*")
+	tmpDir, err := os.MkdirTemp("", "beads-bench-direct-list-*")
 	if err != nil {
 		b.Fatalf("Failed to create temp dir: %v", err)
 	}
@@ -264,12 +264,12 @@ func BenchmarkConcurrentAgents(b *testing.B) {
 }
 
 func setupBenchServer(b *testing.B) (*Server, *Client, func(), string) {
-	tmpDir, err := os.MkdirTemp("", "bd-rpc-bench-*")
+	tmpDir, err := os.MkdirTemp("", "beads-rpc-bench-*")
 	if err != nil {
 		b.Fatalf("Failed to create temp dir: %v", err)
 	}
 
-	// Create .beads subdirectory so findDatabaseForCwd finds THIS database, not project's
+	// Create .beads subeadsirectory so findDatabaseForCwd finds THIS database, not project's
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	if err := os.MkdirAll(beadsDir, 0755); err != nil {
 		os.RemoveAll(tmpDir)
@@ -277,7 +277,7 @@ func setupBenchServer(b *testing.B) (*Server, *Client, func(), string) {
 	}
 
 	dbPath := filepath.Join(beadsDir, "test.db")
-	socketPath := filepath.Join(beadsDir, "bd.sock")
+	socketPath := filepath.Join(beadsDir, "beads.sock")
 
 	store, err := sqlitestorage.New(dbPath)
 	if err != nil {
