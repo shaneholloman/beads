@@ -206,7 +206,7 @@ Add to your MCP settings:
 - Ready work detection and dependency management
 - All without requiring Bash commands
 
-See [integrations/beads-mcp/README.md](../integrations/beads-mcp/README.md) for detailed MCP server documentation.
+See [integrations/mcp/README.md](../integrations/mcp/README.md) for detailed MCP server documentation.
 
 ## Verifying Installation
 

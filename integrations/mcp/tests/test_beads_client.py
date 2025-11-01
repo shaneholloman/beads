@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from beads_mcp.beads_client import BeadsClient, BeadsCommandError, BeadsNotFoundError
-from beads_mcp.models import (
+from mcp_beads.client import BeadsClient, BeadsCommandError, BeadsNotFoundError
+from mcp_beads.models import (
     AddDependencyParams,
     CloseIssueParams,
     CreateIssueParams,
@@ -693,7 +693,7 @@ async def test_init(beads_client, mock_process):
     mock_process.communicate = AsyncMock(return_value=(init_output.encode(), b""))
 
     with patch("asyncio.create_subprocess_exec", return_value=mock_process):
-        from beads_mcp.models import InitParams
+        from mcp_beads.models import InitParams
 
         params = InitParams(prefix="test")
         result = await beads_client.init(params)

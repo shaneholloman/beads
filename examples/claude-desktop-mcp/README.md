@@ -1,6 +1,6 @@
 # Claude Desktop MCP Server for Beads
 
-> **Note**: The beads MCP server is now fully implemented! See [integrations/beads-mcp](../../integrations/beads-mcp/) for the production implementation.
+> **Note**: The beads MCP server is now fully implemented! See [integrations/mcp](../../integrations/mcp/) for the production implementation.
 
 ## What This Provides
 
@@ -39,7 +39,7 @@ Restart Claude Desktop and you're done! Claude can now manage your beads issues.
 
 ## Full Documentation
 
-See the [beads-mcp README](../../integrations/beads-mcp/README.md) for:
+See the [beads-mcp README](../../integrations/mcp/README.md) for:
 
 - Installation instructions
 - Configuration options

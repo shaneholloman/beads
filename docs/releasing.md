@@ -83,8 +83,8 @@ This updates:
 - `cmd/beads/version.go`
 - `.claude-plugin/plugin.json`
 - `.claude-plugin/marketplace.json`
-- `integrations/beads-mcp/pyproject.toml`
-- `integrations/beads-mcp/src/beads_mcp/__init__.py`
+- `integrations/mcp/pyproject.toml`
+- `integrations/mcp/src/mcp_beads/__init__.py`
 - `README.md`
 - `plugin.md`
 
@@ -126,7 +126,7 @@ The automation requires this secret to be configured:
 If the automated publish fails, you can manually upload:
 
 ```bash
-cd integrations/beads-mcp
+cd integrations/mcp
 
 # Clean and rebuild
 rm -rf dist/ build/ src/*.egg-info
@@ -136,7 +136,7 @@ uv build
 TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-... uv tool run twine upload dist/*
 ```
 
-See [integrations/beads-mcp/pypi.md](integrations/beads-mcp/pypi.md) for detailed PyPI instructions.
+See [integrations/mcp/pypi.md](integrations/mcp/pypi.md) for detailed PyPI instructions.
 
 ### 3. Update Homebrew Formula
 
@@ -277,4 +277,4 @@ Set up API token at <https://pypi.org/manage/account/token/> and use `__token__`
 
 - [CHANGELOG.md](CHANGELOG.md) - Release history
 - [scripts/README.md](scripts/README.md) - Version bump script details
-- [integrations/beads-mcp/pypi.md](integrations/beads-mcp/pypi.md) - Detailed PyPI guide
+- [integrations/mcp/pypi.md](integrations/mcp/pypi.md) - Detailed PyPI guide

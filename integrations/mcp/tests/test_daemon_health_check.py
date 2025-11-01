@@ -5,14 +5,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from beads_mcp.beads_client import BeadsError
-from beads_mcp.beads_daemon_client import (
+from mcp_beads.client import BeadsError
+from mcp_beads.daemon import (
     BeadsDaemonClient,
     DaemonConnectionError,
     DaemonError,
     DaemonNotRunningError,
 )
-from beads_mcp.tools import _get_client, _health_check_client, _reconnect_client
+from mcp_beads.tools import _get_client, _health_check_client, _reconnect_client
 
 
 @pytest.mark.asyncio
@@ -112,7 +112,7 @@ async def test_health_check_client_daemon_client_unhealthy():
 @pytest.mark.asyncio
 async def test_health_check_client_cli_client():
     """Test health check for CLI client (always returns True)."""
-    from beads_mcp.beads_client import BeadsClient
+    from mcp_beads.client import BeadsClient
     
     client = BeadsClient(beads_path="/usr/bin/beads", beads_db="/tmp/test.db")
     
@@ -125,12 +125,12 @@ async def test_health_check_client_cli_client():
 @pytest.mark.asyncio
 async def test_reconnect_client_success():
     """Test successful reconnection after failure."""
-    from beads_mcp.beads_client import create_beads_client
+    from mcp_beads.client import create_beads_client
     
     with (
-        patch('beads_mcp.tools.create_beads_client') as mock_create,
-        patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
-        patch('beads_mcp.tools._register_client_for_cleanup') as mock_register,
+        patch('mcp_beads.tools.create_beads_client') as mock_create,
+        patch('mcp_beads.tools._health_check_client', new_callable=AsyncMock) as mock_health,
+        patch('mcp_beads.tools._register_client_for_cleanup') as mock_register,
     ):
         mock_client = MagicMock()
         mock_create.return_value = mock_client
@@ -147,7 +147,7 @@ async def test_reconnect_client_success():
 async def test_reconnect_client_retry_with_backoff():
     """Test reconnection with exponential backoff on failure."""
     # Need to patch asyncio.sleep in the actual module where it's called
-    import beads_mcp.tools as tools_module
+    import mcp_beads.tools as tools_module
     
     with (
         patch.object(tools_module, 'create_beads_client') as mock_create,
@@ -187,8 +187,8 @@ async def test_reconnect_client_retry_with_backoff():
 async def test_reconnect_client_max_retries_exceeded():
     """Test reconnection failure after max retries."""
     with (
-        patch('beads_mcp.tools.create_beads_client') as mock_create,
-        patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
+        patch('mcp_beads.tools.create_beads_client') as mock_create,
+        patch('mcp_beads.tools._health_check_client', new_callable=AsyncMock) as mock_health,
         patch('asyncio.sleep', new_callable=AsyncMock),
     ):
         mock_client = MagicMock()
@@ -204,7 +204,7 @@ async def test_reconnect_client_max_retries_exceeded():
 @pytest.mark.asyncio
 async def test_get_client_uses_cached_healthy_client(monkeypatch):
     """Test that _get_client returns cached client if healthy."""
-    from beads_mcp import tools
+    from mcp_beads import tools
     
     # Set up environment
     monkeypatch.setenv("BEADS_WORKING_DIR", "/tmp/test")
@@ -213,8 +213,8 @@ async def test_get_client_uses_cached_healthy_client(monkeypatch):
     mock_client._check_version = AsyncMock()
     
     with (
-        patch('beads_mcp.tools._canonicalize_path', return_value="/tmp/test"),
-        patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
+        patch('mcp_beads.tools._canonicalize_path', return_value="/tmp/test"),
+        patch('mcp_beads.tools._health_check_client', new_callable=AsyncMock) as mock_health,
     ):
         mock_health.return_value = True
         
@@ -231,7 +231,7 @@ async def test_get_client_uses_cached_healthy_client(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_client_reconnects_on_stale_connection(monkeypatch):
     """Test that _get_client reconnects when cached client is stale."""
-    from beads_mcp import tools
+    from mcp_beads import tools
     
     # Set up environment
     monkeypatch.setenv("BEADS_WORKING_DIR", "/tmp/test")
@@ -241,9 +241,9 @@ async def test_get_client_reconnects_on_stale_connection(monkeypatch):
     new_client._check_version = AsyncMock()
     
     with (
-        patch('beads_mcp.tools._canonicalize_path', return_value="/tmp/test"),
-        patch('beads_mcp.tools._health_check_client', new_callable=AsyncMock) as mock_health,
-        patch('beads_mcp.tools._reconnect_client', new_callable=AsyncMock) as mock_reconnect,
+        patch('mcp_beads.tools._canonicalize_path', return_value="/tmp/test"),
+        patch('mcp_beads.tools._health_check_client', new_callable=AsyncMock) as mock_health,
+        patch('mcp_beads.tools._reconnect_client', new_callable=AsyncMock) as mock_reconnect,
     ):
         # First health check fails (stale), reconnect returns new client
         mock_health.return_value = False
@@ -265,7 +265,7 @@ async def test_get_client_reconnects_on_stale_connection(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_client_creates_new_client_if_not_cached(monkeypatch):
     """Test that _get_client creates new client if not in pool."""
-    from beads_mcp import tools
+    from mcp_beads import tools
     
     # Clear pool
     tools._connection_pool.clear()
@@ -278,9 +278,9 @@ async def test_get_client_creates_new_client_if_not_cached(monkeypatch):
     mock_client._check_version = AsyncMock()
     
     with (
-        patch('beads_mcp.tools._canonicalize_path', return_value="/tmp/test"),
-        patch('beads_mcp.tools.create_beads_client', return_value=mock_client) as mock_create,
-        patch('beads_mcp.tools._register_client_for_cleanup') as mock_register,
+        patch('mcp_beads.tools._canonicalize_path', return_value="/tmp/test"),
+        patch('mcp_beads.tools.create_beads_client', return_value=mock_client) as mock_create,
+        patch('mcp_beads.tools._register_client_for_cleanup') as mock_register,
     ):
         result = await _get_client()
         
@@ -293,7 +293,7 @@ async def test_get_client_creates_new_client_if_not_cached(monkeypatch):
 @pytest.mark.asyncio
 async def test_get_client_no_workspace_error():
     """Test that _get_client raises error if no workspace is set."""
-    from beads_mcp import tools
+    from mcp_beads import tools
     
     # Clear context
     tools.current_workspace.set(None)

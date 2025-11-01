@@ -403,7 +403,7 @@ beads ready
 ps aux | grep "beads daemon"
 ```
 
-See [integrations/beads-mcp/README.md](../integrations/beads-mcp/README.md) for MCP-specific troubleshooting.
+See [integrations/mcp/README.md](../integrations/mcp/README.md) for MCP-specific troubleshooting.
 
 ### Claude Code sandbox mode
 

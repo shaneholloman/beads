@@ -5,7 +5,7 @@ import json
 import os
 import re
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from asyncio import subprocess as asyncio_subprocess
 
 from .config import load_config
 from .models import (
@@ -75,12 +75,12 @@ class BeadsClientBase(ABC):
     """Abstract base class for beads clients (CLI or daemon)."""
 
     @abstractmethod
-    async def ready(self, params: Optional[ReadyWorkParams] = None) -> List[Issue]:
+    async def ready(self, params: ReadyWorkParams | None = None) -> list[Issue]:
         """Get ready work (issues with no blockers)."""
         pass
 
     @abstractmethod
-    async def list_issues(self, params: Optional[ListIssuesParams] = None) -> List[Issue]:
+    async def list_issues(self, params: ListIssuesParams | None = None) -> list[Issue]:
         """List issues with optional filters."""
         pass
 
@@ -100,12 +100,12 @@ class BeadsClientBase(ABC):
         pass
 
     @abstractmethod
-    async def close(self, params: CloseIssueParams) -> List[Issue]:
+    async def close(self, params: CloseIssueParams) -> list[Issue]:
         """Close one or more issues."""
         pass
 
     @abstractmethod
-    async def reopen(self, params: ReopenIssueParams) -> List[Issue]:
+    async def reopen(self, params: ReopenIssueParams) -> list[Issue]:
         """Reopen one or more closed issues."""
         pass
 
@@ -120,13 +120,23 @@ class BeadsClientBase(ABC):
         pass
 
     @abstractmethod
-    async def blocked(self) -> List[BlockedIssue]:
+    async def blocked(self) -> list[BlockedIssue]:
         """Get blocked issues."""
         pass
 
     @abstractmethod
-    async def init(self, params: Optional[InitParams] = None) -> str:
+    async def init(self, params: InitParams | None = None) -> str:
         """Initialize a new beads database."""
+        pass
+
+    @abstractmethod
+    async def ping(self) -> bool:
+        """Ping the client to check if it's healthy."""
+        pass
+
+    @abstractmethod
+    async def quickstart(self) -> str:
+        """Get quickstart guide."""
         pass
 
 
@@ -214,6 +224,7 @@ class BeadsCliClient(BeadsClientBase):
 
         # Log database routing for debugging
         import sys
+
         working_dir = self._get_working_dir()
         db_info = self.beads_db if self.beads_db else "auto-discover"
         print(f"[beads-mcp] Running beads command: {' '.join(args)}", file=sys.stderr)
@@ -223,8 +234,8 @@ class BeadsCliClient(BeadsClientBase):
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stdout=asyncio_subprocess.PIPE,
+                stderr=asyncio_subprocess.PIPE,
                 cwd=working_dir,
             )
             stdout, stderr = await process.communicate()
@@ -265,8 +276,8 @@ class BeadsCliClient(BeadsClientBase):
             process = await asyncio.create_subprocess_exec(
                 self.beads_path,
                 "version",
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stdout=asyncio_subprocess.PIPE,
+                stderr=asyncio_subprocess.PIPE,
                 cwd=self._get_working_dir(),
             )
             stdout, stderr = await process.communicate()
@@ -368,7 +379,7 @@ class BeadsCliClient(BeadsClientBase):
             if not data:
                 raise BeadsCommandError(f"Issue not found: {params.issue_id}")
             data = data[0]
-        
+
         if not isinstance(data, dict):
             raise BeadsCommandError(f"Invalid response for show {params.issue_id}")
 
@@ -444,7 +455,7 @@ class BeadsCliClient(BeadsClientBase):
             if not data:
                 raise BeadsCommandError(f"Issue not found: {params.issue_id}")
             data = data[0]
-        
+
         if not isinstance(data, dict):
             raise BeadsCommandError(f"Invalid response for update {params.issue_id}")
 
@@ -508,8 +519,8 @@ class BeadsCliClient(BeadsClientBase):
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stdout=asyncio_subprocess.PIPE,
+                stderr=asyncio_subprocess.PIPE,
                 cwd=self._get_working_dir(),
             )
             _stdout, stderr = await process.communicate()
@@ -534,8 +545,8 @@ class BeadsCliClient(BeadsClientBase):
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stdout=asyncio_subprocess.PIPE,
+                stderr=asyncio_subprocess.PIPE,
                 cwd=self._get_working_dir(),
             )
             stdout, stderr = await process.communicate()
@@ -599,8 +610,8 @@ class BeadsCliClient(BeadsClientBase):
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
+                stdout=asyncio_subprocess.PIPE,
+                stderr=asyncio_subprocess.PIPE,
                 cwd=self._get_working_dir(),
             )
             stdout, stderr = await process.communicate()
@@ -623,12 +634,12 @@ BeadsClient = BeadsCliClient
 
 def create_beads_client(
     prefer_daemon: bool = False,
-    beads_path: Optional[str] = None,
-    beads_db: Optional[str] = None,
-    actor: Optional[str] = None,
-    no_auto_flush: Optional[bool] = None,
-    no_auto_import: Optional[bool] = None,
-    working_dir: Optional[str] = None,
+    beads_path: str | None = None,
+    beads_db: str | None = None,
+    actor: str | None = None,
+    no_auto_flush: bool | None = None,
+    no_auto_import: bool | None = None,
+    working_dir: str | None = None,
 ) -> BeadsClientBase:
     """Create a beads client (daemon or CLI-based).
 
@@ -650,8 +661,9 @@ def create_beads_client(
     """
     if prefer_daemon:
         try:
-            from .beads_daemon_client import BeadsDaemonClient
             from pathlib import Path
+
+            from .daemon import BeadsDaemonClient
 
             # Check if daemon socket exists before creating client
             # Walk up from working_dir to find .beads/beads.sock, then check global

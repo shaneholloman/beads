@@ -5,12 +5,12 @@ import os
 import subprocess
 from contextvars import ContextVar
 from functools import lru_cache
-from typing import Annotated, TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated
 
-from .beads_client import create_beads_client, BeadsClientBase, BeadsError
+from .client import BeadsClientBase, BeadsError, create_beads_client
 
 if TYPE_CHECKING:
-    from typing import List
+    pass
 from .models import (
     AddDependencyParams,
     BlockedIssue,
@@ -30,7 +30,7 @@ from .models import (
 )
 
 # ContextVar for request-scoped workspace routing
-current_workspace: ContextVar[str | None] = ContextVar('workspace', default=None)
+current_workspace: ContextVar[str | None] = ContextVar[str | None]("workspace", default=None)
 
 # Connection pool for per-project daemon sockets
 _connection_pool: dict[str, BeadsClientBase] = {}
@@ -46,13 +46,14 @@ DEFAULT_DEPENDENCY_TYPE: DependencyType = "blocks"
 
 def _register_client_for_cleanup(client: BeadsClientBase) -> None:
     """Register client with server cleanup system.
-    
+
     This ensures daemon connections are properly closed on server shutdown.
     Import is deferred to avoid circular dependency.
     """
     try:
         from . import server
-        if hasattr(server, '_daemon_clients'):
+
+        if hasattr(server, "_daemon_clients"):
             server._daemon_clients.append(client)
     except (ImportError, AttributeError):
         # Server module not available or cleanup not initialized - that's ok
@@ -61,10 +62,10 @@ def _register_client_for_cleanup(client: BeadsClientBase) -> None:
 
 def _resolve_workspace_root(path: str) -> str:
     """Resolve workspace root to git repo root if inside a git repo.
-    
+
     Args:
         path: Directory path to resolve
-        
+
     Returns:
         Git repo root if inside git repo, otherwise the original path
     """
@@ -80,31 +81,31 @@ def _resolve_workspace_root(path: str) -> str:
             return result.stdout.strip()
     except Exception:
         pass
-    
+
     return os.path.abspath(path)
 
 
 @lru_cache(maxsize=128)
 def _canonicalize_path(path: str) -> str:
     """Canonicalize workspace path to handle symlinks and git repos.
-    
+
     This ensures that different paths pointing to the same project
     (e.g., via symlinks) use the same daemon connection.
-    
+
     Args:
         path: Workspace directory path
-        
+
     Returns:
         Canonical path (handles symlinks and submodules correctly)
     """
     # 1. Resolve symlinks
     real = os.path.realpath(path)
-    
+
     # 2. Check for local .beads directory (submodule edge case)
     # Submodules should use their own .beads, not the parent repo's
     if os.path.exists(os.path.join(real, ".beads")):
         return real
-    
+
     # 3. Try to find git toplevel
     # This ensures we connect to the right daemon for the git repo
     return _resolve_workspace_root(real)
@@ -112,17 +113,17 @@ def _canonicalize_path(path: str) -> str:
 
 async def _health_check_client(client: BeadsClientBase) -> bool:
     """Check if a client is healthy and responsive.
-    
+
     Args:
         client: Client to health check
-        
+
     Returns:
         True if client is healthy, False otherwise
     """
     # Only health check daemon clients
-    if not hasattr(client, 'ping'):
+    if not hasattr(client, "ping"):
         return True
-    
+
     try:
         await client.ping()
         return True
@@ -133,53 +134,49 @@ async def _health_check_client(client: BeadsClientBase) -> bool:
 
 async def _reconnect_client(canonical: str, max_retries: int = 3) -> BeadsClientBase:
     """Attempt to reconnect to daemon with exponential backoff.
-    
+
     Args:
         canonical: Canonical workspace path
         max_retries: Maximum number of retry attempts (default: 3)
-        
+
     Returns:
         New client instance
-        
+
     Raises:
         BeadsError: If all reconnection attempts fail
     """
     use_daemon = os.environ.get("BEADS_USE_DAEMON", "1") == "1"
-    
+
     for attempt in range(max_retries):
         try:
-            client = create_beads_client(
-                prefer_daemon=use_daemon,
-                working_dir=canonical
-            )
-            
+            client = create_beads_client(prefer_daemon=use_daemon, working_dir=canonical)
+
             # Verify new client works
             if await _health_check_client(client):
                 _register_client_for_cleanup(client)
                 return client
-                
+
         except Exception:
             if attempt < max_retries - 1:
                 # Exponential backoff: 0.1s, 0.2s, 0.4s
-                backoff = 0.1 * (2 ** attempt)
+                backoff = 0.1 * (2**attempt)
                 await asyncio.sleep(backoff)
             continue
-    
+
     raise BeadsError(
-        f"Failed to connect to daemon after {max_retries} attempts. "
-        "The daemon may be stopped or unresponsive."
+        f"Failed to connect to daemon after {max_retries} attempts. The daemon may be stopped or unresponsive."
     )
 
 
 async def _get_client() -> BeadsClientBase:
     """Get a BeadsClient instance for the current workspace.
-    
+
     Uses connection pool to manage per-project daemon sockets.
     Workspace is determined by current_workspace ContextVar or BEADS_WORKING_DIR env.
 
     Performs health check before returning cached client.
     On failure, drops from pool and attempts reconnection with exponential backoff.
-    
+
     Performs version check on first connection to each workspace.
     Uses daemon client if available, falls back to CLI client.
 
@@ -192,13 +189,11 @@ async def _get_client() -> BeadsClientBase:
     # Determine workspace from ContextVar or environment
     workspace = current_workspace.get() or os.environ.get("BEADS_WORKING_DIR")
     if not workspace:
-        raise BeadsError(
-            "No workspace set. Either provide workspace_root parameter or call set_context() first."
-        )
-    
+        raise BeadsError("No workspace set. Either provide workspace_root parameter or call set_context() first.")
+
     # Canonicalize path to handle symlinks and deduplicate connections
     canonical = _canonicalize_path(workspace)
-    
+
     # Thread-safe connection pool access
     async with _pool_lock:
         if canonical in _connection_pool:
@@ -209,29 +204,26 @@ async def _get_client() -> BeadsClientBase:
                 del _connection_pool[canonical]
                 if canonical in _version_checked:
                     _version_checked.remove(canonical)
-                
+
                 # Attempt reconnection with backoff
                 client = await _reconnect_client(canonical)
                 _connection_pool[canonical] = client
         else:
             # Create new client for this workspace
             use_daemon = os.environ.get("BEADS_USE_DAEMON", "1") == "1"
-            
-            client = create_beads_client(
-                prefer_daemon=use_daemon,
-                working_dir=canonical
-            )
-            
+
+            client = create_beads_client(prefer_daemon=use_daemon, working_dir=canonical)
+
             # Register for cleanup
             _register_client_for_cleanup(client)
-            
+
             # Add to pool
             _connection_pool[canonical] = client
-    
+
     # Check version once per workspace (only for CLI client)
     if canonical not in _version_checked:
-        if hasattr(client, '_check_version'):
-            await client._check_version()
+        if hasattr(client, "_check_version"):
+            await client._check_version()  # type: ignore[misc]
         _version_checked.add(canonical)
 
     return client
@@ -334,7 +326,7 @@ async def beads_update_issue(
     """Update an existing issue.
 
     Claim work by setting status to 'in_progress'.
-    
+
     Note: Setting status to 'closed' or 'open' will automatically route to
     beads_close_issue() or beads_reopen_issue() respectively to ensure
     proper approval workflows are followed.
@@ -344,12 +336,12 @@ async def beads_update_issue(
         # Route to close tool to respect approval workflows
         reason = notes if notes else "Completed"
         return await beads_close_issue(issue_id=issue_id, reason=reason)
-    
+
     if status == "open":
         # Route to reopen tool to respect approval workflows
         reason = notes if notes else "Reopened"
         return await beads_reopen_issue(issue_ids=[issue_id], reason=reason)
-    
+
     # Normal attribute updates proceed as usual
     client = await _get_client()
     params = UpdateIssueParams(

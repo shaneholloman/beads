@@ -2,7 +2,7 @@
 
 Utility scripts for maintaining the beads project.
 
-## release.sh (⭐ The Easy Button)
+## release.sh (The Easy Button)
 
 **One-command release** from version bump to local installation.
 
@@ -10,10 +10,10 @@ Utility scripts for maintaining the beads project.
 
 ```bash
 # Full release (does everything)
-./scripts/release.sh 0.9.3
+./scripts/release.sh 0.0.0
 
 # Preview what would happen
-./scripts/release.sh 0.9.3 --dry-run
+./scripts/release.sh 0.0.0 --dry-run
 ```
 
 ### What It Does
@@ -34,8 +34,8 @@ This master script automates the **entire release process**:
 ### Examples
 
 ```bash
-# Release version 0.9.3
-./scripts/release.sh 0.9.3
+# Release version 0.0.0
+./scripts/release.sh 0.0.0
 
 # Preview a release (no changes made)
 ./scripts/release.sh 1.0.0 --dry-run
@@ -80,10 +80,10 @@ Bumps the version number across all beads components in a single command.
 ./scripts/bump-version.sh
 
 # Update versions (shows diff, no commit)
-./scripts/bump-version.sh 0.9.3
+./scripts/bump-version.sh 0.0.0
 
 # Update versions and auto-commit
-./scripts/bump-version.sh 0.9.3 --commit
+./scripts/bump-version.sh 0.0.0 --commit
 ```
 
 ### What It Does
@@ -108,8 +108,8 @@ Updates version in all these files:
 ### Examples
 
 ```bash
-# Bump to 0.9.3 and review changes
-./scripts/bump-version.sh 0.9.3
+# Bump to 0.0.0 and review changes
+./scripts/bump-version.sh 0.0.0
 # Review the diff, then manually commit
 
 # Bump to 1.0.0 and auto-commit

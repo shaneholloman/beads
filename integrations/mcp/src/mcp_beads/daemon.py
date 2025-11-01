@@ -3,11 +3,10 @@
 import asyncio
 import json
 import os
-import socket
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from .beads_client import BeadsClientBase, BeadsError
+from .client import BeadsClientBase
 from .models import (
     AddDependencyParams,
     BlockedIssue,
@@ -72,7 +71,7 @@ class BeadsDaemonClient(BeadsClientBase):
 
     async def _find_socket_path(self) -> str:
         """Find daemon socket path by searching for .beads directory.
-        
+
         Checks local .beads/beads.sock first, then falls back to global ~/.beads/beads.sock.
 
         Returns:
@@ -101,19 +100,19 @@ class BeadsDaemonClient(BeadsClientBase):
                 # Reached filesystem root - check global
                 break
             current = parent
-        
+
         # Check for global daemon socket at ~/.beads/beads.sock
         home = Path.home()
         global_sock_path = home / ".beads" / "beads.sock"
         if global_sock_path.exists():
             return str(global_sock_path)
-        
+
         # No socket found anywhere
         raise DaemonNotRunningError(
             "Daemon socket not found. Is the daemon running? Try: beads daemon (local) or beads daemon --global"
         )
 
-    async def _send_request(self, operation: str, args: Dict[str, Any]) -> Dict[str, Any]:
+    async def _send_request(self, operation: str, args: dict[str, Any]) -> dict[str, Any]:
         """Send RPC request to daemon and get response.
 
         Args:
@@ -145,18 +144,12 @@ class BeadsDaemonClient(BeadsClientBase):
                 asyncio.open_unix_connection(sock_path),
                 timeout=self.timeout,
             )
-        except FileNotFoundError:
-            raise DaemonNotRunningError(
-                f"Daemon socket not found: {sock_path}. Is the daemon running?"
-            )
-        except asyncio.TimeoutError:
-            raise DaemonConnectionError(
-                f"Timeout connecting to daemon at {sock_path}"
-            )
+        except FileNotFoundError as e:
+            raise DaemonNotRunningError(f"Daemon socket not found: {sock_path}. Is the daemon running?") from e
+        except asyncio.TimeoutError as e:
+            raise DaemonConnectionError(f"Timeout connecting to daemon at {sock_path}") from e
         except Exception as e:
-            raise DaemonConnectionError(
-                f"Failed to connect to daemon at {sock_path}: {e}"
-            )
+            raise DaemonConnectionError(f"Failed to connect to daemon at {sock_path}: {e}") from e
 
         try:
             # Send request as newline-delimited JSON
@@ -170,10 +163,8 @@ class BeadsDaemonClient(BeadsClientBase):
                     reader.readline(),
                     timeout=self.timeout,
                 )
-            except asyncio.TimeoutError:
-                raise DaemonError(
-                    f"Timeout waiting for response from daemon (operation: {operation})"
-                )
+            except asyncio.TimeoutError as e:
+                raise DaemonError(f"Timeout waiting for response from daemon (operation: {operation})") from e
 
             if not response_line:
                 raise DaemonError("Daemon closed connection without responding")
@@ -192,7 +183,7 @@ class BeadsDaemonClient(BeadsClientBase):
             writer.close()
             await writer.wait_closed()
 
-    async def ping(self) -> Dict[str, str]:
+    async def ping(self) -> dict[str, str]:
         """Ping daemon to check if it's running.
 
         Returns:
@@ -206,7 +197,7 @@ class BeadsDaemonClient(BeadsClientBase):
         data = await self._send_request("ping", {})
         return json.loads(data) if isinstance(data, str) else data
 
-    async def health(self) -> Dict[str, Any]:
+    async def health(self) -> dict[str, Any]:
         """Get daemon health status.
 
         Returns:
@@ -226,7 +217,7 @@ class BeadsDaemonClient(BeadsClientBase):
         data = await self._send_request("health", {})
         return json.loads(data) if isinstance(data, str) else data
 
-    async def init(self, params: Optional[InitParams] = None) -> str:
+    async def init(self, params: InitParams | None = None) -> str:
         """Initialize new beads database (not typically used via daemon).
 
         Args:
@@ -239,7 +230,7 @@ class BeadsDaemonClient(BeadsClientBase):
             This command is typically run via CLI, not daemon
         """
         params = params or InitParams()
-        args: Dict[str, Any] = {}
+        args: dict[str, Any] = {}
         if params.prefix:
             args["prefix"] = params.prefix
         result = await self._send_request("init", args)
@@ -286,7 +277,7 @@ class BeadsDaemonClient(BeadsClientBase):
         Returns:
             Updated issue
         """
-        args: Dict[str, Any] = {"id": params.issue_id}
+        args: dict[str, Any] = {"id": params.issue_id}
         if params.status:
             args["status"] = params.status
         if params.priority is not None:
@@ -307,7 +298,7 @@ class BeadsDaemonClient(BeadsClientBase):
         data = await self._send_request("update", args)
         return Issue(**(json.loads(data) if isinstance(data, str) else data))
 
-    async def close(self, params: CloseIssueParams) -> List[Issue]:
+    async def close(self, params: CloseIssueParams) -> list[Issue]:
         """Close an issue.
 
         Args:
@@ -324,7 +315,7 @@ class BeadsDaemonClient(BeadsClientBase):
         issue = Issue(**(json.loads(data) if isinstance(data, str) else data))
         return [issue]
 
-    async def reopen(self, params: ReopenIssueParams) -> List[Issue]:
+    async def reopen(self, params: ReopenIssueParams) -> list[Issue]:
         """Reopen one or more closed issues.
 
         Args:
@@ -340,7 +331,7 @@ class BeadsDaemonClient(BeadsClientBase):
         # This is a placeholder for when it's added
         raise NotImplementedError("Reopen operation not yet supported via daemon")
 
-    async def list_issues(self, params: Optional[ListIssuesParams] = None) -> List[Issue]:
+    async def list_issues(self, params: ListIssuesParams | None = None) -> list[Issue]:
         """List issues with optional filters.
 
         Args:
@@ -350,7 +341,7 @@ class BeadsDaemonClient(BeadsClientBase):
             List of matching issues
         """
         params = params or ListIssuesParams()
-        args: Dict[str, Any] = {}
+        args: dict[str, Any] = {}
         if params.status:
             args["status"] = params.status
         if params.priority is not None:
@@ -366,7 +357,7 @@ class BeadsDaemonClient(BeadsClientBase):
         issues_data = json.loads(data) if isinstance(data, str) else data
         if issues_data is None:
             return []
-        return [Issue(**issue) for issue in issues_data]
+        return [Issue(**issue) for issue in issues_data if isinstance(issue, dict)]
 
     async def show(self, params: ShowIssueParams) -> Issue:
         """Show detailed issue information.
@@ -381,7 +372,7 @@ class BeadsDaemonClient(BeadsClientBase):
         data = await self._send_request("show", args)
         return Issue(**(json.loads(data) if isinstance(data, str) else data))
 
-    async def ready(self, params: Optional[ReadyWorkParams] = None) -> List[Issue]:
+    async def ready(self, params: ReadyWorkParams | None = None) -> list[Issue]:
         """Get ready work (issues with no blockers).
 
         Args:
@@ -391,7 +382,7 @@ class BeadsDaemonClient(BeadsClientBase):
             List of ready issues
         """
         params = params or ReadyWorkParams()
-        args: Dict[str, Any] = {}
+        args: dict[str, Any] = {}
         if params.assignee:
             args["assignee"] = params.assignee
         if params.priority is not None:
@@ -403,7 +394,7 @@ class BeadsDaemonClient(BeadsClientBase):
         issues_data = json.loads(data) if isinstance(data, str) else data
         if issues_data is None:
             return []
-        return [Issue(**issue) for issue in issues_data]
+        return [Issue(**issue) for issue in issues_data if isinstance(issue, dict)]
 
     async def stats(self) -> Stats:
         """Get repository statistics.
@@ -417,7 +408,7 @@ class BeadsDaemonClient(BeadsClientBase):
             stats_data = {}
         return Stats(**stats_data)
 
-    async def blocked(self) -> List[BlockedIssue]:
+    async def blocked(self) -> list[BlockedIssue]:
         """Get blocked issues.
 
         Returns:
@@ -457,7 +448,7 @@ class BeadsDaemonClient(BeadsClientBase):
 
     def cleanup(self) -> None:
         """Close daemon client connections and cleanup resources.
-        
+
         This is called during MCP server shutdown to ensure clean termination.
         Since we use asyncio.open_unix_connection which closes per-request,
         there's no persistent connection to close. This method is a no-op

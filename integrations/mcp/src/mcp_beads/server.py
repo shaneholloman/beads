@@ -7,13 +7,14 @@ import os
 import signal
 import subprocess
 import sys
+from collections.abc import Awaitable, Callable
 from functools import wraps
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 from fastmcp import FastMCP
 
-from beads_mcp.models import BlockedIssue, DependencyType, Issue, IssueStatus, IssueType, Stats
-from beads_mcp.tools import (
+from mcp_beads.models import BlockedIssue, DependencyType, Issue, IssueStatus, IssueType, Stats
+from mcp_beads.tools import (
     beads_add_dependency,
     beads_blocked,
     beads_close_issue,
@@ -36,7 +37,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-T = TypeVar("T")
+T = TypeVar("T", bound=Awaitable)
 
 # Global state for cleanup
 _daemon_clients: list = []
@@ -56,27 +57,27 @@ IMPORTANT: Call set_context with your workspace root before any write operations
 
 def cleanup() -> None:
     """Clean up resources on exit.
-    
+
     Closes daemon connections and removes temp files.
     Safe to call multiple times.
     """
     global _cleanup_done
-    
+
     if _cleanup_done:
         return
-    
+
     _cleanup_done = True
     logger.info("Cleaning up beads-mcp resources...")
-    
+
     # Close all daemon client connections
     for client in _daemon_clients:
         try:
-            if hasattr(client, 'cleanup'):
+            if hasattr(client, "cleanup"):
                 client.cleanup()
                 logger.debug(f"Closed daemon client: {client}")
         except Exception as e:
             logger.warning(f"Error closing daemon client: {e}")
-    
+
     _daemon_clients.clear()
     logger.info("Cleanup complete")
 
@@ -99,44 +100,46 @@ logger.info("beads-mcp server initialized with lifecycle management")
 
 def with_workspace(func: Callable[..., T]) -> Callable[..., T]:
     """Decorator to set workspace context for the duration of a tool call.
-    
+
     Extracts workspace_root parameter from tool call kwargs, resolves it,
     and sets current_workspace ContextVar for the request duration.
     Falls back to BEADS_WORKING_DIR if workspace_root not provided.
-    
+
     This enables per-request workspace routing for multi-project support.
     """
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         # Extract workspace_root parameter (if provided)
-        workspace_root = kwargs.get('workspace_root')
-        
+        workspace_root = kwargs.get("workspace_root")
+
         # Determine workspace: parameter > env > None
         workspace = workspace_root or os.environ.get("BEADS_WORKING_DIR")
-        
+
         # Set ContextVar for this request
         token = current_workspace.set(workspace)
-        
+
         try:
             # Execute tool with workspace context set
             return await func(*args, **kwargs)
         finally:
             # Always reset ContextVar after tool completes
             current_workspace.reset(token)
-    
+
     return wrapper
 
 
 def require_context(func: Callable[..., T]) -> Callable[..., T]:
     """Decorator to enforce context has been set before write operations.
-    
+
     Passes if either:
     - workspace_root was provided on tool call (via ContextVar), OR
     - BEADS_WORKING_DIR is set (from set_context)
-    
+
     Only enforces if BEADS_REQUIRE_CONTEXT=1 is set in environment.
     This allows backward compatibility while adding safety for multi-repo setups.
     """
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         # Only enforce if explicitly enabled
@@ -148,21 +151,23 @@ def require_context(func: Callable[..., T]) -> Callable[..., T]:
                     "Context not set. Either provide workspace_root parameter or call set_context() first."
                 )
         return await func(*args, **kwargs)
+
     return wrapper
 
 
 def _find_beads_db(workspace_root: str) -> str | None:
     """Find .beads/*.db by walking up from workspace_root.
-    
+
     Args:
         workspace_root: Starting directory to search from
-        
+
     Returns:
         Absolute path to first .db file found in .beads/, None otherwise
     """
     import glob
+
     current = os.path.abspath(workspace_root)
-    
+
     while True:
         beads_dir = os.path.join(current, ".beads")
         if os.path.isdir(beads_dir):
@@ -170,21 +175,21 @@ def _find_beads_db(workspace_root: str) -> str | None:
             db_files = glob.glob(os.path.join(beads_dir, "*.db"))
             if db_files:
                 return db_files[0]  # Return first .db file found
-        
+
         parent = os.path.dirname(current)
         if parent == current:  # Reached root
             break
         current = parent
-    
+
     return None
 
 
 def _resolve_workspace_root(path: str) -> str:
     """Resolve workspace root to git repo root if inside a git repo.
-    
+
     Args:
         path: Directory path to resolve
-        
+
     Returns:
         Git repo root if inside git repo, otherwise the original path
     """
@@ -200,7 +205,7 @@ def _resolve_workspace_root(path: str) -> str:
             return result.stdout.strip()
     except Exception:
         pass
-    
+
     return os.path.abspath(path)
 
 
@@ -221,23 +226,23 @@ async def get_quickstart() -> str:
 )
 async def set_context(workspace_root: str) -> str:
     """Set workspace root directory and discover the beads database.
-    
+
     Args:
         workspace_root: Absolute path to workspace/project root directory
-        
+
     Returns:
         Confirmation message with resolved paths
     """
     # Resolve to git repo root if possible
     resolved_root = _resolve_workspace_root(workspace_root)
-    
+
     # Always set working directory and context flag
     os.environ["BEADS_WORKING_DIR"] = resolved_root
     os.environ["BEADS_CONTEXT_SET"] = "1"
-    
+
     # Find beads database
     db_path = _find_beads_db(resolved_root)
-    
+
     if db_path is None:
         # Clear any stale DB path
         os.environ.pop("BEADS_DB", None)
@@ -246,15 +251,11 @@ async def set_context(workspace_root: str) -> str:
             f"  Workspace root: {resolved_root}\n"
             f"  Database: Not found (run 'beads init' to create)"
         )
-    
+
     # Set database path
     os.environ["BEADS_DB"] = db_path
-    
-    return (
-        f"Context set successfully:\n"
-        f"  Workspace root: {resolved_root}\n"
-        f"  Database: {db_path}"
-    )
+
+    return f"Context set successfully:\n  Workspace root: {resolved_root}\n  Database: {db_path}"
 
 
 @mcp.tool(
@@ -270,7 +271,7 @@ async def where_am_i(workspace_root: str | None = None) -> str:
             f"BEADS_WORKING_DIR env: {os.environ.get('BEADS_WORKING_DIR', 'NOT SET')}\n"
             f"BEADS_DB env: {os.environ.get('BEADS_DB', 'NOT SET')}"
         )
-    
+
     return (
         f"Workspace root: {os.environ.get('BEADS_WORKING_DIR', 'NOT SET')}\n"
         f"Database: {os.environ.get('BEADS_DB', 'NOT SET')}\n"
@@ -385,9 +386,11 @@ async def update_issue(
     # If trying to close via update, redirect to close_issue to preserve approval workflow
     if status == "closed":
         issues = await beads_close_issue(issue_id=issue_id, reason="Closed via update")
-        return issues[0] if issues else None
-    
-    return await beads_update_issue(
+        if not issues:
+            raise ValueError(f"Failed to close issue {issue_id}")
+        return issues[0]
+
+    result = await beads_update_issue(
         issue_id=issue_id,
         status=status,
         priority=priority,
@@ -399,6 +402,7 @@ async def update_issue(
         notes=notes,
         external_ref=external_ref,
     )
+    return result if isinstance(result, Issue) else result[0]
 
 
 @mcp.tool(
@@ -418,7 +422,9 @@ async def close_issue(issue_id: str, reason: str = "Completed", workspace_root: 
 )
 @with_workspace
 @require_context
-async def reopen_issue(issue_ids: list[str], reason: str | None = None, workspace_root: str | None = None) -> list[Issue]:
+async def reopen_issue(
+    issue_ids: list[str], reason: str | None = None, workspace_root: str | None = None
+) -> list[Issue]:
     """Reopen one or more closed issues."""
     return await beads_reopen_issue(issue_ids=issue_ids, reason=reason)
 

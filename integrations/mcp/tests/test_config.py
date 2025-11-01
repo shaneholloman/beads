@@ -1,11 +1,11 @@
-"""Tests for beads_mcp.config module."""
+"""Tests for mcp_beads.config module."""
 
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-from beads_mcp.config import Config, ConfigError, load_config
+from mcp_beads.config import Config, ConfigError, load_config
 
 
 class TestConfig:

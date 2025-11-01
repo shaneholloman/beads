@@ -20,7 +20,7 @@ jobs:
 
       - name: Build package
         run: |
-          cd integrations/beads-mcp
+          cd integrations/mcp
           uv build
 
       - name: Publish to TestPyPI
@@ -28,5 +28,5 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: |
-          cd integrations/beads-mcp
+          cd integrations/mcp
           uv tool run twine upload --repository testpypi dist/*

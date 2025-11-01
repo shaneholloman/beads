@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from beads_mcp.beads_client import BeadsClient, BeadsCommandError
-from beads_mcp.models import (
+from mcp_beads.client import BeadsClient, BeadsCommandError
+from mcp_beads.models import (
     AddDependencyParams,
     CloseIssueParams,
     CreateIssueParams,
@@ -408,8 +408,8 @@ async def test_init_creates_beads_directory(beads_executable):
     This is a critical test for the bug where init was using --db flag
     and creating the database in the wrong location.
     """
-    from beads_mcp.beads_client import BeadsClient
-    from beads_mcp.models import InitParams
+    from mcp_beads.client import BeadsClient
+    from mcp_beads.models import InitParams
 
     # Create a temporary directory to test in
     with tempfile.TemporaryDirectory(prefix="beads_init_test_", dir="/tmp") as temp_dir:

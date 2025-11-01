@@ -12,7 +12,7 @@ def test_cleanup_handlers_registered():
     """Test that cleanup handlers are registered on server import."""
     # Server is already imported, so handlers are already registered
     # We can verify the cleanup function and signal handler exist
-    import beads_mcp.server as server
+    import mcp_beads.server as server
     
     # Verify cleanup function exists and is callable
     assert hasattr(server, 'cleanup')
@@ -29,7 +29,7 @@ def test_cleanup_handlers_registered():
 
 def test_cleanup_function_safe_to_call_multiple_times():
     """Test that cleanup function can be called multiple times safely."""
-    from beads_mcp.server import cleanup, _daemon_clients
+    from mcp_beads.server import cleanup, _daemon_clients
     
     # Mock client
     mock_client = MagicMock()
@@ -47,10 +47,10 @@ def test_cleanup_function_safe_to_call_multiple_times():
 
 def test_cleanup_handles_client_errors_gracefully():
     """Test that cleanup continues even if a client raises an error."""
-    from beads_mcp.server import cleanup, _daemon_clients
+    from mcp_beads.server import cleanup, _daemon_clients
     
     # Reset state
-    import beads_mcp.server as server
+    import mcp_beads.server as server
     server._cleanup_done = False
     
     # Create mock clients - one that raises, one that doesn't
@@ -73,9 +73,9 @@ def test_cleanup_handles_client_errors_gracefully():
 
 def test_signal_handler_calls_cleanup():
     """Test that signal handler calls cleanup and exits."""
-    from beads_mcp.server import signal_handler
+    from mcp_beads.server import signal_handler
     
-    with patch('beads_mcp.server.cleanup') as mock_cleanup:
+    with patch('mcp_beads.server.cleanup') as mock_cleanup:
         with patch('sys.exit') as mock_exit:
             # Call signal handler
             signal_handler(signal.SIGTERM, None)
@@ -90,19 +90,19 @@ def test_signal_handler_calls_cleanup():
 @pytest.mark.asyncio
 async def test_client_registration_on_first_use():
     """Test that client is registered for cleanup on first use."""
-    from beads_mcp.tools import _get_client
-    from beads_mcp.server import _daemon_clients
+    from mcp_beads.tools import _get_client
+    from mcp_beads.server import _daemon_clients
     
     # Clear existing clients
     _daemon_clients.clear()
     
     # Reset global client state
-    import beads_mcp.tools as tools
+    import mcp_beads.tools as tools
     tools._client = None
     tools._client_registered = False
     
     # Get client (will create and register it)
-    with patch('beads_mcp.beads_client.create_beads_client') as mock_create:
+    with patch('mcp_beads.beads_client.create_beads_client') as mock_create:
         mock_client = MagicMock()
         mock_create.return_value = mock_client
         
@@ -115,10 +115,10 @@ async def test_client_registration_on_first_use():
 def test_cleanup_logs_lifecycle_events(caplog):
     """Test that cleanup logs informative messages."""
     import logging
-    from beads_mcp.server import cleanup
+    from mcp_beads.server import cleanup
     
     # Reset state
-    import beads_mcp.server as server
+    import mcp_beads.server as server
     server._cleanup_done = False
     server._daemon_clients.clear()
     

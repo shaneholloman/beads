@@ -86,7 +86,7 @@ pip install beads-mcp
 - `beads create` → `mcp__beads__create(title="...", priority=1)`
 - `beads update` → `mcp__beads__update(issue_id="beads-42", status="in_progress")`
 
-See `integrations/beads-mcp/README.md` for complete documentation.
+See `integrations/mcp/README.md` for complete documentation.
 
 ### Multi-Repo Configuration (MCP Server)
 
@@ -675,7 +675,7 @@ Run `beads stats` to see overall progress.
 - **Core CLI**: Mature, but always room for polish
 - **Examples**: Growing collection of agent integrations
 - **Documentation**: Comprehensive but can always improve
-- **MCP Server**: Implemented at `integrations/beads-mcp/` with Claude Code plugin
+- **MCP Server**: Implemented at `integrations/mcp/` with Claude Code plugin
 - **Migration Tools**: Planned (see beads-6)
 
 ### 1.0 Milestone
@@ -833,7 +833,7 @@ git push origin main
 - `cmd/beads/version.go` - CLI version
 - `.claude-plugin/plugin.json` - Plugin version
 - `.claude-plugin/marketplace.json` - Marketplace version
-- `integrations/beads-mcp/pyproject.toml` - MCP server version
+- `integrations/mcp/pyproject.toml` - MCP server version
 - `README.md` - Documentation version
 - `plugin.md` - Version requirements
 

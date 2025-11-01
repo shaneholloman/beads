@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 from fastmcp.client import Client
 
-from beads_mcp.server import mcp
+from mcp_beads.server import mcp
 
 
 @pytest.fixture(scope="session")
@@ -259,8 +259,8 @@ async def test_changes_sync_via_git(git_worktree_with_separate_dbs, beads_execut
 @pytest.mark.asyncio
 async def test_mcp_works_with_separate_databases(git_worktree_with_separate_dbs, monkeypatch):
     """Test that MCP server works independently in each worktree with daemon-less mode."""
-    from beads_mcp import tools
-    from beads_mcp.beads_client import BeadsCliClient
+    from mcp_beads import tools
+    from mcp_beads.client import BeadsCliClient
     
     main_repo, worktree, temp_dir = git_worktree_with_separate_dbs
     

@@ -65,7 +65,8 @@ class Config(BaseSettings):
                     f"beads executable not found at: {v}\n\n"
                     + "The beads Claude Code plugin requires the beads CLI to be installed.\n\n"
                     + "Install beads CLI:\n"
-                    + "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/install.sh | bash\n\n"
+                    + "  curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/"
+                    + "install.sh | bash\n\n"
                     + "Or visit: https://github.com/shaneholloman/beads#installation\n\n"
                     + "After installation, restart Claude Code to reload the MCP server."
                 )

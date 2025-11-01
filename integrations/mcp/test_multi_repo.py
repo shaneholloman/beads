@@ -16,8 +16,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from beads_mcp.beads_daemon_client import BeadsDaemonClient
-from beads_mcp.models import CreateIssueParams, ListIssuesParams
+from mcp_beads.beads_daemon_client import BeadsDaemonClient
+from mcp_beads.models import CreateIssueParams, ListIssuesParams
 
 
 async def main():

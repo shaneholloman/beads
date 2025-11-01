@@ -7,7 +7,7 @@ import tempfile
 import pytest
 from fastmcp.client import Client
 
-from beads_mcp.server import mcp
+from mcp_beads.server import mcp
 
 
 @pytest.fixture(scope="session")
@@ -26,7 +26,7 @@ def beads_executable():
 async def temp_db(beads_executable):
     """Create a temporary database file and initialize it - fully hermetic."""
     # Create temp directory for database
-    temp_dir = tempfile.mkdtemp(prefix="beads_mcp_test_", dir="/tmp")
+    temp_dir = tempfile.mkdtemp(prefix="mcp_beads_test_", dir="/tmp")
     db_path = os.path.join(temp_dir, "test.db")
 
     # Initialize database with explicit BEADS_DB - no chdir needed!
@@ -65,8 +65,8 @@ async def temp_db(beads_executable):
 @pytest.fixture
 async def mcp_client(beads_executable, temp_db, monkeypatch):
     """Create MCP client with temporary database."""
-    from beads_mcp import tools
-    from beads_mcp.beads_client import BeadsClient
+    from mcp_beads import tools
+    from mcp_beads.client import BeadsClient
 
     # Reset client before test
     tools._client = None
@@ -604,13 +604,13 @@ async def test_init_tool(mcp_client, beads_executable):
         new_db_path = os.path.join(temp_dir, "new_test.db")
 
         # Temporarily override the client's BEADS_DB for this test
-        from beads_mcp import tools
+        from mcp_beads import tools
 
         # Save original client
         original_client = tools._client
 
         # Create a new client pointing to the new database path
-        from beads_mcp.beads_client import BeadsClient
+        from mcp_beads.client import BeadsClient
         tools._client = BeadsClient(beads_path=beads_executable, beads_db=new_db_path)
 
         try:
