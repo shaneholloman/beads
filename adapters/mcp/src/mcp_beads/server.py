@@ -221,7 +221,7 @@ async def get_quickstart() -> str:
 
 # Context management tools
 @mcp.tool(
-    name="set_context",
+    name="beads__set_context",
     description="Set the workspace root directory for all beads operations. Call this first!",
 )
 async def set_context(workspace_root: str) -> str:
@@ -259,7 +259,7 @@ async def set_context(workspace_root: str) -> str:
 
 
 @mcp.tool(
-    name="where_am_i",
+    name="beads__where_am_i",
     description="Show current workspace context and database path",
 )
 async def where_am_i(workspace_root: str | None = None) -> str:
@@ -280,7 +280,7 @@ async def where_am_i(workspace_root: str | None = None) -> str:
 
 
 # Register all tools
-@mcp.tool(name="ready", description="Find tasks that have no blockers and are ready to be worked on.")
+@mcp.tool(name="beads__ready", description="Find tasks that have no blockers and are ready to be worked on.")
 @with_workspace
 async def ready_work(
     limit: int = 10,
@@ -293,7 +293,7 @@ async def ready_work(
 
 
 @mcp.tool(
-    name="list",
+    name="beads__list",
     description="List all issues with optional filters (status, priority, type, assignee).",
 )
 @with_workspace
@@ -316,7 +316,7 @@ async def list_issues(
 
 
 @mcp.tool(
-    name="show",
+    name="beads__show",
     description="Show detailed information about a specific issue including dependencies and dependents.",
 )
 @with_workspace
@@ -326,7 +326,7 @@ async def show_issue(issue_id: str, workspace_root: str | None = None) -> Issue:
 
 
 @mcp.tool(
-    name="create",
+    name="beads__create",
     description="""Create a new issue (bug, feature, task, epic, or chore) with optional design,
 acceptance criteria, and dependencies.""",
 )
@@ -363,7 +363,7 @@ async def create_issue(
 
 
 @mcp.tool(
-    name="update",
+    name="beads__update",
     description="""Update an existing issue's status, priority, assignee, description, design notes,
 or acceptance criteria. Use this to claim work (set status=in_progress).""",
 )
@@ -406,7 +406,7 @@ async def update_issue(
 
 
 @mcp.tool(
-    name="close",
+    name="beads__close",
     description="Close (complete) an issue. Mark work as done when you've finished implementing/fixing it.",
 )
 @with_workspace
@@ -417,7 +417,7 @@ async def close_issue(issue_id: str, reason: str = "Completed", workspace_root: 
 
 
 @mcp.tool(
-    name="reopen",
+    name="beads__reopen",
     description="Reopen one or more closed issues. Sets status to 'open' and clears closed_at timestamp.",
 )
 @with_workspace
@@ -430,7 +430,7 @@ async def reopen_issue(
 
 
 @mcp.tool(
-    name="dep",
+    name="beads__dep",
     description="""Add a dependency between issues. Types: blocks (hard blocker),
 related (soft link), parent-child (epic/subtask), discovered-from (found during work).""",
 )
@@ -451,7 +451,7 @@ async def add_dependency(
 
 
 @mcp.tool(
-    name="stats",
+    name="beads__stats",
     description="Get statistics: total issues, open, in_progress, closed, blocked, ready, and average lead time.",
 )
 @with_workspace
@@ -461,7 +461,7 @@ async def stats(workspace_root: str | None = None) -> Stats:
 
 
 @mcp.tool(
-    name="blocked",
+    name="beads__blocked",
     description="Get blocked issues showing what dependencies are blocking them from being worked on.",
 )
 @with_workspace
@@ -471,7 +471,7 @@ async def blocked(workspace_root: str | None = None) -> list[BlockedIssue]:
 
 
 @mcp.tool(
-    name="init",
+    name="beads__init",
     description="""Initialize beads in current directory. Creates .beads/ directory and
 database with optional custom prefix for issue IDs.""",
 )
@@ -483,7 +483,7 @@ async def init(prefix: str | None = None, workspace_root: str | None = None) -> 
 
 
 @mcp.tool(
-    name="debug_env",
+    name="beads__debug_env",
     description="Debug tool: Show environment and working directory information",
 )
 @with_workspace

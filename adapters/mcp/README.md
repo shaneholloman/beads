@@ -238,18 +238,20 @@ await beads_ready_work(workspace_root="/Users/you/project-a")
 
 **Tools (all support `workspace_root` parameter):**
 
-- `init` - Initialize beads in current directory
-- `create` - Create new issue (bug, feature, task, epic, chore)
-- `list` - List issues with filters (status, priority, type, assignee)
-- `ready` - Find tasks with no blockers ready to work on
-- `show` - Show detailed issue info including dependencies
-- `update` - Update issue (status, priority, design, notes, etc). Note: `status="closed"` or `status="open"` automatically route to `close` or `reopen` tools to respect approval workflows
-- `close` - Close completed issue
-- `dep` - Add dependency (blocks, related, parent-child, discovered-from)
-- `blocked` - Get blocked issues
-- `stats` - Get project statistics
-- `reopen` - Reopen a closed issue with optional reason
-- `set_context` - Set default workspace for subsequent calls (backward compatibility)
+- `beads__init` - Initialize beads in current directory
+- `beads__create` - Create new issue (bug, feature, task, epic, chore)
+- `beads__list` - List issues with filters (status, priority, type, assignee)
+- `beads__ready` - Find tasks with no blockers ready to work on
+- `beads__show` - Show detailed issue info including dependencies
+- `beads__update` - Update issue (status, priority, design, notes, etc). Note: `status="closed"` or `status="open"` automatically route to `close` or `reopen` tools to respect approval workflows
+- `beads__close` - Close completed issue
+- `beads__dep` - Add dependency (blocks, related, parent-child, discovered-from)
+- `beads__blocked` - Get blocked issues
+- `beads__stats` - Get project statistics
+- `beads__reopen` - Reopen a closed issue with optional reason
+- `beads__set_context` - Set default workspace for subsequent calls (backward compatibility)
+- `beads__where_am_i` - Show current workspace context and database path
+- `beads__debug_env` - Debug tool to show environment and working directory information
 
 ## Development
 

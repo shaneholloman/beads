@@ -15,7 +15,7 @@ We've added two new MCP tools to allow explicit context management:
 
 ### Tools
 
-#### `set_context`
+#### `beads__set_context`
 
 Sets the workspace root directory for all beads operations.
 
@@ -32,7 +32,7 @@ Confirmation message with resolved paths (workspace root and database)
 2. Walks up directory tree to find `.beads/*.db`
 3. Sets `BEADS_WORKING_DIR`, `BEADS_DB`, and `BEADS_CONTEXT_SET` environment variables
 
-#### `where_am_i`
+#### `beads__where_am_i`
 
 Shows current workspace context and database path for debugging.
 
@@ -41,7 +41,7 @@ Current context information including workspace root, database path, and actor
 
 ### Write Operation Protection
 
-All write operations (`create`, `update`, `close`, `reopen`, `dep`, `init`) are decorated with `@require_context`.
+All write operations (`beads__create`, `beads__update`, `beads__close`, `beads__reopen`, `beads__dep`, `beads__init`) are decorated with `@require_context`.
 
 **Enforcement:** Only enforced when `BEADS_REQUIRE_CONTEXT=1` environment variable is set.
 This allows backward compatibility while adding safety for multi-repo setups.
@@ -50,7 +50,7 @@ This allows backward compatibility while adding safety for multi-repo setups.
 
 **Environment Variable Persistence:** FastMCP's architecture doesn't guarantee environment variables persist between tool calls. This means:
 
-- `set_context` sets env vars for that tool call
+- `beads__set_context` sets env vars for that tool call
 - Subsequent tool calls may not see those env vars
 - Context needs to be re-established for each session
 
@@ -88,7 +88,7 @@ No changes needed. The MCP server works as before with auto-discovery.
 **Option 2: Client-Side Context Management (Future)**
 AI clients would need to:
 
-1. Call `set_context` at session start with workspace root
+1. Call `beads__set_context` at session start with workspace root
 2. MCP protocol would need to support persistent session state
 
 **Option 3: Daemon with RPC (Future - Path 1.5 from beads-105)**
