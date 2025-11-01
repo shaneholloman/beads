@@ -5,17 +5,36 @@ Enables AI agents to manage tasks using beads CLI through Model Context Protocol
 
 ## Installing
 
-Install from PyPI:
+### Option 1: Using uvx (Recommended)
+
+No installation required - UV runs it on-demand:
+
+```json
+{
+  "mcpServers": {
+    "beads": {
+      "command": "uvx",
+      "args": ["mcp-beads"]
+    }
+  }
+}
+```
+
+**Benefits:**
+
+- No global installation needed
+- Always uses latest version (or pin with `uvx mcp-beads@0.30.0`)
+- UV handles caching automatically
+
+### Option 2: Using uv tool install
+
+Install permanently to PATH:
 
 ```sh
-# Using uv (recommended)
-uv tool install mcp-beads
-
-# Or using pip
 uv tool install mcp-beads
 ```
 
-Add to your Claude Desktop config:
+Then configure Claude Desktop:
 
 ```json
 {
@@ -27,7 +46,7 @@ Add to your Claude Desktop config:
 }
 ```
 
-### Development Installation
+### Option 3: Development Installation
 
 For development, clone the repository:
 
@@ -92,7 +111,7 @@ Then use in Claude Desktop config:
 
 **Architecture:**
 
-```
+```txt
 MCP Server (one instance)
     ↓
 Per-Project Daemons (one per workspace)
