@@ -91,32 +91,32 @@ The script maps GitHub labels to beads fields:
 
 ### Priority Mapping
 
-| GitHub Labels | beads Priority |
-|--------------|-------------|
-| `critical`, `p0`, `urgent` | 0 (Critical) |
-| `high`, `p1`, `important` | 1 (High) |
-| (default) | 2 (Medium) |
-| `low`, `p3`, `minor` | 3 (Low) |
-| `backlog`, `p4`, `someday` | 4 (Backlog) |
+| GitHub Labels              | beads Priority |
+| -------------------------- | -------------- |
+| `critical`, `p0`, `urgent` | 0 (Critical)   |
+| `high`, `p1`, `important`  | 1 (High)       |
+| (default)                  | 2 (Medium)     |
+| `low`, `p3`, `minor`       | 3 (Low)        |
+| `backlog`, `p4`, `someday` | 4 (Backlog)    |
 
 ### Type Mapping
 
-| GitHub Labels | beads Type |
-|--------------|---------|
-| `bug`, `defect` | bug |
-| `feature`, `enhancement` | feature |
-| `epic`, `milestone` | epic |
-| `chore`, `maintenance`, `dependencies` | chore |
-| (default) | task |
+| GitHub Labels                          | beads Type |
+| -------------------------------------- | ---------- |
+| `bug`, `defect`                        | bug        |
+| `feature`, `enhancement`               | feature    |
+| `epic`, `milestone`                    | epic       |
+| `chore`, `maintenance`, `dependencies` | chore      |
+| (default)                              | task       |
 
 ### Status Mapping
 
-| GitHub State | GitHub Labels | beads Status |
-|-------------|---------------|-----------|
-| closed | (any) | closed |
-| open | `in progress`, `in-progress`, `wip` | in_progress |
-| open | `blocked` | blocked |
-| open | (default) | open |
+| GitHub State | GitHub Labels                       | beads Status |
+| ------------ | ----------------------------------- | ------------ |
+| closed       | (any)                               | closed       |
+| open         | `in progress`, `in-progress`, `wip` | in_progress  |
+| open         | `blocked`                           | blocked      |
+| open         | (default)                           | open         |
 
 ### Labels
 
@@ -124,18 +124,18 @@ All other labels are preserved in the `labels` field. Labels used for mapping (p
 
 ## Field Mapping
 
-| GitHub Field | beads Field | Notes |
-|--------------|----------|-------|
-| `number` | (internal mapping) | GH#123 → beads-1, etc. |
-| `title` | `title` | Direct copy |
-| `body` | `description` | Direct copy |
-| `state` | `status` | See status mapping |
-| `labels` | `priority`, `issue_type`, `labels` | See label mapping |
-| `assignee.login` | `assignee` | First assignee only |
-| `created_at` | `created_at` | ISO 8601 timestamp |
-| `updated_at` | `updated_at` | ISO 8601 timestamp |
-| `closed_at` | `closed_at` | ISO 8601 timestamp |
-| `html_url` | `external_ref` | Link back to GitHub |
+| GitHub Field     | beads Field                        | Notes                  |
+| ---------------- | ---------------------------------- | ---------------------- |
+| `number`         | (internal mapping)                 | GH#123 → beads-1, etc. |
+| `title`          | `title`                            | Direct copy            |
+| `body`           | `description`                      | Direct copy            |
+| `state`          | `status`                           | See status mapping     |
+| `labels`         | `priority`, `issue_type`, `labels` | See label mapping      |
+| `assignee.login` | `assignee`                         | First assignee only    |
+| `created_at`     | `created_at`                       | ISO 8601 timestamp     |
+| `updated_at`     | `updated_at`                       | ISO 8601 timestamp     |
+| `closed_at`      | `closed_at`                        | ISO 8601 timestamp     |
+| `html_url`       | `external_ref`                     | Link back to GitHub    |
 
 ## Cross-References
 
@@ -210,7 +210,7 @@ Edit `map_priority()`, `map_issue_type()`, and `map_status()` to match your labe
 ```python
 def map_priority(self, labels: List[str]) -> int:
     label_names = [label.get("name", "").lower() if isinstance(label, dict) else label.lower() for label in labels]
-    
+
     # Add your custom mappings
     if any(l in label_names for l in ["sev1", "emergency"]):
         return 0
@@ -224,11 +224,11 @@ Map additional GitHub fields to beads:
 ```python
 def convert_issue(self, gh_issue: Dict[str, Any]) -> Dict[str, Any]:
     # ... existing code ...
-    
+
     # Add milestone to design field
     if gh_issue.get("milestone"):
         issue["design"] = f"Milestone: {gh_issue['milestone']['title']}"
-    
+
     return issue
 ```
 
@@ -239,7 +239,7 @@ Parse more dependency patterns from body text:
 ```python
 def extract_dependencies_from_body(self, body: str) -> List[str]:
     # ... existing code ...
-    
+
     # Add: "Blocks: #123, #456"
     blocks_pattern = r'Blocks:\s*((?:#\d+(?:\s*,\s*)?)+)'
     # ... etc
