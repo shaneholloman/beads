@@ -244,7 +244,7 @@ uv run fastmcp dev src/beads_mcp/server.py
 Type checking:
 
 ```sh
-uv run mypy src/beads_mcp
+uv run ty check src/
 ```
 
 Linting and formatting:
