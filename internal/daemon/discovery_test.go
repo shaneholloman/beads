@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -29,10 +30,16 @@ func TestDiscoverDaemon(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go server.Start(ctx)
+	// Capture server.Start() errors instead of silently discarding them
+	errChan := make(chan error, 1)
+	go func() {
+		errChan <- server.Start(ctx)
+	}()
 
 	// Wait for server to be ready with timeout
 	select {
+	case err := <-errChan:
+		t.Fatalf("server.Start() failed: %v", err)
 	case <-server.WaitReady():
 		// Server ready
 	case <-time.After(5 * time.Second):
@@ -57,7 +64,10 @@ func TestDiscoverDaemon(t *testing.T) {
 }
 
 func TestFindDaemonByWorkspace(t *testing.T) {
-	tmpDir := t.TempDir()
+	// Use shorter path to avoid macOS Unix socket path length limit (104 chars)
+	tmpDir := filepath.Join("/tmp", fmt.Sprintf("beads-test-%d", time.Now().UnixNano()%1000000))
+	defer os.RemoveAll(tmpDir)
+
 	workspace := filepath.Join(tmpDir, ".beads")
 	os.MkdirAll(workspace, 0755)
 
@@ -74,10 +84,16 @@ func TestFindDaemonByWorkspace(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go server.Start(ctx)
+	// Capture server.Start() errors instead of silently discarding them
+	errChan := make(chan error, 1)
+	go func() {
+		errChan <- server.Start(ctx)
+	}()
 
 	// Wait for server to be ready with timeout
 	select {
+	case err := <-errChan:
+		t.Fatalf("server.Start() failed: %v", err)
 	case <-server.WaitReady():
 		// Server ready
 	case <-time.After(5 * time.Second):
@@ -234,7 +250,10 @@ func TestDiscoverDaemons_Registry(t *testing.T) {
 }
 
 func TestDiscoverDaemons_Legacy(t *testing.T) {
-	tmpDir := t.TempDir()
+	// Use shorter path to avoid macOS Unix socket path length limit (104 chars)
+	tmpDir := filepath.Join("/tmp", fmt.Sprintf("beads-test-%d", time.Now().UnixNano()%1000000))
+	defer os.RemoveAll(tmpDir)
+
 	beadsDir := filepath.Join(tmpDir, ".beads")
 	os.MkdirAll(beadsDir, 0755)
 
@@ -251,10 +270,16 @@ func TestDiscoverDaemons_Legacy(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go server.Start(ctx)
+	// Capture server.Start() errors instead of silently discarding them
+	errChan := make(chan error, 1)
+	go func() {
+		errChan <- server.Start(ctx)
+	}()
 
 	// Wait for server to be ready with timeout
 	select {
+	case err := <-errChan:
+		t.Fatalf("server.Start() failed: %v", err)
 	case <-server.WaitReady():
 		// Server ready
 	case <-time.After(5 * time.Second):
