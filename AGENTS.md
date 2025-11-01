@@ -43,9 +43,11 @@ If it goes into git history, it must be a bd issue first.
 ### Ephemeral vs Project Work
 
 **Project work (use bd):** Anything that becomes part of the project
+
 - Example: "Rename docs to lowercase-with-dashes" → Create `bd` issue
 
 **Ephemeral session planning (use native agent tools):** Temporary task breakdown for complex work
+
 - Example: Breaking "Implement auth system" into 5 implementation steps
 - These are throwaway plans that help YOU work, not project history
 
@@ -958,6 +960,7 @@ Then use `mcp__beads__*` functions instead of CLI commands.
 ### Important Rules
 
 **Project Work (MUST use bd):**
+
 - ✔ Create bd issue for ANY code/docs/config changes
 - ✔ Always use `--json` flag for programmatic use
 - ✔ Link discovered work with `discovered-from` dependencies
@@ -965,12 +968,14 @@ Then use `mcp__beads__*` functions instead of CLI commands.
 - ✔ Run `bd sync` at end of session to commit/push
 
 **What NOT to do:**
+
 - ✘ Do NOT create markdown TODO lists
 - ✘ Do NOT use external issue trackers
 - ✘ Do NOT duplicate tracking systems
 - ✘ Do NOT commit work without a bd issue
 
 **Ephemeral Session Planning (escape hatch):**
+
 - ✔ Native agent tools (like TodoWrite) are OK for temporary task breakdown
 - ✔ Use for complex multi-step work that helps YOU plan, not project history
 - ✔ When in doubt, use bd

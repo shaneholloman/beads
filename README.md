@@ -7,609 +7,163 @@
 [![License](https://img.shields.io/github/license/shaneholloman/beads)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/beads-mcp)](https://pypi.org/project/beads-mcp/)
 
-## Overview
+## What is it?
 
-Beads is a lightweight memory system for coding agents, using a graph-based issue tracker. Four kinds of dependencies work to chain your issues together like beads, making them easy for agents to follow for long distances, and reliably perform complex task streams in the right order.
+Dependency-aware issue tracker for AI coding agents. Issues chain together like beads through four dependency types (blocks, related, parent-child, discovered-from). Local SQLite database syncs via git through JSONL export/import, acting like a distributed database without any server infrastructure.
 
-Drop Beads into any project where you're using a coding agent, and you'll enjoy an instant upgrade in organization, focus, and your agent's ability to handle long-horizon tasks over multiple compaction sessions. Your agents will use issue tracking with proper epics, rather than creating a swamp of rotten half-implemented markdown plans.
-
-Instant start:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
-```
-
-Then tell your coding agent to start using the `bd` tool instead of markdown for all new work, somewhere in your `AGENTS.md` or `CLAUDE.md`. That's all there is to it!
-
-You don't use Beads directly as a human. Your coding agent will file and manage issues on your behalf. They'll file things they notice automatically, and you can ask them at any time to add or update issues for you.
-
-Beads gives agents unprecedented long-term planning capability, solving their amnesia when dealing with complex nested plans. They can trivially query the ready work, orient themselves, and land on their feet as soon as they boot up.
-
-Agents using Beads will no longer silently pass over problems they notice due to lack of context space -- instead, they will automatically file issues for newly-discovered work as they go. No more lost work, ever.
-
-Beads issues are backed by git, but through a clever design it manages to act like a managed, centrally hosted SQL database shared by all of the agents working on a project (repo), even across machines.
-
-Beads even improves work auditability. The issue tracker has a sophisticated audit trail, which agents can use to reconstruct complex operations that may have spanned multiple sessions.
-
-Agents report that they enjoy working with Beads, and they will use it spontaneously for both recording new work and reasoning about your project in novel ways. Whether you are a human or an AI, Beads lets you have more fun and less stress with agentic coding.
-
-![AI Agent using Beads](https://raw.githubusercontent.com/shaneholloman/beads/main/.github/images/agent-using-beads.jpg)
+**WARNING: Alpha Status** - Core features work but expect API changes before 1.0.
 
 ## Features
 
-- **Zero setup** - `bd init` creates project-local database (and your agent will do it)
-- **Dependency tracking** - Four dependency types (blocks, related, parent-child, discovered-from)
-- **Ready work detection** - Automatically finds issues with no open blockers
-- **Agent-friendly** - `--json` flags for programmatic integration
-- **Git-versioned** - JSONL records stored in git, synced across machines
-- **Distributed by design** - Agents on multiple machines share one logical database via git
-- **Extensible** - Add your own tables to the SQLite database
-- **Multi-project isolation** - Each project gets its own database, auto-discovered by directory
-- **Dependency trees** - Visualize full dependency graphs
-- **Beautiful CLI** - Colored output for humans, JSON for bots
-- **Full audit trail** - Every change is logged
-- **High performance** - Batch operations for bulk imports (1000 issues in ~950ms)
-- **Memory decay** - Semantic compaction gracefully reduces old closed issues
+- **Dependency tracking** - Chain issues together, detect cycles, visualize trees
+- **Ready work detection** - Find unblocked issues automatically
+- **Git-synced** - JSONL stored in git, auto-sync between database and files
+- **Hash-based IDs** - Collision-resistant for multi-agent/multi-branch workflows
+- **Agent-optimized** - JSON output, MCP server, CLI designed for programmatic use
+- **Multi-project** - Auto-discovers databases by directory, complete isolation
+- **Extensible** - Add your own SQLite tables alongside core schema
 
 ## Installation
 
-**Quick install (all platforms):**
+**Quick install:**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/shaneholloman/beads/main/scripts/install.sh | bash
 ```
 
-**Homebrew (macOS/Linux):**
+**Homebrew:**
 
 ```bash
 brew tap shaneholloman/beads
 brew install bd
 ```
 
-**Other platforms and methods:** See [installing.md](docs/installing.md) for Windows, Arch Linux, and manual installation.
+**From source:**
 
-**IDE Integration:** See [installing.md](docs/installing.md) for Claude Code plugin and MCP server setup.
+```bash
+git clone https://github.com/shaneholloman/beads.git
+cd beads
+go build -o bd ./cmd/bd
+sudo cp bd /usr/local/bin/bd  # Or: cp bd ~/bin/bd
+```
+
+**Other platforms:** See [installing.md](docs/installing.md) for Windows, Arch Linux, IDE integration.
 
 ## Quick Start
 
-### For Humans
-
-Beads is designed for **AI coding agents** to use on your behalf. Setup takes 30 seconds:
-
-**You run this once (humans only):**
+**Initialize in your project:**
 
 ```bash
-# In your project root:
+cd your-project
 bd init
-
-# bd will:
-# - Create .beads/ directory with database
-# - Import existing issues from git (if any)
-# - Prompt to install git hooks (recommended: say yes)
-# - Auto-start daemon for sync
-
-# Then tell your agent about bd:
-echo "BEFORE ANYTHING ELSE: run 'bd onboard' and follow the instructions" >> AGENTS.md
 ```
 
-**Your agent does the rest:** Next time your agent starts, it will:
-
-1. Run `bd onboard` and receive integration instructions
-2. Add bd workflow documentation to AGENTS.md
-3. Update CLAUDE.md with a note (if present)
-4. Remove the bootstrap instruction
-
-**For agents setting up repos:** Use `bd init --quiet` for non-interactive setup (auto-installs git hooks, no prompts).
-
-**For new repo clones:** Run `bd init` (or `bd init --quiet` for agents) to import existing issues from `.beads/issues.jsonl` automatically.
-
-Most tasks will be created and managed by agents during conversations. You can check on things with:
+**Tell your AI agent:**
 
 ```bash
-bd list                  # See what's being tracked
-bd show <issue-id>       # Review a specific issue
-bd ready                 # See what's ready to work on
-bd dep tree <issue-id>   # Visualize dependencies
+echo "Use 'bd' for issue tracking. Run 'bd onboard' for instructions." >> AGENTS.md
 ```
 
-### For AI Agents
+Your agent handles the rest - creating issues, tracking dependencies, finding ready work.
 
-Run the interactive guide to learn the full workflow:
+**Manual usage:**
 
 ```bash
-bd quickstart
+bd ready                           # Show unblocked work
+bd create "Fix bug" -p 1 -t bug    # Create issue
+bd show bd-a1b2                    # View details
+bd dep tree bd-a1b2                # Visualize dependencies
+bd close bd-a1b2 --reason "Done"   # Mark complete
 ```
 
-Quick reference for agent workflows:
+## Core Concepts
 
-```bash
-# Find ready work
-bd ready --json | jq '.[0]'
+**Dependencies:**
 
-# Create issues during work
-bd create "Discovered bug" -t bug -p 0 --json
+- `blocks` - Hard blocker (affects ready work)
+- `related` - Soft connection
+- `parent-child` - Epic/subtask hierarchy
+- `discovered-from` - Work found during execution
 
-# Link discovered work back to parent
-bd dep add <new-id> <parent-id> --type discovered-from
+**Priorities:** 0 (critical) to 4 (backlog)
 
-# Update status
-bd update <issue-id> --status in_progress --json
+**Types:** bug, feature, task, epic, chore
 
-# Complete work
-bd close <issue-id> --reason "Implemented" --json
-```
+**Hash IDs:** Collision-resistant identifiers (bd-a1b2, bd-f14c) instead of sequential numbers. See [hash-id-design.md](docs/hash-id-design.md) for details.
 
-## The Magic: Distributed Database via Git
+## Git Workflow
 
-Here's the crazy part: **bd acts like a centralized database, but it's actually distributed via git.**
-
-When you install bd on any machine with your project repo, you get:
-
-- ✔ Full query capabilities (dependencies, ready work, etc.)
-- ✔ Fast local operations (<100ms via SQLite)
-- ✔ Shared state across all machines (via git)
-- ✔ No server, no daemon required, no configuration
-- ✔ AI-assisted merge conflict resolution
-
-**How it works:** Each machine has a local SQLite cache (`.beads/*.db`, gitignored). Source of truth is JSONL (`.beads/issues.jsonl`, committed to git). Auto-sync keeps them in sync: SQLite → JSONL after CRUD operations (5-second debounce), JSONL → SQLite when JSONL is newer (e.g., after `git pull`).
-
-**The result:** Agents on your laptop, your desktop, and your coworker's machine all query and update what *feels* like a single shared database, but it's really just git doing what git does best - syncing text files across machines.
-
-No PostgreSQL instance. No MySQL server. No hosted service. Just install bd, clone the repo, and you're connected to the "database."
-
-### Git Workflow & Auto-Sync
-
-bd automatically syncs your local database with git:
-
-**Making changes (auto-export):**
+bd auto-syncs with git:
 
 ```bash
 bd create "Fix bug" -p 1
-bd update bd-a1b2 --status in_progress
-# bd automatically exports to .beads/issues.jsonl after 5 seconds
+# After 5 seconds: exports to .beads/issues.jsonl
 
 git add .beads/issues.jsonl
-git commit -m "Working on bd-a1b2"
+git commit -m "Working on fix"
 git push
-```
 
-**Pulling changes (auto-import):**
-
-```bash
+# On other machine:
 git pull
-# bd automatically detects JSONL is newer and imports on next command
-
-bd ready  # Fresh data from git!
-bd list   # Shows issues from other machines
+bd ready  # Auto-imports updated JSONL
 ```
 
-**Manual sync (optional):**
-
-```bash
-bd sync  # Immediately flush pending changes and import latest JSONL
-```
-
-**For zero-lag sync**, install the git hooks:
+Install git hooks for instant sync:
 
 ```bash
 cd examples/git-hooks && ./install.sh
 ```
 
-This adds:
-
-- **pre-commit** - Immediate flush before commit (no 5-second wait)
-- **post-merge** - Guaranteed import after `git pull` or `git merge`
-
-**Disable auto-sync** if needed:
-
-```bash
-bd --no-auto-flush create "Issue"   # Skip auto-export
-bd --no-auto-import list            # Skip auto-import check
-```
-
-## Hash-Based Issue IDs
-
-**Version 0.20.1 introduces collision-resistant hash-based IDs** to enable reliable multi-worker and multi-branch workflows.
-
-### ID Format
-
-Issue IDs now use short hexadecimal hashes instead of sequential numbers:
-
-- **Before (v0.20.0):** `bd-1`, `bd-2`, `bd-152` (sequential numbers)
-- **After (v0.20.1):** `bd-a1b2`, `bd-f14c`, `bd-3e7a` (4-6 character hashes)
-
-Hash IDs use **progressive length scaling** based on database size:
-
-- **0-500 issues:** 4-character hashes (e.g., `bd-a1b2`)
-- **500-1,500 issues:** 5-character hashes (e.g., `bd-f14c3`)
-- **1,500-10,000 issues:** 6-character hashes (e.g., `bd-3e7a5b`)
-
-### Why Hash IDs?
-
-**The problem with sequential IDs:**
-When multiple agents or branches create issues concurrently, sequential IDs collide:
-
-- Agent A creates `bd-10` on branch `feature-auth`
-- Agent B creates `bd-10` on branch `feature-payments`
-- Git merge creates duplicate IDs → collision resolution required
-
-**How hash IDs solve this:**
-Hash IDs are generated from random data, making concurrent creation collision-free:
-
-- Agent A creates `bd-a1b2` (hash of random UUID)
-- Agent B creates `bd-f14c` (different hash, different UUID)
-- Git merge succeeds cleanly → no collision resolution needed
-
-### Birthday Paradox Math
-
-Hash IDs use **birthday paradox probability** to determine length:
-
-| Hash Length | Total Space | 50% Collision at N Issues | 1% Collision at N Issues |
-|-------------|-------------|---------------------------|--------------------------|
-| 4 chars     | 65,536      | ~304 issues               | ~38 issues               |
-| 5 chars     | 1,048,576   | ~1,217 issues             | ~153 issues              |
-| 6 chars     | 16,777,216  | ~4,869 issues             | ~612 issues              |
-
-**Our thresholds are conservative:** We switch from 4→5 chars at 500 issues (way before the 1% collision point at ~1,217) and from 5→6 chars at 1,500 issues.
-
-**Progressive extension on collision:** If a hash collision does occur, bd automatically extends the hash to 7 or 8 characters instead of remapping to a new ID.
-
-### Migration
-
-**Existing databases continue to work** - no forced migration. Run `bd migrate` when ready:
-
-```bash
-# Preview migration
-bd migrate --dry-run
-
-# Migrate database schema (removes obsolete issue_counters table)
-bd migrate
-
-# Show current database info
-bd info
-```
-
-**Note:** Hash IDs require schema version 9+. The `bd migrate` command detects old schemas and upgrades automatically.
-
-### Hierarchical Child IDs
-
-Hash IDs support **hierarchical children** for natural work breakdown structures. Child IDs use dot notation:
-
-```json
-bd-a3f8e9      [epic] Auth System
-bd-a3f8e9.1    [task] Design login UI
-bd-a3f8e9.2    [task] Backend validation
-bd-a3f8e9.3    [epic] Password Reset
-bd-a3f8e9.3.1  [task] Email templates
-bd-a3f8e9.3.2  [task] Reset flow tests
-```
-
-**Benefits:**
-
-- **Collision-free**: Parent hash ensures unique namespace
-- **Human-readable**: Clear parent-child relationships
-- **Flexible depth**: Up to 3 levels of nesting
-- **No coordination needed**: Each epic owns its child ID space
-
-**Common patterns:**
-
-- 1 level: Epic → tasks (most projects)
-- 2 levels: Epic → features → tasks (large projects)
-- 3 levels: Epic → features → stories → tasks (complex projects)
-
-**Example workflow:**
-
-```bash
-# Create parent epic (generates hash ID automatically)
-bd create "Auth System" -t epic -p 1
-# Returns: bd-a3f8e9
-
-# Create child tasks
-bd create "Design login UI" -p 1       # Auto-assigned: bd-a3f8e9.1
-bd create "Backend validation" -p 1    # Auto-assigned: bd-a3f8e9.2
-
-# Create nested epic with its own children
-bd create "Password Reset" -t epic -p 1  # Auto-assigned: bd-a3f8e9.3
-bd create "Email templates" -p 1          # Auto-assigned: bd-a3f8e9.3.1
-```
-
-**Note:** Child IDs are automatically assigned sequentially within each parent's namespace. No need to specify parent manually - bd tracks context from git branch/working directory.
-
-## Usage
-
-### Health Check
-
-Check installation health: `bd doctor` validates your `.beads/` setup, database version, ID format, and CLI version. Provides actionable fixes for any issues found.
-
-### Creating Issues
-
-```bash
-bd create "Fix bug" -d "Description" -p 1 -t bug
-bd create "Add feature" --description "Long description" --priority 2 --type feature
-bd create "Task" -l "backend,urgent" --assignee alice
-
-# Get JSON output for programmatic use
-bd create "Fix bug" -d "Description" --json
-
-# Create multiple issues from a markdown file
-bd create -f feature-plan.md
-```
-
-Options:
-
-- `-f, --file` - Create multiple issues from markdown file
-- `-d, --description` - Issue description
-- `-p, --priority` - Priority (0-4, 0=highest, default=2)
-- `-t, --type` - Type (bug|feature|task|epic|chore, default=task)
-- `-a, --assignee` - Assign to user
-- `-l, --labels` - Comma-separated labels
-- `--id` - Explicit issue ID (e.g., `worker1-100` for ID space partitioning)
-- `--json` - Output in JSON format
-
-### Viewing Issues
-
-```bash
-bd info                                    # Show database path and daemon status
-bd show bd-a1b2                            # Show full details
-bd list                                    # List all issues
-bd list --status open                      # Filter by status
-bd list --priority 1                       # Filter by priority
-bd list --assignee alice                   # Filter by assignee
-bd list --label=backend,urgent             # Filter by labels (AND)
-bd list --label-any=frontend,backend       # Filter by labels (OR)
-
-# JSON output for agents
-bd info --json
-bd list --json
-bd show bd-a1b2 --json
-```
-
-### Updating Issues
-
-```bash
-bd update bd-a1b2 --status in_progress
-bd update bd-a1b2 --priority 2
-bd update bd-a1b2 --assignee bob
-bd close bd-a1b2 --reason "Completed"
-bd close bd-a1b2 bd-f14c bd-3e7a   # Close multiple
-
-# JSON output
-bd update bd-a1b2 --status in_progress --json
-```
-
-### Dependencies
-
-```bash
-# Add dependency (bd-f14c depends on bd-a1b2)
-bd dep add bd-f14c bd-a1b2
-bd dep add bd-3e7a bd-a1b2 --type blocks
-
-# Remove dependency
-bd dep remove bd-f14c bd-a1b2
-
-# Show dependency tree
-bd dep tree bd-f14c
-
-# Detect cycles
-bd dep cycles
-```
-
-#### Dependency Types
-
-- **blocks**: Hard blocker (default) - issue cannot start until blocker is resolved
-- **related**: Soft relationship - issues are connected but not blocking
-- **parent-child**: Hierarchical relationship (child depends on parent)
-- **discovered-from**: Issue discovered during work on another issue
-
-Only `blocks` dependencies affect ready work detection.
-
-### Finding Work
-
-```bash
-# Show ready work (no blockers)
-bd ready
-bd ready --limit 20
-bd ready --priority 1
-bd ready --assignee alice
-
-# Sort policies (hybrid is default)
-bd ready --sort priority    # Strict priority order (P0, P1, P2, P3)
-bd ready --sort oldest      # Oldest issues first (backlog clearing)
-bd ready --sort hybrid      # Recent by priority, old by age (default)
-
-# Show blocked issues
-bd blocked
-
-# Statistics
-bd stats
-
-# JSON output for agents
-bd ready --json
-```
-
-### Labels
-
-Add flexible metadata to issues for filtering and organization:
-
-```bash
-# Add labels during creation
-bd create "Fix auth bug" -t bug -p 1 -l auth,backend,urgent
-
-# Add/remove labels
-bd label add bd-a1b2 security
-bd label remove bd-a1b2 urgent
-
-# List labels
-bd label list bd-a1b2            # Labels on one issue
-bd label list-all                # All labels with counts
-
-# Filter by labels
-bd list --label backend,auth     # AND: must have ALL labels
-bd list --label-any frontend,ui  # OR: must have AT LEAST ONE
-```
-
-**See [labels.md](docs/labels.md) for complete label documentation and best practices.**
-
-### Deleting Issues
-
-```bash
-# Single issue deletion (preview mode)
-bd delete bd-a1b2
-
-# Force single deletion
-bd delete bd-a1b2 --force
-
-# Batch deletion
-bd delete bd-a1b2 bd-f14c bd-3e7a --force
-
-# Delete from file (one ID per line)
-bd delete --from-file deletions.txt --force
-
-# Cascade deletion (recursively delete dependents)
-bd delete bd-a1b2 --cascade --force
-```
-
-The delete operation removes all dependency links, updates text references to `[deleted:ID]`, and removes the issue from database and JSONL.
-
-### Configuration
-
-Manage per-project configuration for external integrations:
-
-```bash
-# Set configuration
-bd config set jira.url "https://company.atlassian.net"
-bd config set jira.project "PROJ"
-
-# Get configuration
-bd config get jira.url
-
-# List all configuration
-bd config list --json
-
-# Unset configuration
-bd config unset jira.url
-```
-
-**See [config.md](docs/config.md) for complete configuration documentation.**
-
-### Compaction (Memory Decay)
-
-Beads uses AI to compress old closed issues, keeping databases lightweight as they age:
-
-```bash
-bd compact --dry-run --all  # Preview candidates
-bd compact --days 90        # Compact closed issues older than 90 days
-```
-
-This is agentic memory decay - your database naturally forgets fine-grained details while preserving essential context.
-
-### Export/Import
-
-```bash
-# Export to JSONL (automatic by default)
-bd export -o issues.jsonl
-
-# Import from JSONL (automatic when JSONL is newer)
-bd import -i issues.jsonl
-
-# Manual sync
-bd sync
-```
-
-**Note:** Auto-sync is enabled by default. Manual export/import is rarely needed.
-
-### Managing Daemons
-
-bd runs a background daemon per workspace for auto-sync and RPC operations. Use `bd daemons` to manage multiple daemons:
-
-```bash
-# List all running daemons
-bd daemons list
-
-# Check health (version mismatches, stale sockets)
-bd daemons health
-
-# Stop a specific daemon
-bd daemons stop /path/to/workspace
-bd daemons stop 12345  # By PID
-
-# View daemon logs
-bd daemons logs /path/to/workspace -n 100
-bd daemons logs 12345 -f  # Follow mode
-
-# Stop all daemons
-bd daemons killall
-bd daemons killall --force  # Force kill if graceful fails
-```
-
-**Common use cases:**
-
-- **After upgrading bd**: Run `bd daemons health` to check for version mismatches, then `bd daemons killall` to restart all daemons with the new version
-- **Debugging**: Use `bd daemons logs <workspace>` to view daemon logs
-- **Cleanup**: `bd daemons list` auto-removes stale sockets
-
-See [commands/daemons.md](commands/daemons.md) for complete documentation.
-
-## Examples
-
-Check out the **[examples/](examples/)** directory for:
-
-- **[Python agent](examples/python-agent/)** - Full agent implementation in Python
-- **[Bash agent](examples/bash-agent/)** - Shell script agent example
-- **[Git hooks](examples/git-hooks/)** - Automatic export/import on git operations
-- **[Branch merge workflow](examples/branch-merge/)** - Handle ID collisions when merging branches
-- **[Claude Desktop MCP](examples/claude-desktop-mcp/)** - MCP server for Claude Desktop
-- **[Claude Code Plugin](docs/plugin.md)** - One-command installation with slash commands
-
-## Advanced Features
-
-For advanced usage, see:
-
-- **[advanced.md](docs/advanced.md)** - Prefix renaming, merging duplicates, daemon configuration
-- **[config.md](docs/config.md)** - Configuration system for integrations
-- **[extending.md](docs/extending.md)** - Database extension patterns
-- **[advanced.md](docs/advanced.md)** - JSONL format and merge strategies
-
-## Documentation
-
-- **[README.md](README.md)** - You are here! Core features and quick start
-- **[installing.md](docs/installing.md)** - Complete installation guide for all platforms
-- **[quickstart.md](docs/quickstart.md)** - Interactive tutorial (`bd quickstart`)
-- **[faq.md](docs/faq.md)** - Frequently asked questions
-- **[troubleshooting.md](docs/troubleshooting.md)** - Common issues and solutions
-- **[advanced.md](docs/advanced.md)** - Advanced features and use cases
-- **[labels.md](docs/labels.md)** - Complete label system guide
-- **[config.md](docs/config.md)** - Configuration system
-- **[extending.md](docs/extending.md)** - Database extension patterns
-- **[advanced.md](docs/advanced.md)** - JSONL format analysis
-- **[plugin.md](docs/plugin.md)** - Claude Code plugin documentation
-
-## Community & Ecosystem
-
-### Third-Party Tools
-
-- **[Beadster](https://apps.apple.com/us/app/beadster-issue-tracking/id6754286462)** - Native macOS app for viewing and managing bd issues across multiple projects. Features a compact, always-on-top window for quick reference during development. Built by [@podviaznikov](https://github.com/podviaznikov).
-
-Have you built something cool with bd? [Open an issue](https://github.com/shaneholloman/beads/issues) to get it featured here!
+See [advanced.md](docs/advanced.md) for merge conflict handling and daemon configuration.
 
 ## Development
 
+**Build and test:**
+
 ```bash
+# Build local binary
+go build -o bd ./cmd/bd
+
+# Test locally
+./bd version
+./bd ready
+
 # Run tests
 go test ./...
 
-# Build
-go build -o bd ./cmd/bd
-
-# Run
-./bd create "Test issue"
-
-# Bump version
-./scripts/bump-version.sh 0.9.3           # Update all versions, show diff
-./scripts/bump-version.sh 0.9.3 --commit  # Update and auto-commit
+# Install system-wide
+cp ./bd ~/bin/bd
+# or
+sudo cp ./bd /usr/local/bin/bd
 ```
 
-See [scripts/README.md](scripts/README.md) for more development scripts.
+**Version management:**
+
+```bash
+./scripts/bump-version.sh 0.24.0 --commit  # Bump all version files
+git push origin main
+```
+
+**Before committing:**
+
+```bash
+go test ./...                    # All tests pass
+go fmt ./...                     # Format code
+golangci-lint run ./...          # Check linting (see docs/linting.md for baseline)
+```
+
+See [scripts/README.md](scripts/README.md) for release process.
+
+## Documentation
+
+- **[installing.md](docs/installing.md)** - Complete installation guide
+- **[quickstart.md](docs/quickstart.md)** - Interactive tutorial
+- **[advanced.md](docs/advanced.md)** - Daemon config, merge strategies, prefix renaming
+- **[hash-id-design.md](docs/hash-id-design.md)** - Hash ID system and collision math
+- **[labels.md](docs/labels.md)** - Label system guide
+- **[extending.md](docs/extending.md)** - Database extension patterns
+- **[faq.md](docs/faq.md)** - Frequently asked questions
+- **[troubleshooting.md](docs/troubleshooting.md)** - Common issues
 
 ## License
 
