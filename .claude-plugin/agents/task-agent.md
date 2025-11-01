@@ -24,8 +24,8 @@ description: Autonomous agent that finds and completes ready tasks
 
 4. **Track Discoveries**
     - If you find bugs, TODOs, or related work:
-       - Use `create` tool to file new issues
-       - Use `dep` tool with `discovered-from` to link them
+        - Use `create` tool to file new issues
+        - Use `dep` tool with `discovered-from` to link them
     - This maintains context for future work
 
 5. **Complete the Task**
