@@ -64,8 +64,8 @@ Your agent handles the rest - creating issues, tracking dependencies, finding re
 **Manual usage:**
 
 ```sh
-beads ready                           # Show unblocked work
-beads create "Fix bug" -p 1 -t bug    # Create issue
+beads ready                              # Show unblocked work
+beads create "Fix bug" -p 1 -t bug       # Create issue
 beads show beads-a1b2                    # View details
 beads dep tree beads-a1b2                # Visualize dependencies
 beads close beads-a1b2 --reason "Done"   # Mark complete
