@@ -14,7 +14,7 @@ require (
 	golang.org/x/mod v0.29.0
 	golang.org/x/sys v0.37.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	modernc.org/sqlite v1.39.1
+	modernc.org/sqlite v1.40.1
 	rsc.io/script v0.0.2
 )
 
